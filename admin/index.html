@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم فكّر - إدارة البلاغات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="styles/main.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>فكّر</h1>
+                <p>لوحة التحكم</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <i class="mdi mdi-flag"></i>
+                    <span>البلاغات</span>
+                    <span class="badge" id="newReportsCount">0</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="mdi mdi-cog"></i>
+                    <span>الإعدادات</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-title">
+                    <h2>إدارة البلاغات</h2>
+                    <p>مراجعة وإدارة البلاغات الواردة</p>
+                </div>
+                <div class="header-actions">
+                    <div class="filter-group">
+                        <select id="statusFilter">
+                            <option value="all">جميع الحالات</option>
+                            <option value="new">جديد</option>
+                            <option value="inProgress">قيد المراجعة</option>
+                            <option value="resolved">تم الحل</option>
+                            <option value="rejected">مرفوض</option>
+                        </select>
+                        <select id="typeFilter">
+                            <option value="all">جميع الأنواع</option>
+                            <option value="format">صياغة السؤال</option>
+                            <option value="answer">خطأ في الإجابة</option>
+                            <option value="category">خطأ في الفئة</option>
+                            <option value="difficulty">مستوى الصعوبة</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                    <button id="refreshBtn" class="btn">
+                        <i class="mdi mdi-refresh"></i>
+                        تحديث
+                    </button>
+                </div>
+            </header>
+
+            <div class="reports-container">
+                <div class="reports-list" id="reportsList">
+                    <!-- سيتم ملء هذا القسم ديناميكياً -->
+                </div>
+
+                <div class="report-details" id="reportDetails">
+                    <div class="no-selection">
+                        <i class="mdi mdi-flag-outline"></i>
+                        <p>اختر بلاغاً لعرض تفاصيله</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- نافذة منبثقة للرد على البلاغ -->
+    <div class="modal" id="responseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>الرد على البلاغ</h3>
+                <button class="close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>حالة البلاغ</label>
+                    <select id="reportStatus">
+                        <option value="inProgress">قيد المراجعة</option>
+                        <option value="resolved">تم الحل</option>
+                        <option value="rejected">مرفوض</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>الرد</label>
+                    <textarea id="responseText" rows="4" placeholder="اكتب ردك هنا..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelResponse">إلغاء</button>
+                <button class="btn btn-primary" id="submitResponse">إرسال الرد</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js" type="module"></script>
+</body>
+</html>

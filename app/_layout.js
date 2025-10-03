@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { ThemeProvider } from '../contexts/ThemeContext';
+import { AuthProvider } from '../contexts/AuthContext';
 import { Suspense } from 'react';
 import { View, ActivityIndicator, StatusBar } from 'react-native';
 import { useFonts } from 'expo-font';
@@ -41,13 +42,15 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
-        <StatusBar style="auto" />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: 'fade'
-          }}
-        />
+        <AuthProvider>
+          <StatusBar style="auto" />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              animation: 'fade'
+            }}
+          />
+        </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

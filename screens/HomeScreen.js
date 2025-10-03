@@ -21,12 +21,15 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { SPACING, FONTS, SHADOWS, BORDER_RADIUS } from '../styles/theme';
 import { useTheme, getTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import StorageService from '../services/storageService';
+import EnhancedStorageService from '../services/enhancedStorageService';
 import RewardsGuide from '../components/RewardsGuide';
 import PentaPointsGuide from '../components/PentaPointsGuide';
 import PentaPointsService from '../services/pentaPointsService';
 import ResponsiveView from '../components/ResponsiveView';
 import { ThemeSelector } from '../components/ThemeSelector';
+import UserProfile from '../components/UserProfile';
 import { 
   wp, 
   hp, 
@@ -326,6 +329,7 @@ const ContainerBackground = ({ style, children }) => {
 const HomeScreen = () => {
   const router = useRouter();
   const { theme } = useTheme();
+  const { currentUser, userProfile, loading: authLoading } = useAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
   const [isSmallScreen, setIsSmallScreen] = useState(screenWidth < breakpoints.tablet);
@@ -340,6 +344,7 @@ const HomeScreen = () => {
   const [tooltipVisible, setTooltipVisible] = useState(null);
   const [patternKey, setPatternKey] = useState(Date.now());
   const [settingsMenuVisible, setSettingsMenuVisible] = useState(false);
+  const [showUserProfile, setShowUserProfile] = useState(false);
 
   if (!theme) {
     return null;
@@ -507,9 +512,11 @@ const HomeScreen = () => {
       const initialGameData = {
         roundName: finalRoundName,
         teams: finalTeams,
+        teamCount: finalTeams.length,
         categories: [],
         questions: {},
         rewardsEnabled: settings.rewardsEnabled,
+        pentaPointsEnabled: settings.pentaPointsEnabled,
         scores: finalTeams.reduce((acc, team) => ({
           ...acc,
           [team]: 0
@@ -520,9 +527,18 @@ const HomeScreen = () => {
           [team]: false
         }), {}),
         timestamp: new Date().toISOString(),
+        createdBy: currentUser?.uid || null,
+        status: 'setup' // setup, active, completed
       };
 
-      await StorageService.saveCurrentGame(initialGameData);
+      // حفظ اللعبة باستخدام الخدمة المحسنة التي تدعم Firebase
+      await EnhancedStorageService.saveCurrentGame(initialGameData, currentUser?.uid);
+      
+      // إذا كان المستخدم مسجل دخول، قم بالمزامنة
+      if (currentUser) {
+        await EnhancedStorageService.syncWithFirebase(currentUser.uid);
+      }
+      
       router.push('/game/setup');
     } catch (error) {
       console.error('خطأ في حفظ بيانات اللعبة:', error);
@@ -895,7 +911,84 @@ const HomeScreen = () => {
           headerTransparent: true,
           headerTitle: '',
           headerLeft: () => null,
-          headerRight: () => null
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 16 }}>
+              {currentUser ? (
+                <TouchableOpacity
+                  onPress={() => setShowUserProfile(true)}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: `${theme.colors.background.surface}E6`,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                    borderRadius: 20,
+                    marginRight: 8,
+                  }}
+                >
+                  <Image
+                    source={{ 
+                      uri: currentUser.photoURL || 'https://via.placeholder.com/32/4A6FFF/FFFFFF?text=' + (userProfile?.displayName?.charAt(0) || 'U')
+                    }}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: 12,
+                      marginRight: 8,
+                      backgroundColor: '#E0E0E0'
+                    }}
+                  />
+                  <Text style={{
+                    color: theme.colors.text.primary,
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    maxWidth: 100
+                  }} numberOfLines={1}>
+                    {userProfile?.displayName || 'مستخدم'}
+                  </Text>
+                  {userProfile?.statistics?.totalScore > 0 && (
+                    <View style={{
+                      backgroundColor: theme.colors.primary,
+                      paddingHorizontal: 6,
+                      paddingVertical: 2,
+                      borderRadius: 10,
+                      marginLeft: 8,
+                    }}>
+                      <Text style={{
+                        color: 'white',
+                        fontSize: 10,
+                        fontWeight: 'bold'
+                      }}>
+                        {userProfile.statistics.totalScore}
+                      </Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => router.push('/auth')}
+                  style={{
+                    backgroundColor: theme.colors.primary,
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
+                    borderRadius: 20,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                >
+                  <MaterialIcons name="login" size={18} color="white" />
+                  <Text style={{
+                    color: 'white',
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    marginLeft: 4
+                  }}>
+                    تسجيل الدخول
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )
         }}
       />
       <View style={{ 
@@ -1203,6 +1296,13 @@ const HomeScreen = () => {
         <PentaPointsGuide
           visible={showPentaPointsGuide}
           onClose={() => setShowPentaPointsGuide(false)}
+        />
+      )}
+
+      {showUserProfile && (
+        <UserProfile
+          visible={showUserProfile}
+          onClose={() => setShowUserProfile(false)}
         />
       )}
     </BackgroundPattern>
