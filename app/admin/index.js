@@ -1,6 +1,13 @@
+import React from 'react';
+import { Stack } from 'expo-router';
 import { Redirect } from 'expo-router';
+import ProtectedRoute from '../../components/ProtectedRoute';
 
 export default function AdminIndex() {
-  // Redirigir a la página del editor de preguntas
-  return <Redirect href="/admin/question-editor" />;
+  return (
+    <ProtectedRoute requireAuth={true} fallbackMessage="يجب تسجيل الدخول للوصول إلى لوحة الإدارة">
+      <Stack.Screen options={{ headerShown: false }} />
+      <Redirect href="/admin/question-editor" />
+    </ProtectedRoute>
+  );
 }

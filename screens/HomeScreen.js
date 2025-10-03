@@ -29,7 +29,7 @@ import PentaPointsGuide from '../components/PentaPointsGuide';
 import PentaPointsService from '../services/pentaPointsService';
 import ResponsiveView from '../components/ResponsiveView';
 import { ThemeSelector } from '../components/ThemeSelector';
-import UserProfile from '../components/UserProfile';
+import UserMenu from '../components/UserMenu';
 import { 
   wp, 
   hp, 
@@ -907,90 +907,19 @@ const HomeScreen = () => {
     >
       <Stack.Screen
         options={{
-          headerShown: true,
-          headerTransparent: true,
-          headerTitle: '',
-          headerLeft: () => null,
-          headerRight: () => (
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 16 }}>
-              {currentUser ? (
-                <TouchableOpacity
-                  onPress={() => setShowUserProfile(true)}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: `${theme.colors.background.surface}E6`,
-                    paddingHorizontal: 12,
-                    paddingVertical: 8,
-                    borderRadius: 20,
-                    marginRight: 8,
-                  }}
-                >
-                  <Image
-                    source={{ 
-                      uri: currentUser.photoURL || 'https://via.placeholder.com/32/4A6FFF/FFFFFF?text=' + (userProfile?.displayName?.charAt(0) || 'U')
-                    }}
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: 12,
-                      marginRight: 8,
-                      backgroundColor: '#E0E0E0'
-                    }}
-                  />
-                  <Text style={{
-                    color: theme.colors.text.primary,
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    maxWidth: 100
-                  }} numberOfLines={1}>
-                    {userProfile?.displayName || 'مستخدم'}
-                  </Text>
-                  {userProfile?.statistics?.totalScore > 0 && (
-                    <View style={{
-                      backgroundColor: theme.colors.primary,
-                      paddingHorizontal: 6,
-                      paddingVertical: 2,
-                      borderRadius: 10,
-                      marginLeft: 8,
-                    }}>
-                      <Text style={{
-                        color: 'white',
-                        fontSize: 10,
-                        fontWeight: 'bold'
-                      }}>
-                        {userProfile.statistics.totalScore}
-                      </Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => router.push('/auth')}
-                  style={{
-                    backgroundColor: theme.colors.primary,
-                    paddingHorizontal: 16,
-                    paddingVertical: 8,
-                    borderRadius: 20,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
-                  <MaterialIcons name="login" size={18} color="white" />
-                  <Text style={{
-                    color: 'white',
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    marginLeft: 4
-                  }}>
-                    تسجيل الدخول
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )
+          headerShown: false
         }}
       />
+      
+      {/* شريط المستخدم في الأعلى يسار */}
+      <View style={{
+        position: 'absolute',
+        top: Platform.OS === 'web' ? 20 : 50,
+        left: 20,
+        zIndex: 1000,
+      }}>
+        <UserMenu />
+      </View>
       <View style={{ 
         flexDirection: 'row',
         justifyContent: 'space-between', 
@@ -1296,13 +1225,6 @@ const HomeScreen = () => {
         <PentaPointsGuide
           visible={showPentaPointsGuide}
           onClose={() => setShowPentaPointsGuide(false)}
-        />
-      )}
-
-      {showUserProfile && (
-        <UserProfile
-          visible={showUserProfile}
-          onClose={() => setShowUserProfile(false)}
         />
       )}
     </BackgroundPattern>
