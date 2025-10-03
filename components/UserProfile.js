@@ -14,7 +14,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
-import FirebaseStorageService from '../services/firebaseStorageService';
+import EnhancedStorageService from '../services/enhancedStorageService';
 import BackgroundPattern from './BackgroundPattern';
 import { SPACING, FONTS } from '../styles/theme';
 
@@ -39,17 +39,17 @@ const UserProfile = ({ visible, onClose }) => {
     
     setLoading(true);
     try {
-      // Load recent games
-      const games = await FirebaseStorageService.getUserGames(currentUser.uid, 'all', 10);
-      setUserGames(games);
+      // Load recent games from local storage for now
+      const games = await EnhancedStorageService.getGameHistory(5);
+      setUserGames(games || []);
 
-      // Load achievements
+      // Load achievements (simplified)
       const userAchievements = Object.entries(userProfile?.achievements || {})
         .filter(([_, achieved]) => achieved)
         .map(([key]) => ({
           id: key,
-          name: FirebaseStorageService.getAchievementName(key),
-          description: FirebaseStorageService.getAchievementDescription(key)
+          name: getAchievementName(key),
+          description: getAchievementDescription(key)
         }));
       setAchievements(userAchievements);
     } catch (error) {
@@ -57,6 +57,35 @@ const UserProfile = ({ visible, onClose }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper functions for achievements
+  const getAchievementName = (key) => {
+    const achievements = {
+      firstGame: 'أول لعبة',
+      first100Points: '100 نقطة',
+      first500Points: '500 نقطة',
+      first1000Points: '1000 نقطة',
+      categoryMaster: 'خبير الفئات',
+      speedDemon: 'سرعة البرق',
+      perfectGame: 'اللعبة المثالية',
+      socialPlayer: 'لاعب اجتماعي'
+    };
+    return achievements[key] || key;
+  };
+
+  const getAchievementDescription = (key) => {
+    const descriptions = {
+      firstGame: 'أكمل أول لعبة لك',
+      first100Points: 'احصل على 100 نقطة',
+      first500Points: 'احصل على 500 نقطة',
+      first1000Points: 'احصل على 1000 نقطة',
+      categoryMaster: 'أتقن جميع الفئات',
+      speedDemon: 'أجب بسرعة على الأسئلة',
+      perfectGame: 'أجب على جميع الأسئلة بشكل صحيح',
+      socialPlayer: 'العب مع الأصدقاء'
+    };
+    return descriptions[key] || 'إنجاز مميز';
   };
 
   const handleUpdateProfile = async () => {
@@ -257,16 +286,16 @@ const UserProfile = ({ visible, onClose }) => {
                   <View key={index} style={[styles.gameCard, { backgroundColor: theme.colors.background.surface }]}>
                     <View style={styles.gameInfo}>
                       <Text style={[styles.gameDate, { color: theme.colors.text.primary }]}>
-                        {new Date(game.createdAt?.toDate?.() || game.createdAt).toLocaleDateString('ar')}
+                        {game.roundName || `الجولة ${index + 1}`}
                       </Text>
                       <Text style={[styles.gameDetails, { color: theme.colors.text.secondary }]}>
-                        {game.teamCount} فرق • {game.categories?.length || 0} فئات
+                        {game.teamCount || game.teams?.length || 2} فرق • {game.categories?.length || 0} فئات
                       </Text>
                     </View>
                     <Text style={[styles.gameStatus, { 
                       color: game.status === 'completed' ? theme.colors.success : theme.colors.warning 
                     }]}>
-                      {game.status === 'completed' ? 'مكتملة' : 'متوقفة'}
+                      {game.status === 'completed' ? 'مكتملة' : 'نشطة'}
                     </Text>
                   </View>
                 ))}

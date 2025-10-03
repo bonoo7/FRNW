@@ -99,6 +99,13 @@ export const AuthProvider = ({ children }) => {
       await signOut(auth);
       setUserProfile(null);
       console.log('AuthContext: Logout successful');
+      
+      // Force page reload to ensure clean state
+      if (Platform.OS === 'web') {
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      }
     } catch (error) {
       console.error('AuthContext: Logout error:', error);
       throw error;
