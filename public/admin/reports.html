@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - إدارة البلاغات</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .report-card {
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .status-new {
+            background-color: #fff3cd;
+        }
+        .status-processing {
+            background-color: #cfe2ff;
+        }
+        .status-resolved {
+            background-color: #d1e7dd;
+        }
+        .status-rejected {
+            background-color: #f8d7da;
+        }
+        .report-content {
+            border-right: 4px solid #6c757d;
+        }
+        .question-section {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 1rem;
+        }
+        .report-details {
+            padding-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">لوحة التحكم</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>إدارة البلاغات</h1>
+                    <div>
+                        <select id="statusFilter" class="form-select">
+                            <option value="all">جميع الحالات</option>
+                            <option value="new">جديد</option>
+                            <option value="processing">قيد المعالجة</option>
+                            <option value="resolved">تم الحل</option>
+                            <option value="rejected">مرفوض</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="reportsContainer">
+                    <!-- سيتم إضافة البلاغات هنا -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تحديد عنوان API بناءً على البيئة
+        const API_BASE_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api'
+            : 'https://www.fakker.net/api';
+
+        async function fetchReports() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const reports = await response.json();
+                displayReports(reports);
+            } catch (error) {
+                console.error('Error fetching reports:', error);
+                alert('حدث خطأ أثناء جلب البلاغات');
+            }
+        }
+
+        function displayReports(reports) {
+            const container = document.getElementById('reportsContainer');
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            container.innerHTML = '';
+            
+            const filteredReports = statusFilter === 'all' 
+                ? reports 
+                : reports.filter(report => report.status === statusFilter);
+
+            filteredReports.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            filteredReports.forEach(report => {
+                const card = document.createElement('div');
+                card.className = `card report-card status-${report.status}`;
+                card.innerHTML = `
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-title">بلاغ #${report.id}</h5>
+                            <span class="badge bg-${getStatusBadgeColor(report.status)}">${getStatusText(report.status)}</span>
+                        </div>
+                        <div class="report-content p-3 my-3 bg-light rounded">
+                            <div class="question-section mb-3">
+                                <h6 class="text-primary mb-2">السؤال:</h6>
+                                <p class="card-text">${report.question}</p>
+                                <h6 class="text-success mb-2">الإجابة:</h6>
+                                <p class="card-text">${report.answer}</p>
+                            </div>
+                            <div class="report-details">
+                                <p class="card-text"><strong>نوع البلاغ:</strong> ${report.reportType}</p>
+                                ${report.reason ? `<p class="card-text"><strong>السبب:</strong> ${report.reason}</p>` : ''}
+                                ${report.comment ? `<p class="card-text"><strong>التعليق:</strong> ${report.comment}</p>` : ''}
+                            </div>
+                        </div>
+                        <p class="card-text"><small class="text-muted">تاريخ البلاغ: ${new Date(report.timestamp).toLocaleString('ar-SA')}</small></p>
+                        
+                        <div class="mt-3">
+                            <select class="form-select mb-2" onchange="updateStatus('${report.id}', this.value)">
+                                <option value="new" ${report.status === 'new' ? 'selected' : ''}>جديد</option>
+                                <option value="processing" ${report.status === 'processing' ? 'selected' : ''}>قيد المعالجة</option>
+                                <option value="resolved" ${report.status === 'resolved' ? 'selected' : ''}>تم الحل</option>
+                                <option value="rejected" ${report.status === 'rejected' ? 'selected' : ''}>مرفوض</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function getStatusBadgeColor(status) {
+            const colors = {
+                new: 'warning',
+                processing: 'primary',
+                resolved: 'success',
+                rejected: 'danger'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                new: 'جديد',
+                processing: 'قيد المعالجة',
+                resolved: 'تم الحل',
+                rejected: 'مرفوض'
+            };
+            return texts[status] || status;
+        }
+
+        async function updateStatus(reportId, newStatus) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports/${reportId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (!response.ok) {
+                    throw new Error('فشل تحديث حالة البلاغ');
+                }
+
+                fetchReports();
+            } catch (error) {
+                console.error('Error updating report status:', error);
+                alert('حدث خطأ أثناء تحديث حالة البلاغ');
+            }
+        }
+
+        // تحديث البلاغات عند تغيير الفلتر
+        document.getElementById('statusFilter').addEventListener('change', fetchReports);
+
+        // جلب البلاغات عند تحميل الصفحة
+        fetchReports();
+    </script>
+</body>
+</html>
