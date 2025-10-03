@@ -11,7 +11,7 @@
 
 **لعبة مسابقات ثقافية تفاعلية بأكثر من 9,600 سؤال في 39 فئة مختلفة**
 
-[📱 تجربة التطبيق](https://fakker.net) • [📚 الدليل](./DEPLOYMENT.md) • [🐛 الإبلاغ عن خطأ](../../issues)
+[📱 تجربة التطبيق](https://fakker.net) • [📚 الدليل](./DEPLOYMENT.md) • [🐛 الإبلاغ عن خطأ](https://github.com/bonoo7/FRNW/issues)
 
 </div>
 
@@ -236,8 +236,8 @@ npm run server
 ### الحصول على المساعدة
 
 - 📖 [الوثائق الكاملة](./docs/)
-- 🐛 [الإبلاغ عن خطأ](../../issues)
-- 💡 [اقتراح ميزة جديدة](../../issues/new)
+- 🐛 [الإبلاغ عن خطأ](https://github.com/bonoo7/FRNW/issues)
+- 💡 [اقتراح ميزة جديدة](https://github.com/bonoo7/FRNW/issues/new)
 - 💬 [مجتمع Discord](#) (قريباً)
 
 ### الأسئلة الشائعة
@@ -273,13 +273,13 @@ npm run server
 
 | المطور | الدور | GitHub |
 |---------|-------|--------|
-| [اسمك هنا] | Lead Developer | [@yourusername](https://github.com/yourusername) |
+| [bonoo7] | Lead Developer | [@bonoo7](https://github.com/bonoo7) |
 
 ### المساهمون
 
 شكراً لجميع المساهمين الذين ساعدوا في تطوير هذا المشروع! 
 
-[![المساهمون](https://contrib.rocks/image?repo=yourusername/FRNW)](https://github.com/yourusername/FRNW/graphs/contributors)
+[![المساهمون](https://contrib.rocks/image?repo=bonoo7/FRNW)](https://github.com/bonoo7/FRNW/graphs/contributors)
 
 </div>
 
