@@ -95,10 +95,12 @@ export const AuthProvider = ({ children }) => {
   // Sign out
   const logout = async () => {
     try {
+      console.log('AuthContext: Starting logout process...');
       await signOut(auth);
       setUserProfile(null);
+      console.log('AuthContext: Logout successful');
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('AuthContext: Logout error:', error);
       throw error;
     }
   };

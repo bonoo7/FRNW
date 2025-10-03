@@ -25,16 +25,19 @@ const UserMenu = ({ style }) => {
   const [showProfile, setShowProfile] = useState(false);
 
   const handleProfilePress = () => {
+    console.log('Profile pressed');
     setIsMenuVisible(false);
     setShowProfile(true);
   };
 
   const handleSettingsPress = () => {
+    console.log('Settings pressed');
     setIsMenuVisible(false);
     router.push('/settings');
   };
 
   const handleLogout = () => {
+    console.log('Logout pressed');
     Alert.alert(
       'تسجيل الخروج',
       'هل أنت متأكد من تسجيل الخروج؟',
@@ -45,9 +48,12 @@ const UserMenu = ({ style }) => {
           style: 'destructive',
           onPress: async () => {
             try {
+              console.log('Logging out...');
               await logout();
               setIsMenuVisible(false);
+              console.log('Logout successful');
             } catch (error) {
+              console.error('Logout error:', error);
               Alert.alert('خطأ', 'حدث خطأ أثناء تسجيل الخروج');
             }
           }
@@ -57,6 +63,7 @@ const UserMenu = ({ style }) => {
   };
 
   const handleLoginPress = () => {
+    console.log('Login pressed');
     setIsMenuVisible(false);
     router.push('/auth');
   };
@@ -64,7 +71,13 @@ const UserMenu = ({ style }) => {
   const MenuItem = ({ icon, title, onPress, color = theme.colors.text.primary }) => (
     <TouchableOpacity
       style={[styles.menuItem, { borderBottomColor: theme.colors.border?.primary }]}
-      onPress={onPress}
+      onPress={() => {
+        console.log(`MenuItem ${title} pressed`);
+        if (onPress) {
+          onPress();
+        }
+      }}
+      activeOpacity={0.7}
     >
       <MaterialIcons name={icon} size={24} color={color} />
       <Text style={[styles.menuItemText, { color }]}>{title}</Text>
