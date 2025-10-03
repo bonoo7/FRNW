@@ -1,15 +1,18 @@
 import React from 'react';
 import { Stack, useRouter } from 'expo-router';
 import UserProfile from '../../components/UserProfile';
-import ProtectedRoute from '../../components/ProtectedRoute';
+import RequiredAuthWrapper from '../../components/RequiredAuthWrapper';
 
 export default function ProfilePage() {
   const router = useRouter();
   
   return (
-    <ProtectedRoute requireAuth={true} fallbackMessage="يجب تسجيل الدخول لعرض الملف الشخصي">
+    <RequiredAuthWrapper 
+      title="الملف الشخصي" 
+      message="لعرض وإدارة ملفك الشخصي، يجب تسجيل الدخول أولاً"
+    >
       <Stack.Screen options={{ headerShown: false }} />
       <UserProfile visible={true} onClose={() => router.back()} />
-    </ProtectedRoute>
+    </RequiredAuthWrapper>
   );
 }

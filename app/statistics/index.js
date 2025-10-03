@@ -1,13 +1,16 @@
 import React from 'react';
 import { Stack } from 'expo-router';
 import StatisticsScreen from '../../screens/StatisticsScreen';
-import ProtectedRoute from '../../components/ProtectedRoute';
+import RequiredAuthWrapper from '../../components/RequiredAuthWrapper';
 
 export default function StatisticsPage() {
   return (
-    <ProtectedRoute requireAuth={true} fallbackMessage="يجب تسجيل الدخول لعرض الإحصائيات">
+    <RequiredAuthWrapper 
+      title="الإحصائيات والتقدم"
+      message="لعرض إحصائياتك وتتبع تقدمك في الألعاب، يجب تسجيل الدخول أولاً"
+    >
       <Stack.Screen options={{ headerShown: false }} />
       <StatisticsScreen />
-    </ProtectedRoute>
+    </RequiredAuthWrapper>
   );
 }

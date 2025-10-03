@@ -191,6 +191,16 @@ const UserMenu = ({ style }) => {
                   title="الإعدادات"
                   onPress={handleSettingsPress}
                 />
+                {/* خيار تجريب المصادقة للمطورين */}
+                <MenuItem
+                  icon="security"
+                  title="تجريب المصادقة"
+                  onPress={() => {
+                    setIsMenuVisible(false);
+                    router.push('/auth-demo');
+                  }}
+                  color={theme.colors.warning}
+                />
                 <MenuItem
                   icon="logout"
                   title="تسجيل الخروج"
@@ -216,6 +226,16 @@ const UserMenu = ({ style }) => {
                   icon="settings"
                   title="الإعدادات"
                   onPress={handleSettingsPress}
+                />
+                {/* خيار تجريب المصادقة للضيوف أيضاً */}
+                <MenuItem
+                  icon="security"
+                  title="تجريب المصادقة"
+                  onPress={() => {
+                    setIsMenuVisible(false);
+                    router.push('/auth-demo');
+                  }}
+                  color={theme.colors.warning}
                 />
               </>
             )}
