@@ -14,7 +14,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'expo-router';
-import UserProfile from './UserProfile';
 import { SPACING, FONTS } from '../styles/theme';
 
 const UserMenu = ({ style }) => {
@@ -22,12 +21,12 @@ const UserMenu = ({ style }) => {
   const { currentUser, userProfile, logout } = useAuth();
   const router = useRouter();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
 
   const handleProfilePress = () => {
     console.log('Profile pressed');
     setIsMenuVisible(false);
-    setShowProfile(true);
+    // استخدام router للانتقال لصفحة الملف الشخصي بدلاً من Modal
+    router.push('/profile');
   };
 
   const handleSettingsPress = () => {
@@ -36,30 +35,18 @@ const UserMenu = ({ style }) => {
     router.push('/settings');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log('Logout pressed');
-    Alert.alert(
-      'تسجيل الخروج',
-      'هل أنت متأكد من تسجيل الخروج؟',
-      [
-        { text: 'إلغاء', style: 'cancel' },
-        {
-          text: 'تسجيل الخروج',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              console.log('Logging out...');
-              await logout();
-              setIsMenuVisible(false);
-              console.log('Logout successful');
-            } catch (error) {
-              console.error('Logout error:', error);
-              Alert.alert('خطأ', 'حدث خطأ أثناء تسجيل الخروج');
-            }
-          }
-        }
-      ]
-    );
+    setIsMenuVisible(false);
+    
+    try {
+      console.log('Logging out...');
+      await logout();
+      console.log('Logout successful');
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert('خطأ', 'حدث خطأ أثناء تسجيل الخروج');
+    }
   };
 
   const handleLoginPress = () => {
@@ -242,14 +229,6 @@ const UserMenu = ({ style }) => {
           </View>
         </Pressable>
       </Modal>
-
-      {/* UserProfile Modal */}
-      {showProfile && (
-        <UserProfile
-          visible={showProfile}
-          onClose={() => setShowProfile(false)}
-        />
-      )}
     </View>
   );
 };
