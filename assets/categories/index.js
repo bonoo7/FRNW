@@ -34,6 +34,9 @@ export default {
   titles: require('./titles.png'),
   characters: require('./characters.png'),
   philosophy: require('./philosophy.png'),
+  // إضافة كاتيجوري الفيديو الجديد
+  video: require('./video.png'), // استخدام صورة مخصصة للفيديو
+  videogames: require('./videogames.png'),
 };
 
 export const categoryStyles = {
