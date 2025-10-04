@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import QuestionScreen from '../../screens/QuestionScreen';
-import { Stack } from 'expo-router';
 import RequiredAuthWrapper from '../../components/RequiredAuthWrapper';
 
 export default function QuestionRoute() {
