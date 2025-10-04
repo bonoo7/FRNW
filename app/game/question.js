@@ -1,6 +1,8 @@
+import React from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import QuestionScreen from '../../screens/QuestionScreen';
 import { Stack } from 'expo-router';
+import RequiredAuthWrapper from '../../components/RequiredAuthWrapper';
 
 export default function QuestionRoute() {
   const params = useLocalSearchParams();
@@ -15,13 +17,11 @@ export default function QuestionRoute() {
   }
 
   return (
-    <>
-      <Stack.Screen 
-        options={{
-          headerShown: false
-        }}
-      />
+    <RequiredAuthWrapper 
+      title="السؤال يتطلب تسجيل الدخول"
+      message="لعرض الأسئلة والمشاركة في اللعبة، يجب تسجيل الدخول أولاً"
+    >
       <QuestionScreen questionData={questionData} />
-    </>
+    </RequiredAuthWrapper>
   );
 }
