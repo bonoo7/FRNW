@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "فكّر",
-    "slug": "fakker",
+    "slug": "frn",
     "scheme": "fakker",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -37,7 +37,23 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.372931862438-8vht7vrqf8f89k4sfi4j8bkumnatdr3q"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "proguardFiles": ["proguard-android-optimize.txt", "proguard-rules.pro"],
+            "kotlinVersion": "1.9.25"
+          }
+        }
+      ]
     ],
     "extra": {
       "eas": {
