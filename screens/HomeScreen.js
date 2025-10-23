@@ -927,7 +927,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={{ 
       flex: 1, 
-      backgroundColor: theme.currentTheme === 'blue' ? '#E8F1FF' : (theme.colors.background?.primary || '#FFFFFF')
+      backgroundColor: 'transparent'
     }}>
       <Stack.Screen
         options={{
@@ -938,7 +938,7 @@ const HomeScreen = () => {
       <ScrollView 
         style={{ 
           flex: 1,
-          backgroundColor: theme.currentTheme === 'blue' ? '#E8F1FF' : 'transparent'
+          backgroundColor: 'transparent'
         }}
         contentContainerStyle={{ flexGrow: 1, padding: 20 }}
         showsVerticalScrollIndicator={false}
