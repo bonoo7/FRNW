@@ -937,6 +937,12 @@ const HomeScreen = () => {
         contentContainerStyle={{ flexGrow: 1, padding: 20 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* رأس الصفحة مع أيقونة الملف الشخصي */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <View style={{ flex: 1 }} />
+          <UserMenu style={{ position: 'relative', zIndex: 10 }} />
+        </View>
+
         <Animated.View style={{ opacity: fadeAnim }}>
           {/* رأس البرنامج */}
           <View style={{ marginBottom: 30, marginTop: 10 }}>
