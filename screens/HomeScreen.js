@@ -349,7 +349,27 @@ const HomeScreen = () => {
   const [settingsMenuVisible, setSettingsMenuVisible] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
 
+  // التحقق من تسجيل الدخول
+  useEffect(() => {
+    if (!authLoading && !currentUser) {
+      router.replace('/auth');
+    }
+  }, [currentUser, authLoading]);
+
   if (!theme) {
+    return null;
+  }
+
+  // عرض شاشة التحميل أثناء التحقق من المصادقة
+  if (authLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background?.primary }}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
+
+  if (!currentUser) {
     return null;
   }
 
