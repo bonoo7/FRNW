@@ -25,29 +25,15 @@ const RootLayoutContent = () => {
   const { currentTheme } = require('../contexts/ThemeContext').useTheme() || { currentTheme: 'blue' };
   
   return (
-    <View style={{ flex: 1 }}>
-      {/* الخلفية الزرقاء للثيم الأزرق */}
-      {currentTheme === 'blue' && (
-        <View style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: '#E8F1FF',
-          zIndex: 0
-        }} />
-      )}
-      
-      <View style={{ flex: 1, zIndex: 1 }}>
-        <StatusBar style="auto" />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: 'fade'
-          }}
-        />
-      </View>
+    <View style={{ flex: 1, backgroundColor: currentTheme === 'blue' ? '#1E40AF' : '#FFFFFF' }}>
+      <StatusBar style={currentTheme === 'blue' ? 'light' : 'auto'} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: 'fade',
+          contentStyle: { backgroundColor: 'transparent' }
+        }}
+      />
     </View>
   );
 };
