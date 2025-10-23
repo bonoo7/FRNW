@@ -1,4 +1,4 @@
-package com.bonoo7.frn
+package net.fakker.app
 
 import android.app.Application
 import android.content.res.Configuration

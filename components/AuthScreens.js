@@ -100,7 +100,8 @@ export const LoginScreen = ({ onSwitchToRegister }) => {
               <TextInput
                 style={[styles.input, { 
                   color: theme.colors.text.primary,
-                  borderColor: theme.colors.border?.primary || theme.colors.primary
+                  borderColor: theme.colors.border?.primary || theme.colors.primary,
+                  backgroundColor: theme.colors.background?.input || 'rgba(255, 255, 255, 0.9)'
                 }]}
                 placeholder="البريد الإلكتروني"
                 placeholderTextColor={theme.colors.text.secondary}
@@ -124,7 +125,8 @@ export const LoginScreen = ({ onSwitchToRegister }) => {
                 style={[styles.input, { 
                   color: theme.colors.text.primary,
                   borderColor: theme.colors.border?.primary || theme.colors.primary,
-                  paddingRight: 50
+                  paddingRight: 50,
+                  backgroundColor: theme.colors.background?.input || 'rgba(255, 255, 255, 0.9)'
                 }]}
                 placeholder="كلمة المرور"
                 placeholderTextColor={theme.colors.text.secondary}
@@ -276,7 +278,8 @@ export const RegisterScreen = ({ onSwitchToLogin }) => {
               <TextInput
                 style={[styles.input, { 
                   color: theme.colors.text.primary,
-                  borderColor: theme.colors.border?.primary || theme.colors.primary
+                  borderColor: theme.colors.border?.primary || theme.colors.primary,
+                  backgroundColor: theme.colors.background?.input || 'rgba(255, 255, 255, 0.9)'
                 }]}
                 placeholder="الاسم الكامل"
                 placeholderTextColor={theme.colors.text.secondary}
@@ -297,7 +300,8 @@ export const RegisterScreen = ({ onSwitchToLogin }) => {
               <TextInput
                 style={[styles.input, { 
                   color: theme.colors.text.primary,
-                  borderColor: theme.colors.border?.primary || theme.colors.primary
+                  borderColor: theme.colors.border?.primary || theme.colors.primary,
+                  backgroundColor: theme.colors.background?.input || 'rgba(255, 255, 255, 0.9)'
                 }]}
                 placeholder="البريد الإلكتروني"
                 placeholderTextColor={theme.colors.text.secondary}
@@ -321,7 +325,8 @@ export const RegisterScreen = ({ onSwitchToLogin }) => {
                 style={[styles.input, { 
                   color: theme.colors.text.primary,
                   borderColor: theme.colors.border?.primary || theme.colors.primary,
-                  paddingRight: 50
+                  paddingRight: 50,
+                  backgroundColor: theme.colors.background?.input || 'rgba(255, 255, 255, 0.9)'
                 }]}
                 placeholder="كلمة المرور (6 أحرف على الأقل)"
                 placeholderTextColor={theme.colors.text.secondary}
@@ -354,7 +359,8 @@ export const RegisterScreen = ({ onSwitchToLogin }) => {
                 style={[styles.input, { 
                   color: theme.colors.text.primary,
                   borderColor: theme.colors.border?.primary || theme.colors.primary,
-                  paddingRight: 50
+                  paddingRight: 50,
+                  backgroundColor: theme.colors.background?.input || 'rgba(255, 255, 255, 0.9)'
                 }]}
                 placeholder="تأكيد كلمة المرور"
                 placeholderTextColor={theme.colors.text.secondary}

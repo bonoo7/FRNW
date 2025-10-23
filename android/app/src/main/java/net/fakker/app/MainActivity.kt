@@ -1,4 +1,4 @@
-package com.bonoo7.frn
+package net.fakker.app
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

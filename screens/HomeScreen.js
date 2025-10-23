@@ -135,13 +135,15 @@ const staticStyles = StyleSheet.create({
   },
   input: {
     borderRadius: 12,
-    padding: SPACING.xxs, // تقليل المسافة أكثر
-    fontSize: FONTS.sizes.small, // تقليل حجم الخط
+    padding: SPACING.xxs,
+    paddingHorizontal: SPACING.sm,
+    fontSize: FONTS.sizes.small,
     textAlign: 'right',
     borderWidth: 1,
-    height: 28, // تقليل الارتفاع
+    height: 28,
     fontFamily: FONTS.families.secondary,
     fontWeight: FONTS.weights.medium,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   startButton: {
     borderRadius: 16,
@@ -616,8 +618,8 @@ const HomeScreen = () => {
     },
     input: {
       ...staticStyles.input,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.background.surface,
+      borderColor: theme.colors.border || theme.colors.primary,
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
       height: 28, 
       paddingHorizontal: 8,
       borderRadius: 4,
@@ -642,7 +644,9 @@ const HomeScreen = () => {
       marginBottom: 4, 
     },
     teamInputContainer: {
-      marginBottom: 2, 
+      marginBottom: 2,
+      marginHorizontal: 2,
+      padding: 2,
     },
     startButton: {
       marginTop: 4, 
@@ -1095,8 +1099,8 @@ const HomeScreen = () => {
                       staticStyles.input,
                       { 
                         color: theme.colors.text.primary,
-                        backgroundColor: theme.colors.background.surface,
-                        borderColor: theme.colors.border,
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderColor: theme.colors.border?.primary || theme.colors.primary,
                         fontFamily: FONTS.families.secondary,
                         fontWeight: FONTS.weights.medium
                       }
@@ -1135,8 +1139,8 @@ const HomeScreen = () => {
                         staticStyles.input,
                         { 
                           color: theme.colors.text.primary,
-                          backgroundColor: theme.colors.background.surface,
-                          borderColor: theme.colors.border,
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          borderColor: theme.colors.border?.primary || theme.colors.primary,
                           height: 28, 
                           fontFamily: FONTS.families.secondary,
                           fontWeight: FONTS.weights.medium
