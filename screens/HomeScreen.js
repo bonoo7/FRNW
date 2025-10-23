@@ -1023,178 +1023,202 @@ const HomeScreen = () => {
             overflow: 'hidden',
             borderRadius: BORDER_RADIUS.lg
           }]}>
-            <ContainerBackground style={[
-              staticStyles.card, 
-              {
-                backgroundColor: 'transparent', 
-                borderColor: theme.colors.border?.primary || theme.colors.primary,
-                borderWidth: 6, // إطار سميك
-                borderRadius: BORDER_RADIUS.lg,
-                position: 'relative',
-                elevation: 4,
-                shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-                marginBottom: 4,
-                padding: 8, // إعادة الـpadding
-                width: '100%' // إعادة العرض
-              }
-            ]}>
-              {/* إطار سميك */}
-              <View style={[staticStyles.row]}>
-                <View style={[staticStyles.inputContainer, { marginLeft: 0, marginRight: SPACING.xl }]}>
-                  <Text style={[
-                    staticStyles.label,
-                    { 
-                      color: theme.colors.text.primary,
-                      fontFamily: FONTS.families.secondary,
-                      fontWeight: FONTS.weights.bold,
-                      fontSize: FONTS.sizes.small,
-                      marginBottom: 6
-                    }
-                  ]}>
-                    {`عدد الفرق`}
+            {/* تصميم عصري بطاقات حديثة */}
+            <View style={[{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              borderRadius: 20,
+              padding: SPACING.lg,
+              elevation: 8,
+              shadowColor: theme.colors.primary,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.15,
+              shadowRadius: 8,
+              width: '100%',
+              marginBottom: SPACING.md
+            }]}>
+              {/* قسم عدد الفرق */}
+              <View style={{ marginBottom: SPACING.lg }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.md }}>
+                  <MaterialIcons name="group" size={24} color={theme.colors.primary} />
+                  <Text style={{
+                    fontSize: FONTS.sizes.subtitle,
+                    fontWeight: FONTS.weights.bold,
+                    color: theme.colors.text.primary,
+                    marginLeft: SPACING.sm,
+                    fontFamily: FONTS.families.secondary
+                  }}>
+                    عدد الفرق
                   </Text>
-                  <View style={[staticStyles.teamCountContainer, { backgroundColor: theme.colors.background.surface }]}>
-                    {[2, 3, 4, 5].map(count => (
-                      <TouchableOpacity
-                        key={count}
-                        style={[
-                          staticStyles.teamCountButton,
-                          gameSettings.teamCount === count && { 
-                            backgroundColor: theme.colors.primary,
-                            transform: [{ scale: 1.05 }]
-                          }
-                        ]}
-                        onPress={() => updateTeamCount(count)}
-                      >
-                        <Text style={[
-                          staticStyles.teamCountText,
-                          { 
-                            color: gameSettings.teamCount === count ? theme.colors.text.light : theme.colors.text.primary,
-                            fontFamily: FONTS.families.secondary,
-                            fontWeight: FONTS.weights.bold
-                          }
-                        ]}>
-                          {count}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
                 </View>
-
-                <View style={[staticStyles.inputContainer, { marginRight: SPACING.xl }]}>
-                  <Text style={[
-                    staticStyles.label,
-                    { 
-                      color: theme.colors.text.primary,
-                      fontFamily: FONTS.families.secondary,
-                      fontWeight: FONTS.weights.bold,
-                      marginBottom: 6
-                    }
-                  ]}>اسم الجولة</Text>
-                  <TextInput
-                    style={[
-                      staticStyles.input,
-                      { 
-                        color: theme.colors.text.primary,
-                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                        borderColor: theme.colors.border?.primary || theme.colors.primary,
-                        fontFamily: FONTS.families.secondary,
-                        fontWeight: FONTS.weights.medium
-                      }
-                    ]}
-                    value={gameSettings.roundName}
-                    onChangeText={(value) => setGameSettings(prev => ({ ...prev, roundName: value }))}
-                    placeholder={showHints ? "مثال: الجولة الأولى" : ""}
-                    placeholderTextColor={theme.colors.text.secondary}
-                  />
-                </View>
-              </View>
-
-              <View style={[styles.teamsGrid, { justifyContent: 'center' }]}>
-                {Array.from({ length: gameSettings.teamCount }).map((_, index) => (
-                  <View key={index} style={[
-                    staticStyles.teamInputContainer,
-                    { 
-                      width: `${Math.floor(98 / gameSettings.teamCount)}%`,
-                      margin: 1
-                    }
-                  ]}>
-                    <Text style={[
-                      staticStyles.label,
-                      { 
-                        color: theme.colors.text.primary,
-                        fontFamily: FONTS.families.secondary,
+                <View style={{
+                  flexDirection: 'row-reverse',
+                  justifyContent: 'space-between',
+                  backgroundColor: 'rgba(30, 64, 175, 0.08)',
+                  borderRadius: 12,
+                  padding: SPACING.sm
+                }}>
+                  {[2, 3, 4, 5].map(count => (
+                    <TouchableOpacity
+                      key={count}
+                      style={[{
+                        paddingHorizontal: SPACING.md,
+                        paddingVertical: SPACING.sm,
+                        borderRadius: 10,
+                        backgroundColor: gameSettings.teamCount === count ? theme.colors.primary : 'transparent',
+                        borderWidth: gameSettings.teamCount === count ? 0 : 2,
+                        borderColor: gameSettings.teamCount === count ? 'transparent' : theme.colors.primary,
+                      }, gameSettings.teamCount === count && {
+                        elevation: 2,
+                        shadowColor: theme.colors.primary,
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.3,
+                        shadowRadius: 4,
+                      }]}
+                      onPress={() => updateTeamCount(count)}
+                    >
+                      <Text style={{
+                        fontSize: FONTS.sizes.medium,
                         fontWeight: FONTS.weights.bold,
-                        fontSize: FONTS.sizes.small,
-                        marginBottom: 6
-                      }
-                    ]}>
-                      {`الفريق ${index + 1}`}
-                    </Text>
-                    <TextInput
-                      style={[
-                        staticStyles.input,
-                        { 
-                          color: theme.colors.text.primary,
-                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                          borderColor: theme.colors.border?.primary || theme.colors.primary,
-                          height: 28, 
-                          fontFamily: FONTS.families.secondary,
-                          fontWeight: FONTS.weights.medium
-                        }
-                      ]}
-                      value={gameSettings.teams[index]}
-                      onChangeText={(value) => updateTeam(index, value)}
-                      placeholder={getDefaultTeamName(index)}
-                      placeholderTextColor={theme.colors.text.secondary}
-                    />
-                  </View>
-                ))}
+                        color: gameSettings.teamCount === count ? '#FFFFFF' : theme.colors.primary,
+                        fontFamily: FONTS.families.secondary
+                      }}>
+                        {count}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
 
+              {/* قسم اسم الجولة */}
+              <View style={{ marginBottom: SPACING.lg }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.sm }}>
+                  <MaterialIcons name="edit" size={24} color={theme.colors.primary} />
+                  <Text style={{
+                    fontSize: FONTS.sizes.subtitle,
+                    fontWeight: FONTS.weights.bold,
+                    color: theme.colors.text.primary,
+                    marginLeft: SPACING.sm,
+                    fontFamily: FONTS.families.secondary
+                  }}>
+                    اسم الجولة
+                  </Text>
+                </View>
+                <TextInput
+                  style={[{
+                    backgroundColor: '#F8F9FA',
+                    borderRadius: 12,
+                    paddingHorizontal: SPACING.md,
+                    paddingVertical: SPACING.sm,
+                    fontSize: FONTS.sizes.medium,
+                    color: theme.colors.text.primary,
+                    borderWidth: 1.5,
+                    borderColor: theme.colors.primary,
+                    fontFamily: FONTS.families.secondary,
+                    textAlign: 'right'
+                  }]}
+                  value={gameSettings.roundName}
+                  onChangeText={(value) => setGameSettings(prev => ({ ...prev, roundName: value }))}
+                  placeholder={showHints ? "أدخل اسم الجولة..." : ""}
+                  placeholderTextColor={theme.colors.text.secondary}
+                />
+              </View>
+
+              {/* قسم أسماء الفرق */}
+              <View style={{ marginBottom: SPACING.lg }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.md }}>
+                  <MaterialIcons name="people" size={24} color={theme.colors.primary} />
+                  <Text style={{
+                    fontSize: FONTS.sizes.subtitle,
+                    fontWeight: FONTS.weights.bold,
+                    color: theme.colors.text.primary,
+                    marginLeft: SPACING.sm,
+                    fontFamily: FONTS.families.secondary
+                  }}>
+                    أسماء الفرق
+                  </Text>
+                </View>
+                <View style={{ flexDirection: 'row-reverse', flexWrap: 'wrap', gap: SPACING.sm }}>
+                  {Array.from({ length: gameSettings.teamCount }).map((_, index) => (
+                    <View key={index} style={{
+                      width: `${100 / gameSettings.teamCount - 2}%`,
+                    }}>
+                      <Text style={{
+                        fontSize: FONTS.sizes.small,
+                        fontWeight: FONTS.weights.semibold,
+                        color: theme.colors.text.primary,
+                        marginBottom: SPACING.xs,
+                        fontFamily: FONTS.families.secondary
+                      }}>
+                        الفريق {index + 1}
+                      </Text>
+                      <TextInput
+                        style={{
+                          backgroundColor: '#F8F9FA',
+                          borderRadius: 10,
+                          paddingHorizontal: SPACING.sm,
+                          paddingVertical: SPACING.xs,
+                          fontSize: FONTS.sizes.small,
+                          color: theme.colors.text.primary,
+                          borderWidth: 1.5,
+                          borderColor: theme.colors.primary,
+                          minHeight: 40,
+                          fontFamily: FONTS.families.secondary,
+                          textAlign: 'right'
+                        }}
+                        value={gameSettings.teams[index]}
+                        onChangeText={(value) => updateTeam(index, value)}
+                        placeholder={getDefaultTeamName(index)}
+                        placeholderTextColor={theme.colors.text.secondary}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              {/* زر بدء اللعبة */}
               <TouchableOpacity
-                style={[
-                  staticStyles.startButton,
-                  isLoading && staticStyles.startButtonDisabled
-                ]}
+                style={{
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  elevation: isLoading ? 2 : 6,
+                  shadowColor: theme.colors.primary,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 8,
+                  opacity: isLoading ? 0.8 : 1
+                }}
                 onPress={handleStartGame}
                 disabled={isLoading}
               >
-                {isLoading ? (
-                  <ActivityIndicator color={theme.colors.text.light} />
-                ) : (
-                  <LinearGradient
-                    colors={theme.colors.gradient.primary}
-                    style={staticStyles.startButtonContent}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                  >
-                    <Text style={[
-                      styles.startButtonText,
-                      { color: theme.colors.text.light }
-                    ]}>
-                      بدء اللعبة
-                    </Text>
-                  </LinearGradient>
-                )}
-              </TouchableOpacity>
-
-              <View style={{ marginTop: 2 }}>
-                <View style={styles.settingsSection}>
-
-                  <View style={styles.settingItem}>
-                    <View style={styles.settingRow}>
-                      <Text style={styles.settingLabel}>
-                        {/* تم نقل هذه الإعدادات إلى قائمة الإعدادات */}
+                <LinearGradient
+                  colors={theme.colors.gradient.primary}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={{
+                    paddingVertical: SPACING.md,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row'
+                  }}
+                >
+                  {isLoading ? (
+                    <ActivityIndicator color="#FFFFFF" />
+                  ) : (
+                    <>
+                      <MaterialIcons name="play-circle-fill" size={24} color="#FFFFFF" style={{ marginRight: SPACING.sm }} />
+                      <Text style={{
+                        fontSize: FONTS.sizes.subtitle,
+                        fontWeight: FONTS.weights.bold,
+                        color: '#FFFFFF',
+                        fontFamily: FONTS.families.secondary
+                      }}>
+                        بدء اللعبة
                       </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </ContainerBackground>
+                    </>
+                  )}
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
             
             {/* رابط سياسة الخصوصية */}
             <TouchableOpacity 
