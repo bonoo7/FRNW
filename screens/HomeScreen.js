@@ -925,43 +925,25 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={{ 
+    <SafeAreaView style={{ 
       flex: 1, 
       backgroundColor: theme.currentTheme === 'blue' ? '#E8F1FF' : (theme.colors.background?.primary || '#FFFFFF')
     }}>
-      {/* الخلفية الزرقاء بتدرج جميل للثيم الأزرق */}
-      {theme.currentTheme === 'blue' && (
-        <LinearGradient
-          colors={['#E8F1FF', '#D6E9FF', '#C5DFFF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={{ 
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            zIndex: 0
-          }}
-        />
-      )}
+      <Stack.Screen
+        options={{
+          headerShown: false
+        }}
+      />
 
-      <SafeAreaView style={{ 
-        flex: 1,
-        zIndex: 1
-      }}>
-        <Stack.Screen
-          options={{
-            headerShown: false
-          }}
-        />
-
-        <ScrollView 
-          style={{ flex: 1 }}
-          contentContainerStyle={{ flexGrow: 1, padding: 20 }}
-          showsVerticalScrollIndicator={false}
-          scrollIndicatorInsets={{ right: 1 }}
-        >
+      <ScrollView 
+        style={{ 
+          flex: 1,
+          backgroundColor: theme.currentTheme === 'blue' ? '#E8F1FF' : 'transparent'
+        }}
+        contentContainerStyle={{ flexGrow: 1, padding: 20 }}
+        showsVerticalScrollIndicator={false}
+        scrollIndicatorInsets={{ right: 1 }}
+      >
         {/* رأس الصفحة مع أيقونة الملف الشخصي */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <View style={{ flex: 1 }} />
@@ -1164,8 +1146,7 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>
-      </SafeAreaView>
-    </View>
+    </SafeAreaView>
   );
 };
 
