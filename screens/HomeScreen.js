@@ -1023,22 +1023,74 @@ const HomeScreen = () => {
             overflow: 'hidden',
             borderRadius: BORDER_RADIUS.lg
           }]}>
-            {/* تصميم عصري بطاقات حديثة */}
+            {/* خلفية زرقاء مطرزة عصرية */}
+            <LinearGradient
+              colors={['#1E40AF', '#3B82F6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: BORDER_RADIUS.lg,
+                opacity: 0.95,
+              }}
+            >
+              {/* نمط عصري (ديكورات) */}
+              <View style={{
+                position: 'absolute',
+                top: -50,
+                right: -50,
+                width: 200,
+                height: 200,
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                borderRadius: 200,
+              }} />
+              <View style={{
+                position: 'absolute',
+                bottom: -30,
+                left: -30,
+                width: 150,
+                height: 150,
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                borderRadius: 150,
+              }} />
+              <View style={{
+                position: 'absolute',
+                top: '50%',
+                right: '10%',
+                width: 100,
+                height: 100,
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                borderRadius: 100,
+              }} />
+            </LinearGradient>
+
+            {/* البطاقة الرئيسية */}
             <View style={[{
               backgroundColor: 'rgba(255, 255, 255, 0.95)',
               borderRadius: 20,
-              padding: SPACING.lg,
+              padding: Dimensions.get('window').width > Dimensions.get('window').height ? SPACING.md : SPACING.lg,
               elevation: 8,
               shadowColor: theme.colors.primary,
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.15,
               shadowRadius: 8,
               width: '100%',
-              marginBottom: SPACING.md
+              marginBottom: SPACING.md,
+              zIndex: 1,
+              marginHorizontal: Platform.OS === 'web' ? 'auto' : 0,
+              maxHeight: Dimensions.get('window').width > Dimensions.get('window').height ? '90%' : undefined,
             }]}>
               {/* قسم عدد الفرق */}
               <View style={{ marginBottom: SPACING.lg }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.md }}>
+                <View style={{ 
+                  flexDirection: 'row', 
+                  alignItems: 'center', 
+                  marginBottom: SPACING.md 
+                }}>
                   <MaterialIcons name="group" size={24} color={theme.colors.primary} />
                   <Text style={{
                     fontSize: FONTS.sizes.subtitle,
@@ -1050,43 +1102,53 @@ const HomeScreen = () => {
                     عدد الفرق
                   </Text>
                 </View>
-                <View style={{
-                  flexDirection: 'row-reverse',
-                  justifyContent: 'space-between',
-                  backgroundColor: 'rgba(30, 64, 175, 0.08)',
-                  borderRadius: 12,
-                  padding: SPACING.sm
-                }}>
-                  {[2, 3, 4, 5].map(count => (
-                    <TouchableOpacity
-                      key={count}
-                      style={[{
-                        paddingHorizontal: SPACING.md,
-                        paddingVertical: SPACING.sm,
-                        borderRadius: 10,
-                        backgroundColor: gameSettings.teamCount === count ? theme.colors.primary : 'transparent',
-                        borderWidth: gameSettings.teamCount === count ? 0 : 2,
-                        borderColor: gameSettings.teamCount === count ? 'transparent' : theme.colors.primary,
-                      }, gameSettings.teamCount === count && {
-                        elevation: 2,
-                        shadowColor: theme.colors.primary,
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.3,
-                        shadowRadius: 4,
-                      }]}
-                      onPress={() => updateTeamCount(count)}
-                    >
-                      <Text style={{
-                        fontSize: FONTS.sizes.medium,
-                        fontWeight: FONTS.weights.bold,
-                        color: gameSettings.teamCount === count ? '#FFFFFF' : theme.colors.primary,
-                        fontFamily: FONTS.families.secondary
-                      }}>
-                        {count}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                <ScrollView 
+                  horizontal 
+                  showsHorizontalScrollIndicator={false}
+                  scrollEnabled={Dimensions.get('window').width < Dimensions.get('window').height}
+                  style={{ marginHorizontal: -SPACING.lg }}
+                >
+                  <View style={{
+                    flexDirection: 'row-reverse',
+                    justifyContent: 'space-between',
+                    backgroundColor: 'rgba(30, 64, 175, 0.08)',
+                    borderRadius: 12,
+                    padding: SPACING.sm,
+                    paddingHorizontal: SPACING.lg,
+                    minWidth: '100%'
+                  }}>
+                    {[2, 3, 4, 5].map(count => (
+                      <TouchableOpacity
+                        key={count}
+                        style={[{
+                          paddingHorizontal: SPACING.md,
+                          paddingVertical: SPACING.sm,
+                          borderRadius: 10,
+                          backgroundColor: gameSettings.teamCount === count ? theme.colors.primary : 'transparent',
+                          borderWidth: gameSettings.teamCount === count ? 0 : 2,
+                          borderColor: gameSettings.teamCount === count ? 'transparent' : theme.colors.primary,
+                          marginHorizontal: SPACING.xs,
+                        }, gameSettings.teamCount === count && {
+                          elevation: 2,
+                          shadowColor: theme.colors.primary,
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                        }]}
+                        onPress={() => updateTeamCount(count)}
+                      >
+                        <Text style={{
+                          fontSize: FONTS.sizes.medium,
+                          fontWeight: FONTS.weights.bold,
+                          color: gameSettings.teamCount === count ? '#FFFFFF' : theme.colors.primary,
+                          fontFamily: FONTS.families.secondary
+                        }}>
+                          {count}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </ScrollView>
               </View>
 
               {/* قسم اسم الجولة */}
@@ -1137,10 +1199,17 @@ const HomeScreen = () => {
                     أسماء الفرق
                   </Text>
                 </View>
-                <View style={{ flexDirection: 'row-reverse', flexWrap: 'wrap', gap: SPACING.sm }}>
+                <View style={{ 
+                  flexDirection: 'row-reverse', 
+                  flexWrap: 'wrap', 
+                  gap: SPACING.sm,
+                  justifyContent: Dimensions.get('window').width > Dimensions.get('window').height ? 'space-between' : 'flex-start'
+                }}>
                   {Array.from({ length: gameSettings.teamCount }).map((_, index) => (
                     <View key={index} style={{
-                      width: `${100 / gameSettings.teamCount - 2}%`,
+                      width: Dimensions.get('window').width > Dimensions.get('window').height 
+                        ? `${100 / Math.min(gameSettings.teamCount, 3) - 2}%`
+                        : `${100 / gameSettings.teamCount - 2}%`,
                     }}>
                       <Text style={{
                         fontSize: FONTS.sizes.small,
