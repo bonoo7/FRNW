@@ -6,6 +6,7 @@ import { View, ActivityIndicator, StatusBar } from 'react-native';
 import { useFonts } from 'expo-font';
 import { MaterialIcons } from '@expo/vector-icons';
 import ErrorBoundary from '../contexts/ErrorBoundary';
+import { LinearGradient } from 'expo-linear-gradient';
 import { 
   useFonts as useReadexPro,
   ReadexPro_400Regular,
@@ -19,6 +20,37 @@ const LoadingScreen = () => (
     <ActivityIndicator size="large" color="#4A6FFF" />
   </View>
 );
+
+const RootLayoutContent = () => {
+  const { currentTheme } = require('../contexts/ThemeContext').useTheme() || { currentTheme: 'blue' };
+  
+  return (
+    <View style={{ flex: 1 }}>
+      {/* الخلفية الزرقاء للثيم الأزرق */}
+      {currentTheme === 'blue' && (
+        <View style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: '#E8F1FF',
+          zIndex: 0
+        }} />
+      )}
+      
+      <View style={{ flex: 1, zIndex: 1 }}>
+        <StatusBar style="auto" />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: 'fade'
+          }}
+        />
+      </View>
+    </View>
+  );
+};
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -43,13 +75,7 @@ export default function RootLayout() {
     <ErrorBoundary>
       <ThemeProvider>
         <AuthProvider>
-          <StatusBar style="auto" />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: 'fade'
-            }}
-          />
+          <RootLayoutContent />
         </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
