@@ -561,7 +561,8 @@ const GameSetup = () => {
         left: 0,
         right: 0,
         bottom: 0,
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       }}>
         <LinearGradient
           colors={['#1a3a52', '#0f2438', '#0a1929']}
