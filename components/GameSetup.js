@@ -48,13 +48,13 @@ const staticStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: SPACING.md,
+    padding: 0,
     backgroundColor: 'transparent',
   },
   gridContainer: {
-    gap: SPACING.sm,
-    padding: SPACING.md,
-    paddingBottom: 10,
+    gap: 0,
+    padding: 0,
+    paddingBottom: 0,
   },
   categoriesContainer: {
     flex: 1,
@@ -74,12 +74,12 @@ const staticStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: SPACING.xs,
-    padding: SPACING.sm,
+    gap: 0,
+    padding: 0,
   },
   categoryItem: {
-    padding: 1,
-    margin: 1,
+    padding: 0,
+    margin: 0,
   },
   progressContainer: {
     position: 'absolute',
@@ -622,7 +622,7 @@ const GameSetup = () => {
               style={{ position: 'relative', zIndex: 1, width: '100%' }}
               contentContainerStyle={{ 
                 alignItems: 'center',
-                paddingVertical: 4,
+                paddingVertical: 0,
               }}
               showsVerticalScrollIndicator={false}
             >
@@ -772,18 +772,18 @@ const GameSetup = () => {
 
 const styles = StyleSheet.create({
   categoryGroupContainer: {
-    marginBottom: SPACING.xxs,
+    marginBottom: 0,
     width: '100%',
   },
   groupHeaderContainer: {
-    marginBottom: SPACING.xxs,
+    marginBottom: 0,
     width: '100%',
     overflow: 'hidden',
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: SPACING.xxs,
+    paddingHorizontal: 0,
   },
   groupHeaderGradient: {
     paddingVertical: SPACING.xxs,
@@ -806,8 +806,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 6,
-    marginBottom: SPACING.xxs,
+    gap: 0,
+    marginBottom: 0,
   },
   headerLine: {
     height: 1,
