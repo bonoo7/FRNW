@@ -14,10 +14,10 @@ const getResponsiveFontSize = () => {
   const screenHeight = Dimensions.get('window').height;
   const isLandscape = screenWidth > screenHeight;
   
-  if (screenWidth < 400) return 10;
-  if (screenWidth < 600) return isLandscape ? 9 : 11;
-  if (screenWidth < 800) return isLandscape ? 10 : 12;
-  return isLandscape ? 11 : 13;
+  if (screenWidth < 400) return 8;
+  if (screenWidth < 600) return isLandscape ? 7 : 9;
+  if (screenWidth < 800) return isLandscape ? 8 : 10;
+  return isLandscape ? 9 : 11;
 };
 
 // التأكد من وجود الصورة
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    flex: 3.5,
+    flex: 4.5,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -144,18 +144,18 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: '100%',
-    padding: SPACING.xs,
+    padding: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1.5,
-    minHeight: 35,
+    flex: 1,
+    minHeight: 24,
   },
   title: {
     fontSize: FONTS.sizes.caption,
     fontWeight: FONTS.weights.bold,
     fontFamily: 'ReadexPro_700Bold',
     textAlign: 'center',
-    numberOfLines: 2,
+    numberOfLines: 1,
   },
   orderBadge: {
     position: 'absolute',

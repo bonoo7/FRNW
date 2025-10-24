@@ -38,6 +38,7 @@ import {
   breakpoints
 } from '../styles/responsive';
 import BackgroundPattern from '../components/BackgroundPattern';
+import AnimatedGridPattern from '../components/AnimatedGridPattern';
 import { useRouter, Link, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -927,7 +928,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={{ 
       flex: 1, 
-      backgroundColor: theme.currentTheme === 'blue' ? '#E8F1FF' : (theme.colors.background?.primary || '#FFFFFF')
+      backgroundColor: '#0a1929'
     }}>
       <Stack.Screen
         options={{
@@ -935,62 +936,51 @@ const HomeScreen = () => {
         }}
       />
 
-      {/* الخلفية الزرقاء بتدرج جميل للثيم الأزرق */}
-      {theme.currentTheme === 'blue' && (
-        <>
-          <LinearGradient
-            colors={['#E8F1FF', '#D6E9FF', '#C5DFFF']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={{ 
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-              zIndex: 0
-            }}
-          />
-          
-          {/* النقش على كل الصفحة - يملأ حتى المسافات بين القوالب */}
-          <View style={{
+      {/* الخلفية الزرقاء الغامقة مع نمط شبكة متحرك جديد - تغطي كل الشاشة */}
+      <View style={{ 
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0
+      }}>
+        <LinearGradient
+          colors={['#1a3a52', '#0f2438', '#0a1929']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ 
             position: 'absolute',
-            top: 0,
             left: 0,
             right: 0,
+            top: 0,
             bottom: 0,
-            zIndex: 1,
-            pointerEvents: 'none'
-          }}>
-            {Array.from({ length: 30 }).map((_, row) =>
-              Array.from({ length: 15 }).map((_, col) => (
-                <View
-                  key={`full-pattern-${row}-${col}`}
-                  style={{
-                    position: 'absolute',
-                    width: 15,
-                    height: 15,
-                    borderRadius: 7.5,
-                    backgroundColor: '#4285F4',
-                    opacity: 0.1,
-                    top: row * 40 - 15,
-                    left: col * 40 - 15,
-                  }}
-                />
-              ))
-            )}
-          </View>
-        </>
-      )}
+            zIndex: 0
+          }}
+        />
+        
+        {/* نمط شبكة متحرك مختلف للخلفية الخارجية - دوائر فقط - يغطي كل الشاشة */}
+        <AnimatedGridPattern
+          width={100}
+          height={100}
+          dotSize={14}
+          dotColor="#64B5F6"
+          dotOpacity={0.25}
+          animationDuration={4000}
+          animationDelay={0}
+          variant="background"
+          isAnimated={true}
+        />
+      </View>
 
       <ScrollView 
-        style={{ flex: 1, backgroundColor: '#E8F1FF' }}
+        style={{ flex: 1, backgroundColor: 'transparent', zIndex: 1 }}
         contentContainerStyle={{ flexGrow: 1, padding: 20 }}
         showsVerticalScrollIndicator={false}
         scrollIndicatorInsets={{ right: 1 }}
       >
         {/* رأس الصفحة مع أيقونة الملف الشخصي */}
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 20, backgroundColor: '#E8F1FF', padding: 10, borderRadius: 8 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8 }}>
           <UserMenu style={{ position: 'relative', zIndex: 10 }} />
         </View>
 
@@ -999,14 +989,14 @@ const HomeScreen = () => {
           <View style={{ 
             marginBottom: 30, 
             marginTop: 10,
-            backgroundColor: '#E8F1FF',
+            backgroundColor: 'transparent',
             borderRadius: 15,
             padding: 20
           }}>
             <Text style={{
               fontSize: 32,
               fontWeight: 'bold',
-              color: '#1E40AF',
+              color: '#64B5F6',
               textAlign: 'center',
               fontFamily: FONTS.families.secondary,
               marginBottom: 10
@@ -1015,7 +1005,7 @@ const HomeScreen = () => {
             </Text>
             <Text style={{
               fontSize: 16,
-              color: '#666',
+              color: '#B3E5FC',
               textAlign: 'center',
               fontFamily: FONTS.families.secondary
             }}>
@@ -1024,34 +1014,23 @@ const HomeScreen = () => {
           </View>
 
           {/* قالب واحد يحتوي على جميع الأقسام */}
-          <View style={{ marginBottom: 30, backgroundColor: '#D6E9FF', borderRadius: 15, padding: 20, borderWidth: 2, borderColor: '#4A90E2', position: 'relative', overflow: 'hidden' }}>
-            <View style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 0,
-              pointerEvents: 'none'
-            }}>
-              {Array.from({ length: 50 }).map((_, row) =>
-                Array.from({ length: 50 }).map((_, col) => (
-                  <View
-                    key={`settings-pattern-${row}-${col}`}
-                    style={{
-                      position: 'absolute',
-                      width: 12,
-                      height: 12,
-                      borderRadius: 6,
-                      backgroundColor: '#1E40AF',
-                      opacity: 0.08,
-                      top: row * 30 - 10,
-                      left: col * 30 - 10,
-                    }}
-                  />
-                ))
-              )}
-            </View>
+          <View style={{ 
+            marginBottom: 30, 
+            backgroundColor: '#D6E9FF', 
+            borderRadius: 15, 
+            padding: 20, 
+            borderWidth: 2, 
+            borderColor: '#4A90E2', 
+            position: 'relative', 
+            overflow: 'hidden',
+            width: '90%',
+            alignSelf: 'center',
+            shadowColor: '#4A90E2',
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.8,
+            shadowRadius: 15,
+            elevation: 20
+          }}>
             
             {/* المحتوى */}
             <View style={{ position: 'relative', zIndex: 1 }}>
