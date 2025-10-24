@@ -54,13 +54,13 @@ const staticStyles = StyleSheet.create({
   gridContainer: {
     gap: SPACING.sm,
     padding: SPACING.md,
-    paddingBottom: 100,
+    paddingBottom: 10,
   },
   categoriesContainer: {
     flex: 1,
     borderRadius: 16,
     padding: SPACING.md,
-    marginBottom: SPACING.xxs, // تقليل المسافة من md إلى xxs
+    marginBottom: SPACING.xxs, // مسافة صغيرة جداً
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: 'transparent', // سيتم تحديد اللون ديناميكيًا في الكود
@@ -613,7 +613,7 @@ const GameSetup = () => {
                 alignSelf: 'center',
                 position: 'relative',
                 overflow: 'hidden',
-                marginBottom: 30
+                marginBottom: 5
               }
             ]}
           >
@@ -622,7 +622,7 @@ const GameSetup = () => {
               style={{ position: 'relative', zIndex: 1, width: '100%' }}
               contentContainerStyle={{ 
                 alignItems: 'center',
-                paddingVertical: SPACING.sm,
+                paddingVertical: 4,
               }}
               showsVerticalScrollIndicator={false}
             >
