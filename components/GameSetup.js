@@ -55,20 +55,21 @@ const staticStyles = StyleSheet.create({
     gap: 0,
     padding: 0,
     paddingBottom: 0,
+    flexGrow: 0,
   },
   categoriesContainer: {
     flex: 1,
     borderRadius: 16,
     padding: SPACING.md,
-    marginBottom: SPACING.xxs, // مسافة صغيرة جداً
+    marginBottom: 0,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: 'transparent', // سيتم تحديد اللون ديناميكيًا في الكود
+    borderColor: 'transparent',
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
-    width: '35%', // تحديد عرض الحاوية هنا
-    alignSelf: 'center', // توسيط الحاوية
+    width: '35%',
+    alignSelf: 'center',
   },
   categoriesGrid: {
     flexDirection: 'row',
@@ -613,7 +614,7 @@ const GameSetup = () => {
                 alignSelf: 'center',
                 position: 'relative',
                 overflow: 'hidden',
-                marginBottom: 5
+                marginBottom: 0
               }
             ]}
           >
