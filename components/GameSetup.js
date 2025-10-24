@@ -50,12 +50,14 @@ const staticStyles = StyleSheet.create({
     flex: 1,
     padding: 0,
     backgroundColor: 'transparent',
+    justifyContent: 'flex-start',
   },
   gridContainer: {
     gap: 0,
     padding: 0,
     paddingBottom: 0,
     flexGrow: 0,
+    justifyContent: 'flex-start',
   },
   categoriesContainer: {
     flex: 1,
