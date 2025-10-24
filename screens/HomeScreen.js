@@ -927,7 +927,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={{ 
       flex: 1, 
-      backgroundColor: 'transparent'
+      backgroundColor: theme.currentTheme === 'blue' ? '#E8F1FF' : (theme.colors.background?.primary || '#FFFFFF')
     }}>
       <Stack.Screen
         options={{
@@ -935,24 +935,74 @@ const HomeScreen = () => {
         }}
       />
 
+      {/* الخلفية الزرقاء بتدرج جميل للثيم الأزرق */}
+      {theme.currentTheme === 'blue' && (
+        <>
+          <LinearGradient
+            colors={['#E8F1FF', '#D6E9FF', '#C5DFFF']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={{ 
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              zIndex: 0
+            }}
+          />
+          
+          {/* النقش على كل الصفحة - يملأ حتى المسافات بين القوالب */}
+          <View style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1,
+            pointerEvents: 'none'
+          }}>
+            {Array.from({ length: 30 }).map((_, row) =>
+              Array.from({ length: 15 }).map((_, col) => (
+                <View
+                  key={`full-pattern-${row}-${col}`}
+                  style={{
+                    position: 'absolute',
+                    width: 15,
+                    height: 15,
+                    borderRadius: 7.5,
+                    backgroundColor: '#4285F4',
+                    opacity: 0.1,
+                    top: row * 40 - 15,
+                    left: col * 40 - 15,
+                  }}
+                />
+              ))
+            )}
+          </View>
+        </>
+      )}
+
       <ScrollView 
-        style={{ 
-          flex: 1,
-          backgroundColor: 'transparent'
-        }}
+        style={{ flex: 1, backgroundColor: '#E8F1FF' }}
         contentContainerStyle={{ flexGrow: 1, padding: 20 }}
         showsVerticalScrollIndicator={false}
         scrollIndicatorInsets={{ right: 1 }}
       >
         {/* رأس الصفحة مع أيقونة الملف الشخصي */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <View style={{ flex: 1 }} />
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 20, backgroundColor: '#E8F1FF', padding: 10, borderRadius: 8 }}>
           <UserMenu style={{ position: 'relative', zIndex: 10 }} />
         </View>
 
         <Animated.View style={{ opacity: fadeAnim }}>
           {/* رأس البرنامج */}
-          <View style={{ marginBottom: 30, marginTop: 10 }}>
+          <View style={{ 
+            marginBottom: 30, 
+            marginTop: 10,
+            backgroundColor: '#E8F1FF',
+            borderRadius: 15,
+            padding: 20
+          }}>
             <Text style={{
               fontSize: 32,
               fontWeight: 'bold',
@@ -973,8 +1023,41 @@ const HomeScreen = () => {
             </Text>
           </View>
 
+          {/* قالب واحد يحتوي على جميع الأقسام */}
+          <View style={{ marginBottom: 30, backgroundColor: '#D6E9FF', borderRadius: 15, padding: 20, borderWidth: 2, borderColor: '#4A90E2', position: 'relative', overflow: 'hidden' }}>
+            <View style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 0,
+              pointerEvents: 'none'
+            }}>
+              {Array.from({ length: 50 }).map((_, row) =>
+                Array.from({ length: 50 }).map((_, col) => (
+                  <View
+                    key={`settings-pattern-${row}-${col}`}
+                    style={{
+                      position: 'absolute',
+                      width: 12,
+                      height: 12,
+                      borderRadius: 6,
+                      backgroundColor: '#1E40AF',
+                      opacity: 0.08,
+                      top: row * 30 - 10,
+                      left: col * 30 - 10,
+                    }}
+                  />
+                ))
+              )}
+            </View>
+            
+            {/* المحتوى */}
+            <View style={{ position: 'relative', zIndex: 1 }}>
+
           {/* قسم عدد الفرق */}
-          <View style={{ marginBottom: 25 }}>
+          <View style={{ marginBottom: 20 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
               <Text style={{
                 fontSize: 18,
@@ -990,9 +1073,9 @@ const HomeScreen = () => {
             <View style={{
               flexDirection: 'row-reverse',
               justifyContent: 'space-around',
-              backgroundColor: '#F5F5F5',
+              backgroundColor: 'transparent',
               borderRadius: 15,
-              padding: 12
+              padding: 0
             }}>
               {[2, 3, 4, 5].map(count => (
                 <TouchableOpacity
@@ -1004,7 +1087,7 @@ const HomeScreen = () => {
                     borderRadius: 10,
                     borderWidth: 2,
                     borderColor: gameSettings.teamCount === count ? '#1E40AF' : '#DDD',
-                    backgroundColor: gameSettings.teamCount === count ? '#1E40AF' : '#FFF',
+                    backgroundColor: gameSettings.teamCount === count ? '#1E40AF' : '#F8FBFF',
                   }}
                 >
                   <Text style={{
@@ -1021,17 +1104,7 @@ const HomeScreen = () => {
           </View>
 
           {/* قسم اسم الجولة */}
-          <View style={{ marginBottom: 25 }}>
-            <Text style={{
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: '#333',
-              marginBottom: 10,
-              fontFamily: FONTS.families.secondary,
-            }}>
-              اسم الجولة
-            </Text>
-
+          <View style={{ marginBottom: 20 }}>
             <TextInput
               style={{
                 borderWidth: 2,
@@ -1043,7 +1116,7 @@ const HomeScreen = () => {
                 fontFamily: FONTS.families.secondary,
                 color: '#333',
                 textAlign: 'right',
-                backgroundColor: '#FFF',
+                backgroundColor: '#F8FBFF',
                 minHeight: 50,
               }}
               placeholder="الجولة الأولى"
@@ -1054,17 +1127,7 @@ const HomeScreen = () => {
           </View>
 
           {/* قسم أسماء الفرق */}
-          <View style={{ marginBottom: 30 }}>
-            <Text style={{
-              fontSize: 18,
-              fontWeight: 'bold',
-              color: '#333',
-              marginBottom: 12,
-              fontFamily: FONTS.families.secondary,
-            }}>
-              أسماء الفرق
-            </Text>
-
+          <View style={{ marginBottom: 20 }}>
             <View style={{
               flexDirection: 'row-reverse',
               flexWrap: 'wrap',
@@ -1099,7 +1162,7 @@ const HomeScreen = () => {
                       fontFamily: FONTS.families.secondary,
                       color: '#333',
                       textAlign: 'right',
-                      backgroundColor: '#FFF',
+                      backgroundColor: '#F8FBFF',
                       minHeight: 45,
                     }}
                     placeholder={getDefaultTeamName(index)}
@@ -1113,24 +1176,24 @@ const HomeScreen = () => {
           </View>
 
           {/* زر البدء */}
-          <TouchableOpacity
-            onPress={handleStartGame}
-            disabled={isLoading}
-            style={{
-              backgroundColor: '#1E40AF',
-              borderRadius: 12,
-              paddingVertical: 16,
-              alignItems: 'center',
-              justifyContent: 'center',
-              opacity: isLoading ? 0.7 : 1,
-              elevation: 4,
-              shadowColor: '#1E40AF',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              marginBottom: 20
-            }}
-          >
+          <View style={{ marginBottom: 0 }}>
+            <TouchableOpacity
+              onPress={handleStartGame}
+              disabled={isLoading}
+              style={{
+                backgroundColor: '#1E40AF',
+                borderRadius: 12,
+                paddingVertical: 16,
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: isLoading ? 0.7 : 1,
+                elevation: 4,
+                shadowColor: '#1E40AF',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+              }}
+            >
             {isLoading ? (
               <ActivityIndicator color="#FFFFFF" />
             ) : (
@@ -1144,6 +1207,9 @@ const HomeScreen = () => {
               </Text>
             )}
           </TouchableOpacity>
+          </View>
+            </View>
+          </View>
         </Animated.View>
       </ScrollView>
     </SafeAreaView>

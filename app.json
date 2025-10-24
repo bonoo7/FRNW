@@ -4,7 +4,7 @@
     "slug": "frn",
     "scheme": "fakker",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -31,7 +31,8 @@
       "versionCode": 1,
       "permissions": [
         "INTERNET"
-      ]
+      ],
+      "screenOrientation": "unspecified"
     },
     "web": {
       "favicon": "./assets/favicon.png"

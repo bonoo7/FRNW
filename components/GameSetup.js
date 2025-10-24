@@ -59,7 +59,7 @@ const staticStyles = StyleSheet.create({
     flex: 1,
     borderRadius: 16,
     padding: SPACING.md,
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.xxs, // تقليل المسافة من md إلى xxs
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: 'transparent', // سيتم تحديد اللون ديناميكيًا في الكود
@@ -257,7 +257,7 @@ const ContainerBackground = ({ style, children }) => {
 
   // استخراج borderRadius وباقي الأنماط من style
   const flatStyle = StyleSheet.flatten(style || {});
-  const { borderRadius, ...restStyle } = flatStyle;
+  const { borderRadius, backgroundColor, ...restStyle } = flatStyle;
 
   // نمط الحاوية الخارجية (للقص والحواف الدائرية)
   const wrapperStyle = {
@@ -270,14 +270,15 @@ const ContainerBackground = ({ style, children }) => {
     width: '100%', // ضمان امتداد العرض
   };
 
-  // نمط الخلفية الموحدة
+  // نمط الخلفية الموحدة - استخدام backgroundColor المُمرر أو اللون من theme
   const backgroundStyle = {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: theme.colors.background?.card || 
+    backgroundColor: backgroundColor || 
+                     theme.colors.background?.card || 
                      theme.colors.background?.light || 
                      theme.colors.secondary || 
                      '#A0C6FF', // احتياطي في حال عدم وجود الألوان
@@ -290,7 +291,7 @@ const ContainerBackground = ({ style, children }) => {
       {/* خلفية موحدة بلون الثيم */}
       <View style={backgroundStyle} />
       
-      {/* صورة الخلفية (إذا كانت موجودة) */}
+      {/* صورة الخلفية (النقش) - تملأ كل القالب */}
       {imageSource && (
         <ImageBackground
           source={imageSource}
@@ -300,10 +301,13 @@ const ContainerBackground = ({ style, children }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            opacity: 0.2, // تقليل الشفافية لتظهر الخلفية الملونة
+            opacity: 0.35,
           }}
-          imageStyle={{ opacity: 0.5 }}
-          resizeMode="cover"
+          imageStyle={{ 
+            opacity: 0.6,
+            resizeMode: 'repeat',
+          }}
+          resizeMode="repeat"
         />
       )}
       {children}
@@ -321,11 +325,14 @@ const GameSetup = () => {
 
   const responsiveStyles = getResponsiveStyles();
   
-  // تعديل الأنماط بناءً على اتجاه الشاشة
+  // تعديل الأنماط بناءً على اتجاه الشاشة وحجم الشاشة
   const dynamicStyles = {
     categoriesContainer: {
-      width: responsiveStyles.isLandscape ? '85%' : '55%',
-      maxWidth: responsiveStyles.isLandscape ? '85%' : '55%', // زيادة العرض أكثر
+      width: responsiveStyles.isLandscape ? '90%' : '85%',
+      maxWidth: responsiveStyles.isLandscape ? '90%' : '85%',
+      maxHeight: responsiveStyles.isLandscape ? '70%' : '65%',
+      paddingVertical: responsiveStyles.isLandscape ? SPACING.lg : SPACING.md,
+      paddingHorizontal: responsiveStyles.isLandscape ? SPACING.lg : SPACING.md,
     }
   };
 
@@ -542,12 +549,24 @@ const GameSetup = () => {
   }
 
   return (
-    <BackgroundPattern
-      style={{ backgroundColor: theme.colors.background.primary }}
-      patternId="gameSetupPattern"
-    >
+    <View style={{ flex: 1, backgroundColor: '#E8F1FF' }}>
+      {/* خلفية زرقاء فاتحة بدون نقش */}
+      <LinearGradient
+        colors={['#E8F1FF', '#D6E9FF', '#C5DFFF']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={{ 
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          zIndex: 0
+        }}
+      />
+      
       <Stack.Screen options={{ headerShown: false }} />
-      <View style={staticStyles.container}>
+      <View style={[staticStyles.container, { position: 'relative', zIndex: 2 }]}>
         <ScrollView 
           contentContainerStyle={staticStyles.gridContainer}
           showsVerticalScrollIndicator={false}
@@ -557,21 +576,59 @@ const GameSetup = () => {
               staticStyles.categoriesContainer,
               dynamicStyles.categoriesContainer,
               { 
-                backgroundColor: `${theme.colors.background.card}60`,
-                // استخدام لون الثيم للإطار
-                borderColor: theme.colors.border?.primary || theme.colors.primary,
-                borderWidth: 4, // إبقاء سمك الإطار متساوي في جميع الثيمات
-                // إضافة ظل للإطار
+                backgroundColor: '#D6E9FF',
+                borderColor: '#4A90E2',
+                borderWidth: 2,
                 elevation: 4,
-                shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                shadowOffset: theme.currentTheme === 'dark' ? theme.colors.shadow.offset : { width: 0, height: 2 },
-                shadowOpacity: theme.currentTheme === 'dark' ? theme.colors.shadow.opacity : 0.1,
-                shadowRadius: theme.currentTheme === 'dark' ? theme.colors.shadow.radius : 4,
-                flex: 1, // إضافة flex: 1 لضمان امتداد الحاوية
-                alignSelf: 'center', // توسيط الحاوية
+                shadowColor: '#4A90E2',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.15,
+                shadowRadius: 4,
+                flex: 1,
+                alignSelf: 'center',
+                position: 'relative',
+                overflow: 'hidden'
               }
             ]}
           >
+            {/* نقش داخل القالب فقط */}
+            <View style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 0,
+              pointerEvents: 'none'
+            }}>
+              {Array.from({ length: 50 }).map((_, row) =>
+                Array.from({ length: 50 }).map((_, col) => (
+                  <View
+                    key={`settings-pattern-${row}-${col}`}
+                    style={{
+                      position: 'absolute',
+                      width: 12,
+                      height: 12,
+                      borderRadius: 6,
+                      backgroundColor: '#1E40AF',
+                      opacity: 0.08,
+                      top: row * 30 - 10,
+                      left: col * 30 - 10,
+                    }}
+                  />
+                ))
+              )}
+            </View>
+
+            {/* المحتوى */}
+            <ScrollView 
+              style={{ position: 'relative', zIndex: 1, width: '100%' }}
+              contentContainerStyle={{ 
+                alignItems: 'center',
+                paddingVertical: SPACING.sm,
+              }}
+              showsVerticalScrollIndicator={false}
+            >
             {/* عرض الفئات مقسمة حسب المجموعات */}
             {Object.entries(categoryGroups).map(([groupName, groupCategories]) => (
               <View key={groupName} style={styles.categoryGroupContainer}>
@@ -614,6 +671,7 @@ const GameSetup = () => {
                 </View>
               </View>
             ))}
+            </ScrollView>
           </ContainerBackground>
         </ScrollView>
 
@@ -711,7 +769,7 @@ const GameSetup = () => {
           </View>
         </View>
       </View>
-    </BackgroundPattern>
+    </View>
   );
 };
 

@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { ThemeProvider } from '../contexts/ThemeContext';
+import { ThemeProvider, useTheme } from '../contexts/ThemeContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { Suspense } from 'react';
 import { View, ActivityIndicator, StatusBar } from 'react-native';
@@ -22,16 +22,26 @@ const LoadingScreen = () => (
 );
 
 const RootLayoutContent = () => {
-  const { currentTheme } = require('../contexts/ThemeContext').useTheme() || { currentTheme: 'blue' };
+  let backgroundColor = '#FFFFFF';
+  
+  try {
+    const { currentTheme } = useTheme();
+    backgroundColor = currentTheme === 'blue' ? '#1E40AF' : '#FFFFFF';
+  } catch (e) {
+    // fallback
+  }
   
   return (
-    <View style={{ flex: 1, backgroundColor: currentTheme === 'blue' ? '#1E40AF' : '#FFFFFF' }}>
-      <StatusBar style={currentTheme === 'blue' ? 'light' : 'auto'} />
+    <View style={{ flex: 1, backgroundColor }}>
+      <StatusBar style={backgroundColor === '#1E40AF' ? 'light' : 'auto'} />
       <Stack
         screenOptions={{
           headerShown: false,
           animation: 'fade',
-          contentStyle: { backgroundColor: 'transparent' }
+          contentStyle: { 
+            backgroundColor: backgroundColor,
+            flex: 1
+          }
         }}
       />
     </View>
