@@ -21,13 +21,13 @@ const staticStyles = StyleSheet.create({
   },
   categoriesContainer: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 12,
     overflow: 'hidden',
     marginTop: SPACING.xs,
     marginBottom: SPACING.xs,
     marginHorizontal: SPACING.xxs,
-    width: '95%', // تقليل العرض إلى 95% من عرض الشاشة
-    alignSelf: 'center', // توسيط الحاوية
+    width: '98%',
+    alignSelf: 'center',
   },
   scrollView: {
     flex: 1,
@@ -36,47 +36,50 @@ const staticStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: SPACING.xs,
-    padding: SPACING.xs,
+    gap: 4,
+    padding: 4,
   },
   categoryHeader: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: SPACING.xs,
-    borderBottomWidth: 1,
-    marginBottom: 2,
+    padding: 4,
+    borderBottomWidth: 0,
+    marginBottom: 0,
   },
   categoryImage: {
-    width: 40,
-    height: 40,
-    marginBottom: 3,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    marginBottom: 0,
+    marginRight: 6,
+    borderRadius: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 2,
+    padding: 1,
   },
   categoryTitle: {
     flex: 1,
-    fontSize: 10,
+    fontSize: 8,
     fontWeight: FONTS.weights.bold,
-    textAlign: 'center',
+    textAlign: 'left',
     letterSpacing: 0,
   },
   questionsContainer: {
-    padding: SPACING.xs,
+    padding: 2,
     alignItems: 'center',
-    width: '90%',
-    borderRadius: 4,
-    margin: 2,
+    width: '100%',
+    borderRadius: 2,
+    margin: 0,
+    flex: 1,
   },
   difficultyRow: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 0,
+    marginBottom: 1,
     gap: 1,
     padding: 1,
     borderRadius: 2,
+    flexWrap: 'wrap',
   },
   loadingContainer: {
     flex: 1,
@@ -93,11 +96,11 @@ const staticStyles = StyleSheet.create({
     textAlign: 'center',
   },
   questionButton: {
-    width: 42,
-    height: 12,
-    margin: 1.5,
-    borderRadius: 6,
-    borderWidth: 2,
+    width: 28,
+    height: 10,
+    margin: 0.5,
+    borderRadius: 4,
+    borderWidth: 1.2,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
@@ -111,7 +114,7 @@ const staticStyles = StyleSheet.create({
     width: '100%',
   },
   pointsText: {
-    fontSize: 10,
+    fontSize: 7,
     fontWeight: FONTS.weights.bold,
     textAlign: 'center',
   },
@@ -127,11 +130,11 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
   // حساب حجم الزر بناءً على عدد الفئات
   const getButtonSize = () => {
     if (categories?.length === 6) {
-      return { width: 32, height: 32, margin: 4, fontSize: 9.5 };
+      return { width: 22, height: 22, margin: 2, fontSize: 7 };
     } else if (categories?.length === 8) {
-      return { width: 30, height: 30, margin: 3.5, fontSize: 9 };
+      return { width: 20, height: 20, margin: 1.5, fontSize: 6.5 };
     } else {
-      return { width: 31, height: 31, margin: 3.8, fontSize: 9.3 };
+      return { width: 21, height: 21, margin: 1.8, fontSize: 6.8 };
     }
   };
 
@@ -182,49 +185,45 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
   const primaryColorWithOpacity = `${theme.colors.primary}80`;
   
-  // حساب أبعاد الصورة بناءً على عرض البطاقة
-  const cardWidth = style?.width || 160;
-  const cardHeight = style?.minHeight || 200;
+  const cardWidth = style?.width || 140;
+  const cardHeight = style?.minHeight || 160;
   
-  // صيغة لتصغير الصورة: عرض الصورة = عرض البطاقة * 0.7، الارتفاع = ارتفاع البطاقة * 0.6
-  const imageWidth = Math.max(cardWidth * 0.65, 80);
-  const imageHeight = Math.max(cardHeight * 0.55, 100);
+  const imageWidth = Math.max(cardWidth * 0.5, 40);
+  const imageHeight = Math.max(cardHeight * 0.35, 35);
   
   const columnStyles = StyleSheet.create({
     column: {
-      flex: 2,
-      minWidth: categories?.length === 6 ? 140 : 100,
-      borderRadius: 12,
+      flex: 1,
+      minWidth: 100,
+      borderRadius: 8,
       overflow: 'hidden',
-      elevation: 4,
+      elevation: 3,
       shadowColor: theme.colors.primary || '#2E5DB8',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.2,
-      shadowRadius: 6,
-      borderWidth: 2,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 3,
+      borderWidth: 1.2,
       borderColor: theme.colors.border?.primary || theme.colors.primary || '#2E5DB8',
-      margin: 5,
+      margin: 2,
       position: 'relative',
-      backgroundColor: `${theme.colors.background.surface}98`,
+      backgroundColor: `${theme.colors.background.surface}95`,
     },
     backgroundImage: {
       position: 'absolute',
       top: 0,
       left: 0,
-      right: 0,
-      bottom: 0,
       width: imageWidth,
       height: imageHeight,
-      opacity: 0.25, 
+      opacity: 0.2, 
       zIndex: 0, 
       pointerEvents: 'none',
-      alignSelf: 'center',
+      alignSelf: 'flex-start',
     },
     categoryHeader: {
       ...staticStyles.categoryHeader,
-      padding: 6,
-      minHeight: 28,
-      flex: 0.15,
+      padding: 3,
+      minHeight: 24,
+      flex: 0,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'column',
@@ -238,47 +237,45 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
     },
     categoryImage: {
       ...staticStyles.categoryImage,
-      width: categories?.length === 6 ? 40 : 38,
-      height: categories?.length === 6 ? 40 : 38,
-      marginBottom: 3,
-      borderRadius: 10,
+      width: 26,
+      height: 26,
+      marginBottom: 0,
+      marginRight: 4,
+      borderRadius: 8,
       padding: 0,
       borderWidth: 0,
       borderColor: 'transparent',
-      backgroundColor: 'rgba(255, 255, 255, 0.98)', 
-      opacity: 1,
+      backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+      opacity: 0.9,
       shadowColor: theme.colors.primary || '#2E5DB8',
-      shadowOffset: { width: 0, height: 3 },
-      shadowOpacity: 0.2,
-      shadowRadius: 5,
-      elevation: 4,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
     },
     categoryTitle: {
       ...staticStyles.categoryTitle,
-      fontSize: categories?.length === 6 ? 7 : 7.5,
-      textAlign: 'center',
+      fontSize: 7.5,
+      textAlign: 'left',
       marginTop: 0,
       marginBottom: 0,
       marginHorizontal: 0,
       letterSpacing: 0,
       flexWrap: 'wrap',
-      textShadowColor: undefined,
-      textShadowOffset: undefined,
-      textShadowRadius: undefined,
       width: '100%',
       fontFamily: 'ReadexPro_700Bold',
       fontWeight: '700',
       color: '#FFFFFF',
       opacity: 1,
-      lineHeight: 10,
+      lineHeight: 9,
     },
     questionsContainer: {
       ...staticStyles.questionsContainer,
-      padding: 4,
+      padding: 2,
       marginBottom: 0,
       backgroundColor: 'transparent', 
-      flex: 0.9,
-      justifyContent: 'space-around',
+      flex: 1,
+      justifyContent: 'flex-start',
       alignItems: 'center',
       borderBottomLeftRadius: 11,
       borderBottomRightRadius: 11,
@@ -1223,8 +1220,8 @@ const GameScreen = () => {
                   }
                   
                   // حساب عرض البطاقة
-                  const containerWidth = screenWidth - 24; // 12 * 2 للـ padding
-                  const itemSpacing = 12;
+                  const containerWidth = screenWidth - 12; // 6 * 2 للـ padding
+                  const itemSpacing = 6;
                   const totalSpacing = itemSpacing * (categoriesPerRow - 1);
                   const itemWidth = (containerWidth - totalSpacing) / categoriesPerRow;
                   
@@ -1235,10 +1232,10 @@ const GameScreen = () => {
                           flexDirection: 'row',
                           justifyContent: 'center',
                           alignItems: 'flex-start',
-                          marginBottom: 12,
+                          marginBottom: 6,
                           alignSelf: 'center',
                           width: '100%',
-                          paddingHorizontal: 0,
+                          paddingHorizontal: 2,
                         }}>
                           {row.map(category => (
                             <CategoryColumn
@@ -1251,14 +1248,14 @@ const GameScreen = () => {
                                 marginHorizontal: itemSpacing / 2,
                                 backgroundColor: `${theme.colors.background.surface}88`, 
                                 borderColor: theme.colors.border?.primary || theme.colors.primary,
-                                borderWidth: 1.5,
+                                borderWidth: 1,
                                 shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                                shadowOffset: { width: 0, height: 2 },
-                                shadowOpacity: 0.15,
-                                shadowRadius: 3,
-                                elevation: 3,
-                                minHeight: 200,
-                                maxHeight: 240,
+                                shadowOffset: { width: 0, height: 1 },
+                                shadowOpacity: 0.1,
+                                shadowRadius: 2,
+                                elevation: 2,
+                                minHeight: 150,
+                                maxHeight: 180,
                                 flex: 1,
                               }}
                               theme={theme}
