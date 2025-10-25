@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font';
 import { MaterialIcons } from '@expo/vector-icons';
 import ErrorBoundary from '../contexts/ErrorBoundary';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { 
   useFonts as useReadexPro,
   ReadexPro_400Regular,
@@ -62,6 +63,9 @@ export default function RootLayout() {
     ReadexPro_600SemiBold,
     ReadexPro_700Bold
   });
+
+  // تفعيل الوضع الأفقي فقط
+  ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
 
   if (!fontsLoaded || !readexProLoaded) {
     return <LoadingScreen />;

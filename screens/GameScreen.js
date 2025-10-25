@@ -6,6 +6,7 @@ import { Stack } from 'expo-router';
 import { GameService } from '../services/gameService';
 import { TeamsHeader } from '../components/TeamsHeader';
 import BackgroundPattern from '../components/BackgroundPattern';
+import AnimatedGridPattern from '../components/AnimatedGridPattern';
 import StorageService from '../services/storageService';
 import PentaPointsService from '../services/pentaPointsService';
 import { useTheme } from '../contexts/ThemeContext';
@@ -22,10 +23,10 @@ const staticStyles = StyleSheet.create({
     flex: 1,
     borderRadius: 16,
     overflow: 'hidden',
-    marginTop: SPACING.md, // زيادة الهامش العلوي من SPACING.xs إلى SPACING.md
-    marginBottom: SPACING.md,
-    marginHorizontal: SPACING.xs,
-    width: '90%', // تقليل العرض إلى 90% من عرض الشاشة
+    marginTop: SPACING.xs,
+    marginBottom: SPACING.xs,
+    marginHorizontal: SPACING.xxs,
+    width: '95%', // تقليل العرض إلى 95% من عرض الشاشة
     alignSelf: 'center', // توسيط الحاوية
   },
   scrollView: {
@@ -63,7 +64,7 @@ const staticStyles = StyleSheet.create({
   questionsContainer: {
     padding: SPACING.xs,
     alignItems: 'center',
-    width: '100%',
+    width: '90%',
     borderRadius: 4,
     margin: 2,
   },
@@ -92,88 +93,88 @@ const staticStyles = StyleSheet.create({
     textAlign: 'center',
   },
   questionButton: {
-    width: 36,
-    height: 9,
-    margin: 0.5,
-    borderRadius: 36,
-    borderWidth: 2,
+    width: 45,
+    height: 12,
+    margin: 1,
+    borderRadius: 8,
+    borderWidth: 2.5,
     overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   questionButtonGradient: {
-    padding: 2,
-    borderRadius: 2,
+    padding: 4,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
+    width: '100%',
   },
   pointsText: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: FONTS.weights.bold,
+    textAlign: 'center',
   },
 });
 
 const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories }) => {
   const difficultyColors = {
-    'سهل': theme.colors.gradient?.success || ['#4CAF50', '#388E3C'],
-    'متوسط': theme.colors.gradient?.warning || ['#FFA000', '#FFD740'],
-    'صعب': ['#FF0000', '#D32F2F'],  
+    'سهل': { bg: '#C8E6C9', border: '#2E7D32', text: '#1B5E20' },
+    'متوسط': { bg: '#FFE0B2', border: '#E65100', text: '#BF360C' },
+    'صعب': { bg: '#FFCDD2', border: '#C62828', text: '#B71C1C' },  
   };
 
-  const difficultyBackgrounds = {
-    'سهل': `${theme.colors.success}20`,
-    'متوسط': `${theme.colors.warning}20`,
-    'صعب': `${theme.colors.error}20`,
+  // حساب حجم الزر بناءً على عدد الفئات
+  const getButtonSize = () => {
+    if (categories?.length === 6) {
+      return { width: 32, height: 32, margin: 5, fontSize: 9.5 };
+    } else if (categories?.length === 8) {
+      return { width: 30, height: 30, margin: 4.4, fontSize: 9 };
+    } else {
+      return { width: 31, height: 31, margin: 4.6, fontSize: 9.3 };
+    }
   };
 
-  const difficultyBorders = {
-    'سهل': theme.colors.border?.primary || theme.colors.success,
-    'متوسط': theme.colors.border?.primary || theme.colors.warning,
-    'صعب': theme.colors.border?.primary || theme.colors.error,  
-  };
+  const buttonSize = getButtonSize();
 
   return (
     <TouchableOpacity
       onPress={onPress}
+      disabled={isUsed}
       style={[
         staticStyles.questionButton,
         {
-          width: categories?.length === 6 ? 60 : 36,
-          height: categories?.length === 6 ? 12 : 9,
-          margin: categories?.length === 6 ? 2 : 0.5,
-          backgroundColor: isUsed ? `${theme.colors.background.card}80` : difficultyBackgrounds[difficulty],
-          borderColor: isUsed ? theme.colors.border : difficultyBorders[difficulty],
+          width: buttonSize.width,
+          height: buttonSize.height,
+          margin: buttonSize.margin,
+          backgroundColor: isUsed ? '#F0F0F0' : difficultyColors[difficulty].bg,
+          borderColor: isUsed ? '#D0D0D0' : difficultyColors[difficulty].border,
+          borderWidth: 1.8,
           justifyContent: 'center',
           alignItems: 'center',
+          borderRadius: 6,
+          elevation: isUsed ? 0 : 2,
+          shadowColor: difficultyColors[difficulty].border,
+          shadowOffset: { width: 0, height: 0.8 },
+          shadowOpacity: isUsed ? 0 : 0.2,
+          shadowRadius: 1.5,
         },
       ]}
     >
-      <LinearGradient
-        colors={[
-          isUsed ? `${theme.colors.background.card}00` : `${difficultyColors[difficulty][0]}20`,
-          isUsed ? `${theme.colors.background.card}00` : `${difficultyColors[difficulty][1]}10`
-        ]}
+      <Text
         style={[
-          staticStyles.questionButtonGradient,
+          staticStyles.pointsText,
           {
-            width: '100%',
-            height: '100%',
+            color: isUsed ? '#B0B0B0' : difficultyColors[difficulty].text,
+            opacity: 1,
+            fontSize: buttonSize.fontSize,
+            fontWeight: '700',
+            fontFamily: 'ReadexPro_700Bold'
           }
         ]}
       >
-        <Text
-          style={[
-            staticStyles.pointsText,
-            {
-              color: isUsed ? theme.colors.text.secondary : theme.colors.text.primary,
-              opacity: isUsed ? 0.6 : 1,
-              fontSize: 10,
-              fontFamily: 'ReadexPro_700Bold'
-            }
-          ]}
-        >
-          {points}
-        </Text>
-      </LinearGradient>
+        {points}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -183,21 +184,20 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
   
   const columnStyles = StyleSheet.create({
     column: {
-      flex: 0,
-      minWidth: categories?.length === 6 ? 150 : 100, // زيادة عرض البطاقة عند وجود 6 فئات
-      minHeight: 160,
+      flex: 2,
+      minWidth: categories?.length === 6 ? 140 : 100,
       borderRadius: 12,
       overflow: 'hidden',
-      elevation: 2,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
+      elevation: 4,
+      shadowColor: theme.colors.primary || '#2E5DB8',
+      shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.2,
-      shadowRadius: 4,
-      borderWidth: 0,
-      borderColor: primaryColorWithOpacity,
-      paddingBottom: 4,
-      margin: 2,
-      position: 'relative', 
+      shadowRadius: 6,
+      borderWidth: 2,
+      borderColor: theme.colors.border?.primary || theme.colors.primary || '#2E5DB8',
+      margin: 5,
+      position: 'relative',
+      backgroundColor: `${theme.colors.background.surface}98`,
     },
     backgroundImage: {
       position: 'absolute',
@@ -207,65 +207,85 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       bottom: 0,
       width: '100%',
       height: '100%',
-      opacity: 0.15, 
-      zIndex: -1, 
+      opacity: 0.25, 
+      zIndex: 0, 
+      pointerEvents: 'none',
     },
     categoryHeader: {
       ...staticStyles.categoryHeader,
-      padding: SPACING.xs,
-      minHeight: 36, // تقليل الارتفاع الأدنى لرأس الفئة من 40 إلى 36
-      height: 70, // تقليل ارتفاع رأس الفئة من 80 إلى 70
+      padding: 6,
+      minHeight: 28,
+      flex: 0.15,
       alignItems: 'center',
-      justifyContent: 'center', // إضافة محاذاة رأسية للمنتصف
+      justifyContent: 'center',
       flexDirection: 'column',
-      backgroundColor: 'transparent',
-      borderBottomWidth: 2, 
-      borderBottomColor: primaryColorWithOpacity, // استخدام اللون نصف الشفاف
+      borderBottomWidth: 0,
+      borderBottomColor: 'transparent',
+      borderTopLeftRadius: 11,
+      borderTopRightRadius: 11,
+      overflow: 'hidden',
+      zIndex: 5,
+      position: 'relative',
     },
     categoryImage: {
       ...staticStyles.categoryImage,
-      width: 40, // تقليل عرض الصورة من 46 إلى 40
-      height: 40, // تقليل ارتفاع الصورة من 46 إلى 40
-      marginBottom: 2, // تقليل الهامش السفلي من 4 إلى 2
-      borderRadius: 18,
-      padding: 2,
-      borderWidth: 2, 
-      borderColor: primaryColorWithOpacity, // استخدام اللون نصف الشفاف
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      width: categories?.length === 6 ? 44 : 40,
+      height: categories?.length === 6 ? 44 : 40,
+      marginBottom: 2,
+      borderRadius: 12,
+      padding: 0,
+      borderWidth: 0,
+      borderColor: 'transparent',
+      backgroundColor: 'rgba(255, 255, 255, 0.98)', 
+      opacity: 1,
+      shadowColor: theme.colors.primary || '#2E5DB8',
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.2,
+      shadowRadius: 5,
+      elevation: 4,
     },
     categoryTitle: {
       ...staticStyles.categoryTitle,
-      fontSize: 10, // تعديل حجم الخط إلى 10
+      fontSize: categories?.length === 6 ? 6.5 : 7,
       textAlign: 'center',
-      marginTop: 2,
-      marginHorizontal: 2,
+      marginTop: 0,
+      marginBottom: 0,
+      marginHorizontal: 0,
       letterSpacing: 0,
       flexWrap: 'wrap',
-      // إزالة الظلال
       textShadowColor: undefined,
       textShadowOffset: undefined,
       textShadowRadius: undefined,
       width: '100%',
-      height: 24, // تقليل ارتفاع اسم الفئة من 30 إلى 24
-      fontFamily: 'ReadexPro_600SemiBold'
+      fontFamily: 'ReadexPro_700Bold',
+      fontWeight: '700',
+      color: '#FFFFFF',
+      opacity: 1,
+      lineHeight: 10,
     },
     questionsContainer: {
       ...staticStyles.questionsContainer,
-      padding: 2,
-      marginBottom: 1,
-      backgroundColor: 'rgba(255, 255, 255, 0.3)', 
-      flex: 1, // إضافة خاصية flex لملء المساحة المتبقية
-      justifyContent: 'space-around', // توزيع الأسئلة بالتساوي
-      height: 80, // تقليل ارتفاع حاوية الأسئلة من 90 إلى 80
+      padding: 4,
+      marginBottom: 0,
+      backgroundColor: 'transparent', 
+      flex: 0.9,
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      borderBottomLeftRadius: 11,
+      borderBottomRightRadius: 11,
+      borderTopWidth: 0,
+      borderTopColor: 'transparent',
+      zIndex: 5,
+      position: 'relative',
     },
     difficultyRow: {
       ...staticStyles.difficultyRow,
-      marginBottom: 0,
+      marginBottom: 4,
       justifyContent: 'center',
-      padding: categories?.length === 6 ? 4 : 1,
-      gap: categories?.length === 6 ? 4 : 2,
-      flexDirection: 'row', // تغيير من 'column' إلى 'row' لجعل الأزرار في نفس السطر
-      flexWrap: 'wrap', // إضافة خاصية التفاف عند الحاجة
+      padding: 4,
+      gap: 3,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
       alignItems: 'center'
     }
   });
@@ -281,19 +301,28 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       <View style={[
         columnStyles.categoryHeader,
         { 
-          borderBottomColor: theme.colors.border,
+          zIndex: 5,
+          position: 'relative',
         }
       ]}>
-        <Image 
-          source={categoryImages[category]} 
-          style={columnStyles.categoryImage}
-          resizeMode="contain"
+        <LinearGradient
+          colors={['#2E5DB8', '#1E40AF']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: -1,
+          }}
         />
         <Text 
-          style={[columnStyles.categoryTitle, { color: theme.colors.text.primary }]}
+          style={[columnStyles.categoryTitle]}
           adjustsFontSizeToFit={true}
-          numberOfLines={2} // السماح بسطرين للنص
-          minimumFontScale={0.5} // زيادة الحد الأدنى لحجم الخط
+          numberOfLines={2}
+          minimumFontScale={0.7}
         >
           {category}
         </Text>
@@ -303,6 +332,31 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         staticStyles.questionsContainer,
         columnStyles.questionsContainer
       ]}>
+        {/* صورة الفئة الشفافة في الخلفية */}
+        <View style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1,
+          opacity: 0,
+          pointerEvents: 'none',
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'hidden',
+          display: 'none',
+        }}>
+          <Image
+            source={categoryImages[category] || categoryImages['معلومات عامة']}
+            style={{
+              width: '100%',
+              height: '100%',
+              resizeMode: 'cover',
+            }}
+          />
+        </View>
+
         {['سهل', 'متوسط', 'صعب'].map((difficulty) => {
           const questions_by_difficulty = questions[difficulty] || [];
           // تقسيم الأسئلة إلى مجموعات من زرين في كل سطر
@@ -313,14 +367,18 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
           
           return (
             <View key={difficulty} style={[
-              staticStyles.difficultyRow,
+              columnStyles.difficultyRow,
               { 
-                marginBottom: 0,
+                marginBottom: 0.5,
                 backgroundColor: difficulty === 'سهل' 
-                  ? `${theme.colors.success}20` 
+                  ? 'rgba(76, 175, 80, 0.05)'
                   : difficulty === 'متوسط' 
-                    ? `${theme.colors.warning}20` 
-                    : `${theme.colors.error}20`
+                    ? 'rgba(255, 152, 0, 0.05)' 
+                    : 'rgba(244, 67, 54, 0.05)',
+                borderRadius: 6,
+                padding: 1,
+                zIndex: 2,
+                position: 'relative',
               }
             ]}>
               {rows.map((row, rowIndex) => (
@@ -330,7 +388,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
                     flexDirection: 'row',
                     justifyContent: 'center',
                     width: '100%',
-                    paddingVertical: 1
+                    paddingVertical: 0.3
                   }}
                 >
                   {row.map((question, qIndex) => (
@@ -910,55 +968,233 @@ const GameScreen = () => {
   }
 
   return (
-    <BackgroundPattern
-      style={{ flex: 1 }}
-      patternId="gameScreenPattern"
-    >
+    <View style={{ flex: 1, backgroundColor: '#0F1C3F' }}>
+      {/* خلفية احترافية متعددة الطبقات */}
+      <View style={{ 
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+        pointerEvents: 'none'
+      }}>
+        {/* تدرج رئيسي */}
+        <LinearGradient
+          colors={['#1a3a5e', '#0F1C3F', '#0a1220']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ 
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 0
+          }}
+        />
+        
+        {/* تدرج ثانوي للحواف */}
+        <LinearGradient
+          colors={['#4A90E2', 'transparent']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 0.3 }}
+          style={{ 
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            height: '30%',
+            zIndex: 0,
+            opacity: 0.15,
+          }}
+        />
+        
+        {/* نمط شبكة متحرك مع حجم أصغر للتفاصيل */}
+        <AnimatedGridPattern
+          width={120}
+          height={120}
+          dotSize={12}
+          dotColor="#64B5F6"
+          dotOpacity={0.20}
+          animationDuration={5000}
+          animationDelay={0}
+          variant="background"
+          isAnimated={true}
+        />
+        
+        {/* نمط إضافي للعمق */}
+        <AnimatedGridPattern
+          width={200}
+          height={200}
+          dotSize={20}
+          dotColor="#2196F3"
+          dotOpacity={0.08}
+          animationDuration={8000}
+          animationDelay={1000}
+          variant="background"
+          isAnimated={true}
+        />
+      </View>
+      
       <Stack.Screen 
         options={{ 
           headerShown: false,
           animation: 'none'
         }} 
       />
-      {/* إضافة حاوية شفافة ذات إطار ذهبي تحيط بكل المحتويات */}
+      {/* حاوية رئيسية احترافية مع تأثيرات عميقة */}
       <View style={{
         flex: 1,
-        margin: 8,
-        borderRadius: 18,
-        borderWidth: 3, // إطار سميك واحد
-        borderColor: theme.colors.border?.primary || theme.colors.primary,
-        backgroundColor: 'rgba(255, 255, 255, 0.12)',
+        margin: 20,
+        borderRadius: 28,
+        borderWidth: 3,
+        borderColor: '#2E5DB8',
+        backgroundColor: 'rgba(227, 240, 255, 0.6)',
         overflow: 'hidden',
-        // إضافة ظل خفيف لتحسين المظهر
-        shadowColor: theme.colors.border?.primary || theme.colors.primary,
-        shadowOffset: { width: 0, height: 0 },
+        shadowColor: '#2E5DB8',
+        shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 24,
+        elevation: 28,
+        position: 'relative',
+        zIndex: 2,
+        justifyContent: 'center',
       }}>
-        <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 2 }]}>
-          {/* تخطيط أفقي: التيم هيدر على اليمين والفئات على اليسار */}
-          <View style={{ 
-            flexDirection: 'row',
-            width: '100%',
+        {/* تدرج داخلي للحاوية */}
+        <LinearGradient
+          colors={['#E3F0FF', '#D6E9FF', '#CDDBF0']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 0,
+          }}
+        />
+        <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 2, flexDirection: 'row-reverse' }]}>
+          {/* التيم هيدر على الجانب الأيمن - رأسي مع خلفية متحركة احترافية */}
+          <View style={{
+            width: 120,
             height: '100%',
-            paddingHorizontal: 4,
-            paddingVertical: 4
+            borderLeftWidth: 2,
+            borderLeftColor: '#4A90E2',
+            backgroundColor: '#D6E9FF',
+            overflow: 'hidden',
+            position: 'relative',
+            borderTopRightRadius: 22,
+            borderBottomRightRadius: 22,
           }}>
-            {/* الجزء الرئيسي (الفئات والأسئلة) - على اليسار */}
-            <View style={{ 
-              flex: 3,
-              marginRight: 4
+            {/* خلفية متحركة احترافية */}
+            <View style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 0,
             }}>
-              <ScrollView
-                style={staticStyles.scrollView}
+              {/* تدرج رئيسي */}
+              <LinearGradient
+                colors={['#E8F4FF', '#D6E9FF', '#C8E0F7']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  zIndex: 0,
+                }}
+              />
+              
+              {/* تدرج إضافي من الأعلى */}
+              <LinearGradient
+                colors={['#4A90E2', 'transparent']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '40%',
+                  opacity: 0.08,
+                  zIndex: 0,
+                }}
+              />
+              
+              {/* نمط شبكة متحرك للتيم هيدر */}
+              <AnimatedGridPattern
+                width={120}
+                height={120}
+                dotSize={5}
+                dotColor="#4A90E2"
+                dotOpacity={0.08}
+                animationDuration={5000}
+                animationDelay={0}
+                variant="background"
+                isAnimated={true}
+              />
+            </View>
+
+            {/* محتوى التيم هيدر */}
+            <View style={{
+              flex: 1,
+              position: 'relative',
+              zIndex: 1,
+              paddingHorizontal: 4,
+              paddingVertical: 4,
+            }}>
+              <TeamsHeader
+                teams={gameData.teams}
+                currentTeamIndex={gameData.currentTeamIndex}
+                scores={gameData.scores}
+                onTeamChange={updateCurrentTeam}
+                onScoreChange={handleScoreChange}
+                onEndRound={handleEndRound}
+                isDoublePoints={isDoublePoints}
+                onDoublePointsChange={handleDoublePointsChange}
+                isPentaPoints={isPentaPoints}
+                onPentaPointsChange={handlePentaPointsChange}
+                usedDoublePoints={usedDoublePoints}
+                usedPentaPoints={usedPentaPoints}
+                style={{
+                  backgroundColor: 'transparent',
+                  borderWidth: 0,
+                  height: '100%',
+                }}
+                vertical={true}
+              />
+            </View>
+          </View>
+
+          {/* تخطيط أفقي: الفئات والأسئلة تملأ بقية المساحة */}
+          <View style={{ 
+            flex: 1,
+            height: '100%',
+            paddingHorizontal: 2,
+            paddingVertical: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            {/* الجزء الرئيسي (الفئات والأسئلة) */}
+            <ScrollView
+                style={[staticStyles.scrollView, { flex: 1 }]}
                 contentContainerStyle={[
                   staticStyles.gridContainer,
                   {
                     flexDirection: 'column',
-                    justifyContent: 'flex-start',
+                    justifyContent: 'space-around',
+                    alignItems: 'center',
                     paddingHorizontal: SPACING.xs,
-                    paddingVertical: 2,
+                    paddingVertical: 1,
+                    flexGrow: 1,
+                    minHeight: '100%',
                   }
                 ]}
                 horizontal={false}
@@ -985,9 +1221,10 @@ const GameScreen = () => {
                       {/* السطر الأول */}
                       <View style={{
                         flexDirection: 'row',
-                        justifyContent: 'center', // تغيير من flex-start إلى center
-                        marginBottom: 4,
-                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: 6,
+                        alignSelf: 'center',
                       }}>
                         {row1.map(category => (
                           <CategoryColumn
@@ -997,15 +1234,15 @@ const GameScreen = () => {
                             onQuestionPress={handleQuestionPress}
                             style={{ 
                               width: itemWidth,
-                              marginHorizontal: 2,
-                              backgroundColor: `${theme.colors.background.surface}80`, 
+                              marginHorizontal: 3,
+                              backgroundColor: `${theme.colors.background.surface}88`, 
                               borderColor: theme.colors.border?.primary || theme.colors.primary,
-                              borderWidth: 1,
+                              borderWidth: 1.5,
                               shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                              shadowOffset: { width: 0, height: 1 },
-                              shadowOpacity: 0.1,
-                              shadowRadius: 2,
-                              elevation: 2,
+                              shadowOffset: { width: 0, height: 2 },
+                              shadowOpacity: 0.15,
+                              shadowRadius: 3,
+                              elevation: 3,
                             }}
                             theme={theme}
                             categories={categories}
@@ -1016,8 +1253,9 @@ const GameScreen = () => {
                       {/* السطر الثاني */}
                       <View style={{
                         flexDirection: 'row',
-                        justifyContent: 'center', // تغيير من flex-start إلى center
-                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        alignSelf: 'center',
                       }}>
                         {row2.map(category => (
                           <CategoryColumn
@@ -1027,15 +1265,15 @@ const GameScreen = () => {
                             onQuestionPress={handleQuestionPress}
                             style={{ 
                               width: itemWidth,
-                              marginHorizontal: 2,
-                              backgroundColor: `${theme.colors.background.surface}80`, 
+                              marginHorizontal: 3,
+                              backgroundColor: `${theme.colors.background.surface}88`, 
                               borderColor: theme.colors.border?.primary || theme.colors.primary,
-                              borderWidth: 1,
+                              borderWidth: 1.5,
                               shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                              shadowOffset: { width: 0, height: 1 },
-                              shadowOpacity: 0.1,
-                              shadowRadius: 2,
-                              elevation: 2,
+                              shadowOffset: { width: 0, height: 2 },
+                              shadowOpacity: 0.15,
+                              shadowRadius: 3,
+                              elevation: 3,
                             }}
                             theme={theme}
                             categories={categories}
@@ -1046,48 +1284,17 @@ const GameScreen = () => {
                   );
                 })()}
               </ScrollView>
-            </View>
-
-            {/* التيم هيدر - على اليمين */}
-            <View style={{ 
-              flex: 1,
-              marginLeft: 2
-            }}>
-              <TeamsHeader
-                teams={gameData.teams}
-                currentTeamIndex={gameData.currentTeamIndex}
-                scores={gameData.scores}
-                onTeamChange={updateCurrentTeam}
-                onScoreChange={handleScoreChange}
-                onEndRound={handleEndRound}
-                isDoublePoints={isDoublePoints}
-                onDoublePointsChange={handleDoublePointsChange}
-                isPentaPoints={isPentaPoints}
-                onPentaPointsChange={handlePentaPointsChange}
-                usedDoublePoints={usedDoublePoints}
-                usedPentaPoints={usedPentaPoints}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: 16,
-                  overflow: 'hidden',
-                  borderWidth: 1.5,
-                  borderColor: theme.colors.gold || '#FFD700',
-                }}
-                vertical={true}
-              />
-            </View>
           </View>
         </View>
+
+        <QuestionDetailsModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          details={selectedQuestionDetails}
+          theme={theme}
+        />
       </View>
-      
-      <QuestionDetailsModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        details={selectedQuestionDetails}
-        theme={theme}
-      />
-    </BackgroundPattern>
+    </View>
   );
 };
 

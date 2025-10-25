@@ -4,7 +4,7 @@
     "slug": "frn",
     "scheme": "fakker",
     "version": "1.0.0",
-    "orientation": "default",
+    "orientation": "landscape",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -20,7 +20,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "net.fakker.app"
+      "bundleIdentifier": "net.fakker.app",
+      "orientation": "landscapeRight"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,7 +33,7 @@
       "permissions": [
         "INTERNET"
       ],
-      "screenOrientation": "unspecified"
+      "screenOrientation": "landscape"
     },
     "web": {
       "favicon": "./assets/favicon.png"

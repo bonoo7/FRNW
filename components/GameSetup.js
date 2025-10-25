@@ -60,18 +60,21 @@ const staticStyles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   categoriesContainer: {
-    flex: 1,
+    height: '38%',
     borderRadius: 16,
-    padding: SPACING.md,
-    marginBottom: 0,
+    padding: 0,
+    marginBottom: SPACING.xl,
+    marginTop: SPACING.xl,
+    marginHorizontal: SPACING.xxl,
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: 'transparent',
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
-    width: '35%',
+    width: '85%',
     alignSelf: 'center',
+    overflow: 'hidden',
   },
   categoriesGrid: {
     flexDirection: 'row',
@@ -287,7 +290,7 @@ const ContainerBackground = ({ style, children }) => {
                      theme.colors.secondary || 
                      '#A0C6FF', // احتياطي في حال عدم وجود الألوان
     borderWidth: 1.5,
-    borderColor: theme.colors.gold || '#FFD700',
+    borderColor: '#2E5DB8',
   };
 
   return (
@@ -334,9 +337,10 @@ const GameSetup = () => {
     categoriesContainer: {
       width: responsiveStyles.isLandscape ? '90%' : '85%',
       maxWidth: responsiveStyles.isLandscape ? '90%' : '85%',
-      maxHeight: responsiveStyles.isLandscape ? '70%' : '65%',
-      paddingVertical: responsiveStyles.isLandscape ? SPACING.lg : SPACING.md,
-      paddingHorizontal: responsiveStyles.isLandscape ? SPACING.lg : SPACING.md,
+      height: responsiveStyles.isLandscape ? '45%' : '38%',
+      paddingVertical: 0,
+      paddingHorizontal: 0,
+      overflow: 'hidden',
     }
   };
 
@@ -595,7 +599,7 @@ const GameSetup = () => {
       <Stack.Screen options={{ headerShown: false }} />
       <View style={[staticStyles.container, { position: 'relative', zIndex: 2 }]}>
         <ScrollView 
-          contentContainerStyle={staticStyles.gridContainer}
+          contentContainerStyle={[staticStyles.gridContainer, { paddingBottom: 80 }]}
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: 'transparent' }}
         >
@@ -612,23 +616,25 @@ const GameSetup = () => {
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.8,
                 shadowRadius: 15,
-                flex: 1,
                 width: '90%',
                 alignSelf: 'center',
                 position: 'relative',
                 overflow: 'hidden',
-                marginBottom: 0
+                marginBottom: 0,
+                height: responsiveStyles.isLandscape ? '45%' : '38%',
               }
             ]}
           >
-            {/* المحتوى - بدون نقوش */}
+            {/* المحتوى - ScrollView داخل حاوية ثابتة */}
             <ScrollView 
-              style={{ position: 'relative', zIndex: 1, width: '100%' }}
+              style={{ position: 'relative', zIndex: 1, width: '100%', flex: 1 }}
               contentContainerStyle={{ 
                 alignItems: 'center',
-                paddingVertical: 0,
+                paddingVertical: SPACING.md,
+                paddingHorizontal: SPACING.md,
               }}
-              showsVerticalScrollIndicator={false}
+              showsVerticalScrollIndicator={true}
+              scrollEnabled={true}
             >
             {/* عرض الفئات مقسمة حسب المجموعات */}
             {Object.entries(categoryGroups).map(([groupName, groupCategories]) => (
