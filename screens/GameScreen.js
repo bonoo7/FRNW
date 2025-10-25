@@ -259,8 +259,6 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
   );
 };
 
-};
-
 const GameScreen = () => {
   const { theme } = useTheme();
   const params = useLocalSearchParams();
