@@ -14,6 +14,7 @@ import { SPACING, FONTS } from '../styles/theme';
 import categoryImages from '../assets/categories';
 import QuestionDetailsModal from '../components/QuestionDetailsModal';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useOrientation, useIsLandscape } from '../hooks/useOrientation';
 
 const staticStyles = StyleSheet.create({
   container: {
@@ -183,40 +184,7 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 };
 
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
-  const [screenDimensions, setScreenDimensions] = useState(() => Dimensions.get('window'));
-  const { width, height } = screenDimensions;
-  const isLandscape = width > height;
-
-  // الاستماع لتغيير أبعاد الشاشة
-  useEffect(() => {
-    const handleDimensionChange = ({ window, screen }) => {
-      setScreenDimensions(window);
-    };
-    
-    const subscription = Dimensions.addEventListener('change', handleDimensionChange);
-    
-    return () => {
-      if (subscription?.remove) {
-        subscription.remove();
-      }
-    };
-  }, []);
-
-  const getButtonSize = () => {
-    if (isLandscape) {
-      return { width: 24, height: 24, margin: 3, fontSize: 7 };
-    } else {
-      if (categories?.length === 6) {
-        return { width: 22, height: 22, margin: 3, fontSize: 7 };
-      } else if (categories?.length === 8) {
-        return { width: 20, height: 20, margin: 2.5, fontSize: 6.5 };
-      } else {
-        return { width: 21, height: 21, margin: 2.8, fontSize: 6.8 };
-      }
-    }
-  };
-
-  const buttonSize = getButtonSize();
+  const isLandscape = useIsLandscape();
   const questionList = Object.values(questions).flat();
 
   // تصميم أفقي (Landscape)
