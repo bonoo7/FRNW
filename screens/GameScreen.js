@@ -47,16 +47,16 @@ const staticStyles = StyleSheet.create({
     marginBottom: 2,
   },
   categoryImage: {
-    width: 50,
-    height: 50,
-    marginBottom: 4,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    marginBottom: 3,
+    borderRadius: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: 2,
   },
   categoryTitle: {
     flex: 1,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: FONTS.weights.bold,
     textAlign: 'center',
     letterSpacing: 0,
@@ -93,11 +93,11 @@ const staticStyles = StyleSheet.create({
     textAlign: 'center',
   },
   questionButton: {
-    width: 50,
-    height: 14,
-    margin: 2,
-    borderRadius: 8,
-    borderWidth: 2.5,
+    width: 42,
+    height: 12,
+    margin: 1.5,
+    borderRadius: 6,
+    borderWidth: 2,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
@@ -127,11 +127,11 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
   // حساب حجم الزر بناءً على عدد الفئات
   const getButtonSize = () => {
     if (categories?.length === 6) {
-      return { width: 38, height: 38, margin: 5, fontSize: 11 };
+      return { width: 32, height: 32, margin: 4, fontSize: 9.5 };
     } else if (categories?.length === 8) {
-      return { width: 36, height: 36, margin: 4.4, fontSize: 10.5 };
+      return { width: 30, height: 30, margin: 3.5, fontSize: 9 };
     } else {
-      return { width: 37, height: 37, margin: 4.6, fontSize: 10.8 };
+      return { width: 31, height: 31, margin: 3.8, fontSize: 9.3 };
     }
   };
 
@@ -213,8 +213,8 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
     },
     categoryHeader: {
       ...staticStyles.categoryHeader,
-      padding: 8,
-      minHeight: 32,
+      padding: 6,
+      minHeight: 28,
       flex: 0.15,
       alignItems: 'center',
       justifyContent: 'center',
@@ -229,10 +229,10 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
     },
     categoryImage: {
       ...staticStyles.categoryImage,
-      width: categories?.length === 6 ? 50 : 46,
-      height: categories?.length === 6 ? 50 : 46,
-      marginBottom: 4,
-      borderRadius: 12,
+      width: categories?.length === 6 ? 40 : 38,
+      height: categories?.length === 6 ? 40 : 38,
+      marginBottom: 3,
+      borderRadius: 10,
       padding: 0,
       borderWidth: 0,
       borderColor: 'transparent',
@@ -246,7 +246,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
     },
     categoryTitle: {
       ...staticStyles.categoryTitle,
-      fontSize: categories?.length === 6 ? 8 : 8.5,
+      fontSize: categories?.length === 6 ? 7 : 7.5,
       textAlign: 'center',
       marginTop: 0,
       marginBottom: 0,
@@ -261,7 +261,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       fontWeight: '700',
       color: '#FFFFFF',
       opacity: 1,
-      lineHeight: 11,
+      lineHeight: 10,
     },
     questionsContainer: {
       ...staticStyles.questionsContainer,
@@ -1248,8 +1248,8 @@ const GameScreen = () => {
                                 shadowOpacity: 0.15,
                                 shadowRadius: 3,
                                 elevation: 3,
-                                minHeight: 240,
-                                maxHeight: 280,
+                                minHeight: 200,
+                                maxHeight: 240,
                                 flex: 1,
                               }}
                               theme={theme}
