@@ -193,8 +193,8 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       borderRadius: 10,
       marginVertical: 2,
       marginHorizontal: 2,
-      paddingVertical: 8,
-      paddingHorizontal: 6,
+      paddingVertical: isLandscape ? 8 : 6,
+      paddingHorizontal: isLandscape ? 6 : 10,
       shadowColor: theme.colors.primary || '#2E5DB8',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
@@ -203,14 +203,20 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       borderWidth: 1,
       borderColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: isLandscape ? 'center' : 'space-between',
       flex: 1,
+      flexDirection: isLandscape ? 'column' : 'row',
     }, style]}>
-      {/* الصورة واسم الفئة في الأعلى */}
+      {/* الصورة واسم الفئة - في الأعلى (Landscape) أو اليسار (Portrait) */}
       <View style={{
         alignItems: 'center',
-        marginBottom: 6,
-        width: '100%',
+        marginBottom: isLandscape ? 6 : 0,
+        marginRight: isLandscape ? 0 : 8,
+        width: isLandscape ? '100%' : 'auto',
+        minWidth: isLandscape ? 'auto' : 80,
+        paddingRight: isLandscape ? 0 : 6,
+        borderRightWidth: isLandscape ? 0 : 1,
+        borderRightColor: isLandscape ? 'transparent' : (theme.colors.border?.primary || theme.colors.primary || '#E8E8E8'),
       }}>
         <Image 
           source={categoryImages[category]} 
@@ -238,13 +244,15 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         </Text>
       </View>
 
-      {/* الأسئلة - 2x3 شبكة (زرين في كل سطر) */}
+      {/* الأسئلة - في الجانب (Portrait) أو تحت الاسم (Landscape) */}
       <View style={{
-        flexDirection: 'row',
+        flexDirection: isLandscape ? 'row' : 'column',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        gap: 2,
-        width: '100%',
+        alignItems: isLandscape ? 'center' : 'center',
+        gap: isLandscape ? 2 : 3,
+        width: isLandscape ? '100%' : 'auto',
+        flex: isLandscape ? 0 : 1,
       }}>
         {questionList.slice(0, 6).map((question, index) => (
           <QuestionButton
@@ -1052,10 +1060,10 @@ const GameScreen = () => {
                 style={{
                   flex: 1,
                   width: '100%',
-                  flexDirection: isLandscapeMode ? 'row' : 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center',
-                  alignItems: isLandscapeMode ? 'center' : 'flex-start',
+                  flexDirection: isLandscapeMode ? 'row' : 'column',
+                  flexWrap: isLandscapeMode ? 'wrap' : 'nowrap',
+                  justifyContent: isLandscapeMode ? 'center' : 'flex-start',
+                  alignItems: isLandscapeMode ? 'flex-start' : 'center',
                   paddingHorizontal: isLandscapeMode ? 4 : 6,
                   paddingVertical: isLandscapeMode ? 4 : 6,
                 }}
@@ -1072,11 +1080,13 @@ const GameScreen = () => {
                           questions={gameData.questions[category]}
                           onQuestionPress={handleQuestionPress}
                           style={{ 
-                            width: isLandscapeMode ? '30%' : '48%',
-                            marginHorizontal: isLandscapeMode ? '1.5%' : '1%',
-                            marginBottom: isLandscapeMode ? 6 : 8,
+                            width: isLandscapeMode ? '32%' : '100%',
+                            marginHorizontal: isLandscapeMode ? '1%' : 0,
+                            marginBottom: isLandscapeMode ? 6 : 10,
+                            marginVertical: isLandscapeMode ? 4 : 6,
                             flex: 0,
                             minHeight: isLandscapeMode ? 220 : 'auto',
+                            height: isLandscapeMode ? 'auto' : 90,
                           }}
                           theme={theme}
                           categories={categories}
