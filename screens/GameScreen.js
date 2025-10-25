@@ -183,8 +183,18 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 };
 
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
-  const { width, height } = Dimensions.get('window');
+  const [screenDimensions, setScreenDimensions] = useState(Dimensions.get('window'));
+  const { width, height } = screenDimensions;
   const isLandscape = width > height;
+
+  // الاستماع لتغيير أبعاد الشاشة
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenDimensions(window);
+    });
+    
+    return () => subscription?.remove();
+  }, []);
 
   const getButtonSize = () => {
     if (isLandscape) {
@@ -389,10 +399,22 @@ const GameScreen = () => {
   const [rewardsEnabled, setRewardsEnabled] = useState(true);
   const [pentaPointsEnabled, setPentaPointsEnabled] = useState(true);
   const [isNavigatingToResults, setIsNavigatingToResults] = useState(false);
+  const [orientation, setOrientation] = useState('portrait');
 
   const screenWidth = Dimensions.get('window').width;
-  const isLandscape = screenWidth > Dimensions.get('window').height;
+  const screenHeight = Dimensions.get('window').height;
+  const isLandscape = screenWidth > screenHeight;
   const isSmallScreen = screenWidth < 768;
+
+  // الاستماع لتغيير الاتجاه
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window: { width, height } }) => {
+      const newOrientation = width > height ? 'landscape' : 'portrait';
+      setOrientation(newOrientation);
+    });
+    
+    return () => subscription?.remove();
+  }, []);
 
   const getCategoriesPerRow = () => {
     const teamCount = teams.length;
