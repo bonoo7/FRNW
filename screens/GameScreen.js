@@ -47,16 +47,16 @@ const staticStyles = StyleSheet.create({
     marginBottom: 2,
   },
   categoryImage: {
-    width: 44,
-    height: 44,
-    marginBottom: 2,
+    width: 50,
+    height: 50,
+    marginBottom: 4,
     borderRadius: 18,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: 2,
   },
   categoryTitle: {
     flex: 1,
-    fontSize: 10, // تعديل حجم الخط إلى 10
+    fontSize: 12,
     fontWeight: FONTS.weights.bold,
     textAlign: 'center',
     letterSpacing: 0,
@@ -93,9 +93,9 @@ const staticStyles = StyleSheet.create({
     textAlign: 'center',
   },
   questionButton: {
-    width: 45,
-    height: 12,
-    margin: 1,
+    width: 50,
+    height: 14,
+    margin: 2,
     borderRadius: 8,
     borderWidth: 2.5,
     overflow: 'hidden',
@@ -127,11 +127,11 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
   // حساب حجم الزر بناءً على عدد الفئات
   const getButtonSize = () => {
     if (categories?.length === 6) {
-      return { width: 32, height: 32, margin: 5, fontSize: 9.5 };
+      return { width: 38, height: 38, margin: 5, fontSize: 11 };
     } else if (categories?.length === 8) {
-      return { width: 30, height: 30, margin: 4.4, fontSize: 9 };
+      return { width: 36, height: 36, margin: 4.4, fontSize: 10.5 };
     } else {
-      return { width: 31, height: 31, margin: 4.6, fontSize: 9.3 };
+      return { width: 37, height: 37, margin: 4.6, fontSize: 10.8 };
     }
   };
 
@@ -213,8 +213,8 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
     },
     categoryHeader: {
       ...staticStyles.categoryHeader,
-      padding: 6,
-      minHeight: 28,
+      padding: 8,
+      minHeight: 32,
       flex: 0.15,
       alignItems: 'center',
       justifyContent: 'center',
@@ -229,9 +229,9 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
     },
     categoryImage: {
       ...staticStyles.categoryImage,
-      width: categories?.length === 6 ? 44 : 40,
-      height: categories?.length === 6 ? 44 : 40,
-      marginBottom: 2,
+      width: categories?.length === 6 ? 50 : 46,
+      height: categories?.length === 6 ? 50 : 46,
+      marginBottom: 4,
       borderRadius: 12,
       padding: 0,
       borderWidth: 0,
@@ -246,7 +246,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
     },
     categoryTitle: {
       ...staticStyles.categoryTitle,
-      fontSize: categories?.length === 6 ? 6.5 : 7,
+      fontSize: categories?.length === 6 ? 8 : 8.5,
       textAlign: 'center',
       marginTop: 0,
       marginBottom: 0,
@@ -261,7 +261,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       fontWeight: '700',
       color: '#FFFFFF',
       opacity: 1,
-      lineHeight: 10,
+      lineHeight: 11,
     },
     questionsContainer: {
       ...staticStyles.questionsContainer,
@@ -1223,8 +1223,9 @@ const GameScreen = () => {
                         flexDirection: 'row',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginBottom: 6,
+                        marginBottom: 8,
                         alignSelf: 'center',
+                        width: '100%',
                       }}>
                         {row1.map(category => (
                           <CategoryColumn
@@ -1233,8 +1234,8 @@ const GameScreen = () => {
                             questions={gameData.questions[category]}
                             onQuestionPress={handleQuestionPress}
                             style={{ 
-                              width: itemWidth,
-                              marginHorizontal: 3,
+                              width: itemWidth + 6,
+                              marginHorizontal: 4,
                               backgroundColor: `${theme.colors.background.surface}88`, 
                               borderColor: theme.colors.border?.primary || theme.colors.primary,
                               borderWidth: 1.5,
@@ -1243,6 +1244,8 @@ const GameScreen = () => {
                               shadowOpacity: 0.15,
                               shadowRadius: 3,
                               elevation: 3,
+                              minHeight: 220,
+                              maxHeight: 260,
                             }}
                             theme={theme}
                             categories={categories}
@@ -1256,6 +1259,8 @@ const GameScreen = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         alignSelf: 'center',
+                        width: '100%',
+                        marginTop: 4,
                       }}>
                         {row2.map(category => (
                           <CategoryColumn
@@ -1264,8 +1269,8 @@ const GameScreen = () => {
                             questions={gameData.questions[category]}
                             onQuestionPress={handleQuestionPress}
                             style={{ 
-                              width: itemWidth,
-                              marginHorizontal: 3,
+                              width: itemWidth + 6,
+                              marginHorizontal: 4,
                               backgroundColor: `${theme.colors.background.surface}88`, 
                               borderColor: theme.colors.border?.primary || theme.colors.primary,
                               borderWidth: 1.5,
@@ -1274,6 +1279,8 @@ const GameScreen = () => {
                               shadowOpacity: 0.15,
                               shadowRadius: 3,
                               elevation: 3,
+                              minHeight: 220,
+                              maxHeight: 260,
                             }}
                             theme={theme}
                             categories={categories}
