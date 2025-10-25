@@ -1041,9 +1041,10 @@ const GameScreen = () => {
             flex: 1,
             height: '100%',
             width: '100%',
-            paddingHorizontal: 4,
-            paddingVertical: 4,
-            justifyContent: 'flex-start',
+            paddingHorizontal: isLandscapeMode ? 2 : 4,
+            paddingVertical: isLandscapeMode ? 8 : 4,
+            paddingTop: isLandscapeMode ? 12 : 4,
+            justifyContent: isLandscapeMode ? 'flex-start' : 'flex-start',
             alignItems: 'center',
           }}>
             {/* الجزء الرئيسي (الفئات والأسئلة) - Grid متعدد الأعمدة */}
@@ -1051,12 +1052,12 @@ const GameScreen = () => {
                 style={{
                   flex: 1,
                   width: '100%',
-                  flexDirection: isLandscapeMode ? 'column' : 'row',
+                  flexDirection: isLandscapeMode ? 'row' : 'row',
                   flexWrap: 'wrap',
                   justifyContent: 'center',
-                  alignItems: 'flex-start',
+                  alignItems: isLandscapeMode ? 'center' : 'flex-start',
                   paddingHorizontal: isLandscapeMode ? 4 : 6,
-                  paddingVertical: 6,
+                  paddingVertical: isLandscapeMode ? 4 : 6,
                 }}
             >
                 {(() => {
@@ -1071,10 +1072,11 @@ const GameScreen = () => {
                           questions={gameData.questions[category]}
                           onQuestionPress={handleQuestionPress}
                           style={{ 
-                            width: isLandscapeMode ? '48%' : '48%',
-                            marginHorizontal: '1%',
-                            marginBottom: 8,
+                            width: isLandscapeMode ? '30%' : '48%',
+                            marginHorizontal: isLandscapeMode ? '1.5%' : '1%',
+                            marginBottom: isLandscapeMode ? 6 : 8,
                             flex: 0,
+                            minHeight: isLandscapeMode ? 220 : 'auto',
                           }}
                           theme={theme}
                           categories={categories}
