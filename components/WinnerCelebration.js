@@ -1,49 +1,47 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import Animated, { 
-  useAnimatedStyle, 
-  withSpring, 
-  withSequence,
-  withTiming,
-  Easing,
-  useSharedValue
-} from 'react-native-reanimated';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, StyleSheet, Dimensions, Animated } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const ConfettiPiece = ({ delay, color }) => {
-  const translateY = useSharedValue(-20);
-  const translateX = useSharedValue(Math.random() * SCREEN_WIDTH);
-  const rotate = useSharedValue(0);
-  const opacity = useSharedValue(1);
+  const translateY = React.useRef(new Animated.Value(-20)).current;
+  const translateX = React.useRef(new Animated.Value(Math.random() * SCREEN_WIDTH)).current;
+  const rotate = React.useRef(new Animated.Value(0)).current;
+  const opacity = React.useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    setTimeout(() => {
-      translateY.value = withTiming(SCREEN_HEIGHT + 50, {
-        duration: 2000,
-        easing: Easing.linear
-      });
-      rotate.value = withTiming(360 * (Math.random() > 0.5 ? 1 : -1), {
-        duration: 2000,
-        easing: Easing.linear
-      });
-      opacity.value = withTiming(0, {
-        duration: 2000,
-        easing: Easing.linear
-      });
+    const timer = setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(translateY, {
+          toValue: SCREEN_HEIGHT + 50,
+          duration: 2000,
+          useNativeDriver: false
+        }),
+        Animated.timing(rotate, {
+          toValue: 360 * (Math.random() > 0.5 ? 1 : -1),
+          duration: 2000,
+          useNativeDriver: false
+        }),
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: false
+        })
+      ]).start();
     }, delay);
-  }, []);
 
-  const style = useAnimatedStyle(() => ({
+    return () => clearTimeout(timer);
+  }, [delay, translateY, rotate, opacity]);
+
+  const style = {
     transform: [
-      { translateY: translateY.value },
-      { translateX: translateX.value },
-      { rotate: `${rotate.value}deg` }
+      { translateY },
+      { translateX },
+      { rotate: rotate.__getValue ? rotate.__getValue() : 0 }
     ],
-    opacity: opacity.value,
-  }));
+    opacity
+  };
 
   return (
     <Animated.View
