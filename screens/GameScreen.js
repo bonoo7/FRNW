@@ -1177,22 +1177,31 @@ const GameScreen = () => {
           <View style={{ 
             flex: 1,
             height: '100%',
-            paddingHorizontal: 2,
-            paddingVertical: 2,
-            justifyContent: 'center',
+            width: '100%',
+            paddingHorizontal: 4,
+            paddingVertical: 4,
+            justifyContent: 'flex-start',
             alignItems: 'center',
           }}>
             {/* الجزء الرئيسي (الفئات والأسئلة) */}
             <ScrollView
-                style={[staticStyles.scrollView, { flex: 1 }]}
+                style={[staticStyles.scrollView, { flex: 1, width: '100%' }]}
                 contentContainerStyle={[
                   staticStyles.gridContainer,
                   {
                     flexDirection: 'column',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    paddingHorizontal: 6,
+                    paddingVertical: 8,
+                    flexGrow: 1,
+                    minHeight: '100%',
+                  }
+                    flexDirection: 'column',
                     justifyContent: 'space-around',
                     alignItems: 'center',
-                    paddingHorizontal: SPACING.xs,
-                    paddingVertical: 1,
+                    paddingHorizontal: 6,
+                    paddingVertical: 8,
                     flexGrow: 1,
                     minHeight: '100%',
                   }
@@ -1204,89 +1213,59 @@ const GameScreen = () => {
                 {(() => {
                   const categories = gameData.categories || [];
                   const totalCategories = categories.length;
-                  const categoriesPerRow = Math.ceil(totalCategories / 2); // تقسيم الفئات بالتساوي على سطرين
+                  const categoriesPerRow = 2;
                   
-                  // تقسيم الفئات إلى سطرين
-                  const row1 = categories.slice(0, categoriesPerRow);
-                  const row2 = categories.slice(categoriesPerRow);
+                  // تقسيم الفئات إلى صفوف
+                  const rows = [];
+                  for (let i = 0; i < totalCategories; i += categoriesPerRow) {
+                    rows.push(categories.slice(i, i + categoriesPerRow));
+                  }
                   
                   // حساب عرض البطاقة
-                  const availableWidth = screenWidth * 0.7;
-                  const itemSpacing = 4;
+                  const containerWidth = screenWidth - 24; // 12 * 2 للـ padding
+                  const itemSpacing = 12;
                   const totalSpacing = itemSpacing * (categoriesPerRow - 1);
-                  const itemWidth = (availableWidth - totalSpacing) / categoriesPerRow;
+                  const itemWidth = (containerWidth - totalSpacing) / categoriesPerRow;
                   
                   return (
                     <>
-                      {/* السطر الأول */}
-                      <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: 8,
-                        alignSelf: 'center',
-                        width: '100%',
-                      }}>
-                        {row1.map(category => (
-                          <CategoryColumn
-                            key={category}
-                            category={category}
-                            questions={gameData.questions[category]}
-                            onQuestionPress={handleQuestionPress}
-                            style={{ 
-                              width: itemWidth + 6,
-                              marginHorizontal: 4,
-                              backgroundColor: `${theme.colors.background.surface}88`, 
-                              borderColor: theme.colors.border?.primary || theme.colors.primary,
-                              borderWidth: 1.5,
-                              shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                              shadowOffset: { width: 0, height: 2 },
-                              shadowOpacity: 0.15,
-                              shadowRadius: 3,
-                              elevation: 3,
-                              minHeight: 220,
-                              maxHeight: 260,
-                            }}
-                            theme={theme}
-                            categories={categories}
-                          />
-                        ))}
-                      </View>
-                      
-                      {/* السطر الثاني */}
-                      <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        alignSelf: 'center',
-                        width: '100%',
-                        marginTop: 4,
-                      }}>
-                        {row2.map(category => (
-                          <CategoryColumn
-                            key={category}
-                            category={category}
-                            questions={gameData.questions[category]}
-                            onQuestionPress={handleQuestionPress}
-                            style={{ 
-                              width: itemWidth + 6,
-                              marginHorizontal: 4,
-                              backgroundColor: `${theme.colors.background.surface}88`, 
-                              borderColor: theme.colors.border?.primary || theme.colors.primary,
-                              borderWidth: 1.5,
-                              shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                              shadowOffset: { width: 0, height: 2 },
-                              shadowOpacity: 0.15,
-                              shadowRadius: 3,
-                              elevation: 3,
-                              minHeight: 220,
-                              maxHeight: 260,
-                            }}
-                            theme={theme}
-                            categories={categories}
-                          />
-                        ))}
-                      </View>
+                      {rows.map((row, rowIndex) => (
+                        <View key={`row-${rowIndex}`} style={{
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'flex-start',
+                          marginBottom: 12,
+                          alignSelf: 'center',
+                          width: '100%',
+                          paddingHorizontal: 0,
+                        }}>
+                          {row.map(category => (
+                            <CategoryColumn
+                              key={category}
+                              category={category}
+                              questions={gameData.questions[category]}
+                              onQuestionPress={handleQuestionPress}
+                              style={{ 
+                                width: itemWidth,
+                                marginHorizontal: itemSpacing / 2,
+                                backgroundColor: `${theme.colors.background.surface}88`, 
+                                borderColor: theme.colors.border?.primary || theme.colors.primary,
+                                borderWidth: 1.5,
+                                shadowColor: theme.colors.border?.primary || theme.colors.primary,
+                                shadowOffset: { width: 0, height: 2 },
+                                shadowOpacity: 0.15,
+                                shadowRadius: 3,
+                                elevation: 3,
+                                minHeight: 240,
+                                maxHeight: 280,
+                                flex: 1,
+                              }}
+                              theme={theme}
+                              categories={categories}
+                            />
+                          ))}
+                        </View>
+                      ))}
                     </>
                   );
                 })()}
