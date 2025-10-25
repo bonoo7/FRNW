@@ -246,10 +246,10 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
       {/* الأسئلة - في الجانب (Portrait) أو تحت الاسم (Landscape) */}
       <View style={{
-        flexDirection: isLandscape ? 'row' : 'column',
-        flexWrap: 'wrap',
+        flexDirection: 'row',
+        flexWrap: isLandscape ? 'wrap' : 'nowrap',
         justifyContent: 'center',
-        alignItems: isLandscape ? 'center' : 'center',
+        alignItems: 'center',
         gap: isLandscape ? 2 : 3,
         width: isLandscape ? '100%' : 'auto',
         flex: isLandscape ? 0 : 1,
