@@ -44,7 +44,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "jest",
     "clean": "expo start --clear",
-    "doctor": "expo doctor"
+    "doctor": "expo doctor",
+    "compress:images": "node scripts/compress-images.js"
   },
   "dependencies": {
     "@expo-google-fonts/mada": "^0.2.3",
