@@ -183,239 +183,82 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 };
 
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
-  const primaryColorWithOpacity = `${theme.colors.primary}80`;
-  
-  const cardWidth = style?.width || 140;
-  const cardHeight = style?.minHeight || 160;
-  
-  const imageWidth = Math.max(cardWidth * 0.5, 40);
-  const imageHeight = Math.max(cardHeight * 0.35, 35);
-  
-  const columnStyles = StyleSheet.create({
-    column: {
-      flex: 1,
-      minWidth: 100,
-      borderRadius: 8,
-      overflow: 'hidden',
-      elevation: 3,
-      shadowColor: theme.colors.primary || '#2E5DB8',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.15,
-      shadowRadius: 3,
-      borderWidth: 1.2,
-      borderColor: theme.colors.border?.primary || theme.colors.primary || '#2E5DB8',
-      margin: 2,
-      position: 'relative',
-      backgroundColor: `${theme.colors.background.surface}95`,
-    },
-    backgroundImage: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: imageWidth,
-      height: imageHeight,
-      opacity: 0.2, 
-      zIndex: 0, 
-      pointerEvents: 'none',
-      alignSelf: 'flex-start',
-    },
-    categoryHeader: {
-      ...staticStyles.categoryHeader,
-      padding: 3,
-      minHeight: 24,
-      flex: 0,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'column',
-      borderBottomWidth: 0,
-      borderBottomColor: 'transparent',
-      borderTopLeftRadius: 11,
-      borderTopRightRadius: 11,
-      overflow: 'hidden',
-      zIndex: 5,
-      position: 'relative',
-    },
-    categoryImage: {
-      ...staticStyles.categoryImage,
-      width: 26,
-      height: 26,
-      marginBottom: 0,
-      marginRight: 4,
-      borderRadius: 8,
-      padding: 0,
-      borderWidth: 0,
-      borderColor: 'transparent',
-      backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-      opacity: 0.9,
-      shadowColor: theme.colors.primary || '#2E5DB8',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-      elevation: 2,
-    },
-    categoryTitle: {
-      ...staticStyles.categoryTitle,
-      fontSize: 7.5,
-      textAlign: 'left',
-      marginTop: 0,
-      marginBottom: 0,
-      marginHorizontal: 0,
-      letterSpacing: 0,
-      flexWrap: 'wrap',
-      width: '100%',
-      fontFamily: 'ReadexPro_700Bold',
-      fontWeight: '700',
-      color: '#FFFFFF',
-      opacity: 1,
-      lineHeight: 9,
-    },
-    questionsContainer: {
-      ...staticStyles.questionsContainer,
-      padding: 2,
-      marginBottom: 0,
-      backgroundColor: 'transparent', 
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-      borderBottomLeftRadius: 11,
-      borderBottomRightRadius: 11,
-      borderTopWidth: 0,
-      borderTopColor: 'transparent',
-      zIndex: 5,
-      position: 'relative',
-    },
-    difficultyRow: {
-      ...staticStyles.difficultyRow,
-      marginBottom: 4,
-      justifyContent: 'center',
-      padding: 4,
-      gap: 3,
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      alignItems: 'center'
+  const getButtonSize = () => {
+    if (categories?.length === 6) {
+      return { width: 20, height: 20, margin: 2.5, fontSize: 6.5 };
+    } else if (categories?.length === 8) {
+      return { width: 18, height: 18, margin: 2, fontSize: 6 };
+    } else {
+      return { width: 19, height: 19, margin: 2.2, fontSize: 6.3 };
     }
-  });
+  };
+
+  const buttonSize = getButtonSize();
+  const questionList = Object.values(questions).flat();
 
   return (
-    <View style={[columnStyles.column, style]}>
-      <Image 
-        source={categoryImages[category]} 
-        style={columnStyles.backgroundImage}
-        resizeMode="cover"
-      />
-      
-      <View style={[
-        columnStyles.categoryHeader,
-        { 
-          zIndex: 5,
-          position: 'relative',
-        }
-      ]}>
-        <LinearGradient
-          colors={['#2E5DB8', '#1E40AF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+    <View style={[{
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 8,
+      paddingHorizontal: 4,
+      flex: 1,
+    }, style]}>
+      {/* الصورة والعنوان */}
+      <View style={{
+        alignItems: 'center',
+        marginBottom: 6,
+      }}>
+        <Image 
+          source={categoryImages[category]} 
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: -1,
+            width: 35,
+            height: 35,
+            borderRadius: 8,
+            marginBottom: 4,
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
           }}
+          resizeMode="cover"
         />
         <Text 
-          style={[columnStyles.categoryTitle]}
-          adjustsFontSizeToFit={true}
+          style={{
+            fontSize: 8,
+            fontWeight: '700',
+            textAlign: 'center',
+            maxWidth: '90%',
+            color: theme.colors.text?.primary || '#000',
+            fontFamily: 'ReadexPro_700Bold',
+          }}
           numberOfLines={2}
-          minimumFontScale={0.7}
         >
           {category}
         </Text>
       </View>
-      
-      <View style={[
-        staticStyles.questionsContainer,
-        columnStyles.questionsContainer
-      ]}>
-        {/* صورة الفئة الشفافة في الخلفية */}
-        <View style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 1,
-          opacity: 0,
-          pointerEvents: 'none',
-          justifyContent: 'center',
-          alignItems: 'center',
-          overflow: 'hidden',
-          display: 'none',
-        }}>
-          <Image
-            source={categoryImages[category] || categoryImages['معلومات عامة']}
-            style={{
-              width: '100%',
-              height: '100%',
-              resizeMode: 'cover',
-            }}
-          />
-        </View>
 
-        {['سهل', 'متوسط', 'صعب'].map((difficulty) => {
-          const questions_by_difficulty = questions[difficulty] || [];
-          // تقسيم الأسئلة إلى مجموعات من زرين في كل سطر
-          const rows = [];
-          for (let i = 0; i < questions_by_difficulty.length; i += 2) {
-            rows.push(questions_by_difficulty.slice(i, i + 2));
-          }
-          
-          return (
-            <View key={difficulty} style={[
-              columnStyles.difficultyRow,
-              { 
-                marginBottom: 0.5,
-                backgroundColor: difficulty === 'سهل' 
-                  ? 'rgba(76, 175, 80, 0.05)'
-                  : difficulty === 'متوسط' 
-                    ? 'rgba(255, 152, 0, 0.05)' 
-                    : 'rgba(244, 67, 54, 0.05)',
-                borderRadius: 6,
-                padding: 1,
-                zIndex: 2,
-                position: 'relative',
-              }
-            ]}>
-              {rows.map((row, rowIndex) => (
-                <View 
-                  key={`row-${rowIndex}`} 
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    width: '100%',
-                    paddingVertical: 0.3
-                  }}
-                >
-                  {row.map((question, qIndex) => (
-                    <QuestionButton
-                      key={`${difficulty}-${rowIndex * 2 + qIndex}`}
-                      difficulty={difficulty}
-                      isUsed={question.isUsed}
-                      points={question.points}
-                      onPress={() => onQuestionPress(category, difficulty, rowIndex * 2 + qIndex)}
-                      theme={theme}
-                      categories={categories}
-                    />
-                  ))}
-                </View>
-              ))}
-            </View>
-          );
-        })}
+      {/* الأسئلة - شبكة 3x3 */}
+      <View style={{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: 2,
+        width: '100%',
+      }}>
+        {questionList.slice(0, 9).map((question, index) => (
+          <QuestionButton
+            key={`${category}-${index}`}
+            difficulty={question?.difficulty || 'سهل'}
+            isUsed={question?.used || false}
+            points={question?.points || 10}
+            onPress={() => onQuestionPress?.(category, index)}
+            theme={theme}
+            categories={categories}
+          />
+        ))}
       </View>
     </View>
   );
+};
+
 };
 
 const GameScreen = () => {
@@ -1210,61 +1053,38 @@ const GameScreen = () => {
               >
                 {(() => {
                   const categories = gameData.categories || [];
-                  const totalCategories = categories.length;
-                  const categoriesPerRow = 2;
-                  
-                  // تقسيم الفئات إلى صفوف
-                  const rows = [];
-                  for (let i = 0; i < totalCategories; i += categoriesPerRow) {
-                    rows.push(categories.slice(i, i + categoriesPerRow));
-                  }
-                  
-                  // حساب عرض البطاقة
-                  const containerWidth = screenWidth - 12; // 6 * 2 للـ padding
-                  const itemSpacing = 6;
-                  const totalSpacing = itemSpacing * (categoriesPerRow - 1);
-                  const itemWidth = (containerWidth - totalSpacing) / categoriesPerRow;
                   
                   return (
-                    <>
-                      {rows.map((row, rowIndex) => (
-                        <View key={`row-${rowIndex}`} style={{
-                          flexDirection: 'row',
-                          justifyContent: 'center',
-                          alignItems: 'flex-start',
-                          marginBottom: 6,
-                          alignSelf: 'center',
-                          width: '100%',
-                          paddingHorizontal: 2,
-                        }}>
-                          {row.map(category => (
-                            <CategoryColumn
-                              key={category}
-                              category={category}
-                              questions={gameData.questions[category]}
-                              onQuestionPress={handleQuestionPress}
-                              style={{ 
-                                width: itemWidth,
-                                marginHorizontal: itemSpacing / 2,
-                                backgroundColor: `${theme.colors.background.surface}88`, 
-                                borderColor: theme.colors.border?.primary || theme.colors.primary,
-                                borderWidth: 1,
-                                shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                                shadowOffset: { width: 0, height: 1 },
-                                shadowOpacity: 0.1,
-                                shadowRadius: 2,
-                                elevation: 2,
-                                minHeight: 150,
-                                maxHeight: 180,
-                                flex: 1,
-                              }}
-                              theme={theme}
-                              categories={categories}
-                            />
-                          ))}
-                        </View>
+                    <View style={{
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingHorizontal: 6,
+                      paddingVertical: 6,
+                      width: '100%',
+                      gap: 8,
+                    }}>
+                      {categories.map(category => (
+                        <CategoryColumn
+                          key={category}
+                          category={category}
+                          questions={gameData.questions[category]}
+                          onQuestionPress={handleQuestionPress}
+                          style={{ 
+                            width: (screenWidth - 24) / 2,
+                            backgroundColor: 'transparent',
+                            borderWidth: 0,
+                            shadowOpacity: 0,
+                            elevation: 0,
+                            minHeight: 140,
+                            flex: 0,
+                          }}
+                          theme={theme}
+                          categories={categories}
+                        />
                       ))}
-                    </>
+                    </View>
                   );
                 })()}
               </ScrollView>
