@@ -1197,14 +1197,6 @@ const GameScreen = () => {
                     flexGrow: 1,
                     minHeight: '100%',
                   }
-                    flexDirection: 'column',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                    paddingHorizontal: 6,
-                    paddingVertical: 8,
-                    flexGrow: 1,
-                    minHeight: '100%',
-                  }
                 ]}
                 horizontal={false}
                 showsHorizontalScrollIndicator={false}
