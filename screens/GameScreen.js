@@ -1086,7 +1086,7 @@ const GameScreen = () => {
                             marginVertical: isLandscapeMode ? 4 : 6,
                             flex: 0,
                             minHeight: isLandscapeMode ? 220 : 'auto',
-                            height: isLandscapeMode ? 'auto' : 90,
+                            height: isLandscapeMode ? 'auto' : undefined,
                           }}
                           theme={theme}
                           categories={categories}
