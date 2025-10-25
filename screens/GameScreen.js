@@ -183,19 +183,109 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 };
 
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
+  const { width, height } = Dimensions.get('window');
+  const isLandscape = width > height;
+
   const getButtonSize = () => {
-    if (categories?.length === 6) {
-      return { width: 22, height: 22, margin: 3, fontSize: 7 };
-    } else if (categories?.length === 8) {
-      return { width: 20, height: 20, margin: 2.5, fontSize: 6.5 };
+    if (isLandscape) {
+      return { width: 24, height: 24, margin: 3, fontSize: 7 };
     } else {
-      return { width: 21, height: 21, margin: 2.8, fontSize: 6.8 };
+      if (categories?.length === 6) {
+        return { width: 22, height: 22, margin: 3, fontSize: 7 };
+      } else if (categories?.length === 8) {
+        return { width: 20, height: 20, margin: 2.5, fontSize: 6.5 };
+      } else {
+        return { width: 21, height: 21, margin: 2.8, fontSize: 6.8 };
+      }
     }
   };
 
   const buttonSize = getButtonSize();
   const questionList = Object.values(questions).flat();
 
+  // تصميم أفقي (Landscape)
+  if (isLandscape) {
+    return (
+      <View style={[{
+        backgroundColor: theme.colors.background?.surface || '#FFF',
+        borderRadius: 12,
+        marginVertical: 6,
+        marginHorizontal: 4,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        shadowColor: theme.colors.primary || '#2E5DB8',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+        borderWidth: 1,
+        borderColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
+        flexDirection: 'row',
+        alignItems: 'center',
+      }, style]}>
+        {/* الصورة واسم الفئة */}
+        <View style={{
+          alignItems: 'center',
+          marginRight: 12,
+          minWidth: 80,
+        }}>
+          <Image 
+            source={categoryImages[category]} 
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 12,
+              marginBottom: 4,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            }}
+            resizeMode="cover"
+          />
+          <Text 
+            style={{
+              fontSize: 8,
+              fontWeight: '700',
+              textAlign: 'center',
+              maxWidth: '95%',
+              color: theme.colors.text?.primary || '#000',
+              fontFamily: 'ReadexPro_700Bold',
+            }}
+            numberOfLines={2}
+          >
+            {category}
+          </Text>
+        </View>
+
+        {/* الأسئلة - 2x3 شبكة (زرين في كل سطر) */}
+        <View style={{
+          flexDirection: 'column',
+          alignItems: 'center',
+          flex: 1,
+        }}>
+          <View style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: 3,
+            width: '100%',
+          }}>
+            {questionList.slice(0, 6).map((question, index) => (
+              <QuestionButton
+                key={`${category}-${index}`}
+                difficulty={question?.difficulty || 'سهل'}
+                isUsed={question?.used || false}
+                points={question?.points || 10}
+                onPress={() => onQuestionPress?.(category, index)}
+                theme={theme}
+                categories={categories}
+              />
+            ))}
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  // تصميم رأسي (Portrait)
   return (
     <View style={[{
       backgroundColor: theme.colors.background?.surface || '#FFF',
@@ -247,7 +337,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         </Text>
       </View>
 
-      {/* الأسئلة - شبكة 3x3 */}
+      {/* الأسئلة - شبكة 2x3 (زرين في كل سطر) */}
       <View style={{
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -255,7 +345,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         gap: 3,
         width: '100%',
       }}>
-        {questionList.slice(0, 9).map((question, index) => (
+        {questionList.slice(0, 6).map((question, index) => (
           <QuestionButton
             key={`${category}-${index}`}
             difficulty={question?.difficulty || 'سهل'}
