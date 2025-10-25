@@ -244,26 +244,38 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         </Text>
       </View>
 
-      {/* الأسئلة - في الجانب (Portrait) أو تحت الاسم (Landscape) */}
+      {/* الأسئلة - منظمة حسب مستوى الصعوبة */}
       <View style={{
-        flexDirection: 'row',
-        flexWrap: isLandscape ? 'wrap' : 'nowrap',
+        flexDirection: isLandscape ? 'column' : 'row',
+        flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
         gap: isLandscape ? 2 : 3,
         width: isLandscape ? '100%' : 'auto',
         flex: isLandscape ? 0 : 1,
       }}>
-        {questionList.slice(0, 6).map((question, index) => (
-          <QuestionButton
-            key={`${category}-${index}`}
-            difficulty={question?.difficulty || 'سهل'}
-            isUsed={question?.used || false}
-            points={question?.points || 10}
-            onPress={() => onQuestionPress?.(category, index)}
-            theme={theme}
-            categories={categories}
-          />
+        {/* ترتيب الأزرار: سهل (0,1), متوسط (2,3), صعب (4,5) */}
+        {[0, 2, 4].map(startIdx => (
+          <View key={`row-${startIdx}`} style={{
+            flexDirection: 'row',
+            gap: isLandscape ? 2 : 3,
+            marginBottom: isLandscape ? 2 : 0,
+          }}>
+            {[startIdx, startIdx + 1].map(index => {
+              const question = questionList[index];
+              return question ? (
+                <QuestionButton
+                  key={`${category}-${index}`}
+                  difficulty={question?.difficulty || 'سهل'}
+                  isUsed={question?.used || false}
+                  points={question?.points || 10}
+                  onPress={() => onQuestionPress?.(category, index)}
+                  theme={theme}
+                  categories={categories}
+                />
+              ) : null;
+            })}
+          </View>
         ))}
       </View>
     </View>
