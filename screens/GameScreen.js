@@ -185,11 +185,11 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
   const getButtonSize = () => {
     if (categories?.length === 6) {
-      return { width: 20, height: 20, margin: 2.5, fontSize: 6.5 };
+      return { width: 22, height: 22, margin: 3, fontSize: 7 };
     } else if (categories?.length === 8) {
-      return { width: 18, height: 18, margin: 2, fontSize: 6 };
+      return { width: 20, height: 20, margin: 2.5, fontSize: 6.5 };
     } else {
-      return { width: 19, height: 19, margin: 2.2, fontSize: 6.3 };
+      return { width: 21, height: 21, margin: 2.8, fontSize: 6.8 };
     }
   };
 
@@ -198,34 +198,46 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
   return (
     <View style={[{
-      borderBottomWidth: 1.5,
-      borderBottomColor: theme.colors.border?.primary || theme.colors.primary || '#E0E0E0',
-      paddingVertical: 10,
-      paddingHorizontal: 8,
+      backgroundColor: theme.colors.background?.surface || '#FFF',
+      borderRadius: 12,
+      marginVertical: 8,
+      marginHorizontal: 6,
+      paddingVertical: 12,
+      paddingHorizontal: 10,
+      shadowColor: theme.colors.primary || '#2E5DB8',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+      borderWidth: 1,
+      borderColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
       flex: 1,
     }, style]}>
-      {/* الصورة والعنوان */}
+      {/* رأس الفئة */}
       <View style={{
         alignItems: 'center',
-        marginBottom: 6,
+        marginBottom: 10,
+        paddingBottom: 10,
+        borderBottomWidth: 2,
+        borderBottomColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
       }}>
         <Image 
           source={categoryImages[category]} 
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: 10,
-            marginBottom: 4,
+            width: 40,
+            height: 40,
+            borderRadius: 12,
+            marginBottom: 6,
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
           }}
           resizeMode="cover"
         />
         <Text 
           style={{
-            fontSize: 8.5,
+            fontSize: 10,
             fontWeight: '700',
             textAlign: 'center',
-            maxWidth: '90%',
+            maxWidth: '95%',
             color: theme.colors.text?.primary || '#000',
             fontFamily: 'ReadexPro_700Bold',
           }}
@@ -240,7 +252,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        gap: 2,
+        gap: 3,
         width: '100%',
       }}>
         {questionList.slice(0, 9).map((question, index) => (
@@ -1031,22 +1043,20 @@ const GameScreen = () => {
             alignItems: 'center',
           }}>
             {/* الجزء الرئيسي (الفئات والأسئلة) */}
-            <View
+            <ScrollView
                 style={[staticStyles.scrollView, { flex: 1, width: '100%' }]}
+                contentContainerStyle={{
+                  alignItems: 'center',
+                  paddingHorizontal: 2,
+                  paddingVertical: 4,
+                }}
+                showsVerticalScrollIndicator={false}
             >
                 {(() => {
                   const categories = gameData.categories || [];
                   
                   return (
-                    <View style={{
-                      flexDirection: 'column',
-                      justifyContent: 'flex-start',
-                      alignItems: 'stretch',
-                      paddingHorizontal: 4,
-                      paddingVertical: 4,
-                      width: '100%',
-                      gap: 0,
-                    }}>
+                    <>
                       {categories.map(category => (
                         <CategoryColumn
                           key={category}
@@ -1054,7 +1064,7 @@ const GameScreen = () => {
                           questions={gameData.questions[category]}
                           onQuestionPress={handleQuestionPress}
                           style={{ 
-                            width: '100%',
+                            width: '95%',
                             backgroundColor: 'transparent',
                             borderWidth: 0,
                             shadowOpacity: 0,
@@ -1066,10 +1076,10 @@ const GameScreen = () => {
                           categories={categories}
                         />
                       ))}
-                    </View>
+                    </>
                   );
                 })()}
-            </View>
+            </ScrollView>
           </View>
         </View>
 
