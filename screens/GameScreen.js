@@ -180,7 +180,15 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 };
 
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
-  const primaryColorWithOpacity = `${theme.colors.primary}80`; // إضافة 80 للشفافية (حوالي 50%)
+  const primaryColorWithOpacity = `${theme.colors.primary}80`;
+  
+  // حساب أبعاد الصورة بناءً على عرض البطاقة
+  const cardWidth = style?.width || 160;
+  const cardHeight = style?.minHeight || 200;
+  
+  // صيغة لتصغير الصورة: عرض الصورة = عرض البطاقة * 0.7، الارتفاع = ارتفاع البطاقة * 0.6
+  const imageWidth = Math.max(cardWidth * 0.65, 80);
+  const imageHeight = Math.max(cardHeight * 0.55, 100);
   
   const columnStyles = StyleSheet.create({
     column: {
@@ -205,11 +213,12 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       left: 0,
       right: 0,
       bottom: 0,
-      width: '100%',
-      height: '100%',
+      width: imageWidth,
+      height: imageHeight,
       opacity: 0.25, 
       zIndex: 0, 
       pointerEvents: 'none',
+      alignSelf: 'center',
     },
     categoryHeader: {
       ...staticStyles.categoryHeader,
