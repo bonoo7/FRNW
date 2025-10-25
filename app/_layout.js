@@ -64,8 +64,8 @@ export default function RootLayout() {
     ReadexPro_700Bold
   });
 
-  // تفعيل الوضع الأفقي فقط
-  ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+  // تفعيل جميع الاتجاهات
+  ScreenOrientation.unlockAsync();
 
   if (!fontsLoaded || !readexProLoaded) {
     return <LoadingScreen />;
