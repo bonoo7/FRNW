@@ -183,17 +183,23 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 };
 
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
-  const [screenDimensions, setScreenDimensions] = useState(Dimensions.get('window'));
+  const [screenDimensions, setScreenDimensions] = useState(() => Dimensions.get('window'));
   const { width, height } = screenDimensions;
   const isLandscape = width > height;
 
   // الاستماع لتغيير أبعاد الشاشة
   useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+    const handleDimensionChange = ({ window, screen }) => {
       setScreenDimensions(window);
-    });
+    };
     
-    return () => subscription?.remove();
+    const subscription = Dimensions.addEventListener('change', handleDimensionChange);
+    
+    return () => {
+      if (subscription?.remove) {
+        subscription.remove();
+      }
+    };
   }, []);
 
   const getButtonSize = () => {
