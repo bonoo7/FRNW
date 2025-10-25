@@ -198,10 +198,10 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
   return (
     <View style={[{
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: 8,
-      paddingHorizontal: 4,
+      borderBottomWidth: 1.5,
+      borderBottomColor: theme.colors.border?.primary || theme.colors.primary || '#E0E0E0',
+      paddingVertical: 10,
+      paddingHorizontal: 8,
       flex: 1,
     }, style]}>
       {/* الصورة والعنوان */}
@@ -212,9 +212,9 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         <Image 
           source={categoryImages[category]} 
           style={{
-            width: 35,
-            height: 35,
-            borderRadius: 8,
+            width: 36,
+            height: 36,
+            borderRadius: 10,
             marginBottom: 4,
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
           }}
@@ -222,7 +222,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         />
         <Text 
           style={{
-            fontSize: 8,
+            fontSize: 8.5,
             fontWeight: '700',
             textAlign: 'center',
             maxWidth: '90%',
@@ -1031,37 +1031,21 @@ const GameScreen = () => {
             alignItems: 'center',
           }}>
             {/* الجزء الرئيسي (الفئات والأسئلة) */}
-            <ScrollView
+            <View
                 style={[staticStyles.scrollView, { flex: 1, width: '100%' }]}
-                contentContainerStyle={[
-                  staticStyles.gridContainer,
-                  {
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    paddingHorizontal: 6,
-                    paddingVertical: 8,
-                    flexGrow: 1,
-                    minHeight: '100%',
-                  }
-                ]}
-                horizontal={false}
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-              >
+            >
                 {(() => {
                   const categories = gameData.categories || [];
                   
                   return (
                     <View style={{
-                      flexDirection: 'row',
-                      flexWrap: 'wrap',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      paddingHorizontal: 6,
-                      paddingVertical: 6,
+                      flexDirection: 'column',
+                      justifyContent: 'flex-start',
+                      alignItems: 'stretch',
+                      paddingHorizontal: 4,
+                      paddingVertical: 4,
                       width: '100%',
-                      gap: 8,
+                      gap: 0,
                     }}>
                       {categories.map(category => (
                         <CategoryColumn
@@ -1070,12 +1054,12 @@ const GameScreen = () => {
                           questions={gameData.questions[category]}
                           onQuestionPress={handleQuestionPress}
                           style={{ 
-                            width: (screenWidth - 24) / 2,
+                            width: '100%',
                             backgroundColor: 'transparent',
                             borderWidth: 0,
                             shadowOpacity: 0,
                             elevation: 0,
-                            minHeight: 140,
+                            minHeight: 'auto',
                             flex: 0,
                           }}
                           theme={theme}
@@ -1085,7 +1069,7 @@ const GameScreen = () => {
                     </View>
                   );
                 })()}
-              </ScrollView>
+            </View>
           </View>
         </View>
 
