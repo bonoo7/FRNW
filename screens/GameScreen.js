@@ -1065,10 +1065,6 @@ const GameScreen = () => {
                           onQuestionPress={handleQuestionPress}
                           style={{ 
                             width: '95%',
-                            backgroundColor: 'transparent',
-                            borderWidth: 0,
-                            shadowOpacity: 0,
-                            elevation: 0,
                             minHeight: 'auto',
                             flex: 0,
                           }}
