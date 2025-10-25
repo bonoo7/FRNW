@@ -187,97 +187,14 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
   const isLandscape = useIsLandscape();
   const questionList = Object.values(questions).flat();
 
-  // تصميم أفقي (Landscape)
-  if (isLandscape) {
-    return (
-      <View style={[{
-        backgroundColor: theme.colors.background?.surface || '#FFF',
-        borderRadius: 12,
-        marginVertical: 6,
-        marginHorizontal: 4,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        shadowColor: theme.colors.primary || '#2E5DB8',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-        borderWidth: 1,
-        borderColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
-        flexDirection: 'row',
-        alignItems: 'center',
-      }, style]}>
-        {/* الصورة واسم الفئة */}
-        <View style={{
-          alignItems: 'center',
-          marginRight: 12,
-          minWidth: 80,
-        }}>
-          <Image 
-            source={categoryImages[category]} 
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: 12,
-              marginBottom: 4,
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            }}
-            resizeMode="cover"
-          />
-          <Text 
-            style={{
-              fontSize: 8,
-              fontWeight: '700',
-              textAlign: 'center',
-              maxWidth: '95%',
-              color: theme.colors.text?.primary || '#000',
-              fontFamily: 'ReadexPro_700Bold',
-            }}
-            numberOfLines={2}
-          >
-            {category}
-          </Text>
-        </View>
-
-        {/* الأسئلة - 2x3 شبكة (زرين في كل سطر) */}
-        <View style={{
-          flexDirection: 'column',
-          alignItems: 'center',
-          flex: 1,
-        }}>
-          <View style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: 3,
-            width: '100%',
-          }}>
-            {questionList.slice(0, 6).map((question, index) => (
-              <QuestionButton
-                key={`${category}-${index}`}
-                difficulty={question?.difficulty || 'سهل'}
-                isUsed={question?.used || false}
-                points={question?.points || 10}
-                onPress={() => onQuestionPress?.(category, index)}
-                theme={theme}
-                categories={categories}
-              />
-            ))}
-          </View>
-        </View>
-      </View>
-    );
-  }
-
-  // تصميم رأسي (Portrait)
   return (
     <View style={[{
       backgroundColor: theme.colors.background?.surface || '#FFF',
-      borderRadius: 12,
-      marginVertical: 8,
-      marginHorizontal: 6,
-      paddingVertical: 12,
-      paddingHorizontal: 10,
+      borderRadius: 10,
+      marginVertical: 2,
+      marginHorizontal: 2,
+      paddingVertical: 8,
+      paddingHorizontal: 6,
       shadowColor: theme.colors.primary || '#2E5DB8',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
@@ -285,23 +202,23 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       elevation: 3,
       borderWidth: 1,
       borderColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       flex: 1,
     }, style]}>
-      {/* رأس الفئة */}
+      {/* الصورة واسم الفئة في الأعلى */}
       <View style={{
         alignItems: 'center',
-        marginBottom: 10,
-        paddingBottom: 10,
-        borderBottomWidth: 2,
-        borderBottomColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
+        marginBottom: 6,
+        width: '100%',
       }}>
         <Image 
           source={categoryImages[category]} 
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 12,
-            marginBottom: 6,
+            width: 32,
+            height: 32,
+            borderRadius: 10,
+            marginBottom: 3,
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
           }}
           resizeMode="cover"
@@ -321,12 +238,12 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         </Text>
       </View>
 
-      {/* الأسئلة - شبكة 2x3 (زرين في كل سطر) */}
+      {/* الأسئلة - 2x3 شبكة (زرين في كل سطر) */}
       <View style={{
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        gap: 3,
+        gap: 2,
         width: '100%',
       }}>
         {questionList.slice(0, 6).map((question, index) => (
@@ -1129,18 +1046,18 @@ const GameScreen = () => {
             justifyContent: 'flex-start',
             alignItems: 'center',
           }}>
-            {/* الجزء الرئيسي (الفئات والأسئلة) */}
-            <ScrollView
-                horizontal={isLandscapeMode}
-                style={[staticStyles.scrollView, { flex: 1, width: '100%' }]}
-                contentContainerStyle={{
-                  alignItems: isLandscapeMode ? 'center' : 'center',
-                  flexDirection: isLandscapeMode ? 'row' : 'column',
-                  paddingHorizontal: isLandscapeMode ? 8 : 2,
-                  paddingVertical: 4,
+            {/* الجزء الرئيسي (الفئات والأسئلة) - Grid متعدد الأعمدة */}
+            <View
+                style={{
+                  flex: 1,
+                  width: '100%',
+                  flexDirection: isLandscapeMode ? 'column' : 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                  paddingHorizontal: isLandscapeMode ? 4 : 6,
+                  paddingVertical: 6,
                 }}
-                showsVerticalScrollIndicator={!isLandscapeMode}
-                showsHorizontalScrollIndicator={isLandscapeMode}
             >
                 {(() => {
                   const categories = gameData.categories || [];
@@ -1154,11 +1071,10 @@ const GameScreen = () => {
                           questions={gameData.questions[category]}
                           onQuestionPress={handleQuestionPress}
                           style={{ 
-                            width: isLandscapeMode ? 280 : '95%',
-                            minHeight: 'auto',
-                            flex: isLandscapeMode ? 0 : 0,
-                            marginRight: isLandscapeMode ? 12 : 0,
-                            marginBottom: isLandscapeMode ? 0 : 8,
+                            width: isLandscapeMode ? '48%' : '48%',
+                            marginHorizontal: '1%',
+                            marginBottom: 8,
+                            flex: 0,
                           }}
                           theme={theme}
                           categories={categories}
@@ -1167,7 +1083,7 @@ const GameScreen = () => {
                     </>
                   );
                 })()}
-            </ScrollView>
+            </View>
           </View>
         </View>
 
