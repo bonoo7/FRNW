@@ -45,7 +45,8 @@
     "test": "jest",
     "clean": "expo start --clear",
     "doctor": "expo doctor",
-    "compress:images": "node scripts/compress-images.js"
+    "compress:images": "node scripts/compress-final.js",
+    "analyze:images": "node scripts/analyze-images.js"
   },
   "dependencies": {
     "@expo-google-fonts/mada": "^0.2.3",
@@ -115,6 +116,7 @@
     "css-loader": "^6.7.1",
     "express": "^4.21.2",
     "file-loader": "^6.2.0",
+    "sharp": "^0.34.4",
     "stream-browserify": "^3.0.0"
   },
   "private": true
