@@ -347,6 +347,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
 const GameScreen = () => {
   const { theme } = useTheme();
+  const isLandscapeMode = useIsLandscape();
   const params = useLocalSearchParams();
   const styles = StyleSheet.create({
     ...staticStyles,
@@ -1130,13 +1131,16 @@ const GameScreen = () => {
           }}>
             {/* الجزء الرئيسي (الفئات والأسئلة) */}
             <ScrollView
+                horizontal={isLandscapeMode}
                 style={[staticStyles.scrollView, { flex: 1, width: '100%' }]}
                 contentContainerStyle={{
-                  alignItems: 'center',
-                  paddingHorizontal: 2,
+                  alignItems: isLandscapeMode ? 'center' : 'center',
+                  flexDirection: isLandscapeMode ? 'row' : 'column',
+                  paddingHorizontal: isLandscapeMode ? 8 : 2,
                   paddingVertical: 4,
                 }}
-                showsVerticalScrollIndicator={false}
+                showsVerticalScrollIndicator={!isLandscapeMode}
+                showsHorizontalScrollIndicator={isLandscapeMode}
             >
                 {(() => {
                   const categories = gameData.categories || [];
@@ -1150,9 +1154,11 @@ const GameScreen = () => {
                           questions={gameData.questions[category]}
                           onQuestionPress={handleQuestionPress}
                           style={{ 
-                            width: '95%',
+                            width: isLandscapeMode ? 280 : '95%',
                             minHeight: 'auto',
-                            flex: 0,
+                            flex: isLandscapeMode ? 0 : 0,
+                            marginRight: isLandscapeMode ? 12 : 0,
+                            marginBottom: isLandscapeMode ? 0 : 8,
                           }}
                           theme={theme}
                           categories={categories}
