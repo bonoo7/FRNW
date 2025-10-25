@@ -1,7 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, Image, StyleSheet, Platform, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { SPACING, FONTS } from '../styles/theme';
 import categoryImages from '../assets/categories.js';
 import { useTheme } from '../contexts/ThemeContext';
@@ -40,12 +39,6 @@ export const CategoryCard = ({
   const { theme } = useTheme();
   const responsiveFontSize = getResponsiveFontSize();
   
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: withSpring(isSelected ? 1.05 : 1) },
-    ],
-  }));
-
   const platformStyles = Platform.select({
     web: {
       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -56,13 +49,13 @@ export const CategoryCard = ({
   });
 
   return (
-    <Animated.View style={[
+    <View style={[
       styles.container, 
       { 
         borderColor: isSelected ? theme.colors.primary : theme.colors.border?.primary || theme.colors.border,
         borderWidth: isSelected ? 2 : 1,
+        transform: [{ scale: isSelected ? 1.05 : 1 }],
       },
-      animatedStyle
     ]}>
       <TouchableOpacity 
         onPress={onPress}
@@ -108,7 +101,7 @@ export const CategoryCard = ({
           </LinearGradient>
         </View>
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 };
 
