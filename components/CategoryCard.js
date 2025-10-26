@@ -122,14 +122,15 @@ const styles = StyleSheet.create({
   categoryContent: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
   },
   imageContainer: {
-    flex: 4.5,
+    flex: 5,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 2,
   },
   image: {
     width: '100%',
@@ -137,11 +138,11 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: '100%',
-    padding: 4,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
-    minHeight: 24,
+    flex: 0,
   },
   title: {
     fontSize: FONTS.sizes.caption,
