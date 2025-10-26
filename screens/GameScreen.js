@@ -121,7 +121,7 @@ const staticStyles = StyleSheet.create({
   },
 });
 
-const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories, isLandscape }) => {
+const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories, isLandscape, buttonSize = 50, buttonFontSize = 17 }) => {
   const difficultyColors = {
     'سهل': { bg: '#E8F5E9', border: '#2E7D32', text: '#1B5E20' },
     'متوسط': { bg: '#FFF3E0', border: '#E65100', text: '#BF360C' },
@@ -133,11 +133,11 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
       onPress={onPress}
       disabled={isUsed}
       style={{
-        width: isLandscape ? 68 : 70,
-        height: isLandscape ? 56 : 60,
+        width: buttonSize,
+        height: buttonSize,
         backgroundColor: isUsed ? '#F5F5F5' : difficultyColors[difficulty].bg,
         borderColor: isUsed ? '#D0D0D0' : difficultyColors[difficulty].border,
-        borderWidth: 2.5,
+        borderWidth: 2,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
@@ -148,121 +148,324 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
         shadowRadius: 4,
       }}
     >
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <Text
-          style={{
-            color: isUsed ? '#B8B8B8' : difficultyColors[difficulty].text,
-            fontSize: isLandscape ? 18 : 20,
-            fontWeight: '800',
-            fontFamily: 'ReadexPro_700Bold',
-            lineHeight: isLandscape ? 20 : 24,
-          }}
-        >
-          {points}
-        </Text>
-      </View>
+      <Text
+        style={{
+          color: isUsed ? '#B8B8B8' : difficultyColors[difficulty].text,
+          fontSize: buttonFontSize,
+          fontWeight: '800',
+          fontFamily: 'ReadexPro_700Bold',
+        }}
+      >
+        {points}
+      </Text>
     </TouchableOpacity>
   );
 };
 
-const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
-  const isLandscape = useIsLandscape();
-
+const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme, categories, isLandscape }) => {
   const difficultyOrder = ['سهل', 'متوسط', 'صعب'];
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
+  
+  if (!isLandscape) {
+    // الوضع الرأسي: بطاقات أفقية
+    const numCategories = categories.length;
+    const teamsHeaderWidth = 120;
+    const availableWidth = screenWidth - teamsHeaderWidth - 50;
+    const availableHeight = (screenHeight - 60) / numCategories; // تقسيم الارتفاع على عدد الفئات
+    
+    const numButtons = 6;
+    const cardPadding = 8;
+    
+    // تحديد عدد الصفوف بناءً على الارتفاع المتاح
+    const minButtonSize = 35;
+    const maxButtonsPerRow = Math.floor(availableHeight / (minButtonSize + 10)) >= 2 ? 6 : 3;
+    const numRows = maxButtonsPerRow === 6 ? 1 : 2;
+    const buttonsPerRow = Math.ceil(numButtons / numRows);
+    
+    const horizontalGaps = 3;
+    const verticalGaps = 3;
+    
+    const contentWidth = availableWidth - (cardPadding * 2);
+    
+    // توزيع المساحة الأفقية
+    const categoryInfoSpace = Math.min(contentWidth * 0.15, 80); // مساحة الصورة والاسم معاً
+    const buttonsSpace = contentWidth - categoryInfoSpace - 20;
+    
+    const totalHorizontalGaps = horizontalGaps * (buttonsPerRow - 1);
+    const buttonSize = Math.min((buttonsSpace - totalHorizontalGaps) / buttonsPerRow, 50);
+    const imageSize = Math.min(buttonSize * 0.8, 40);
+    
+    const buttonFontSize = Math.min(buttonSize * 0.35, 17);
+    const fontSize = Math.min(categoryInfoSpace * 0.15, 10);
+    
+    const cardHeight = Math.min(buttonSize * numRows + (verticalGaps * (numRows - 1)) + (cardPadding * 2), availableHeight - 8);
+    
+    return (
+      <View style={[{
+        backgroundColor: theme.colors.background?.surface || '#FFF',
+        borderRadius: 12,
+        padding: cardPadding,
+        shadowColor: theme.colors.primary || '#2E5DB8',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 5,
+        borderWidth: 2,
+        borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        height: cardHeight,
+        width: availableWidth - 8,
+        marginVertical: 3,
+        marginHorizontal: 4,
+      }, style]}>
+        {/* الصورة والاسم في عمود على اليمين */}
+        <View style={{
+          width: categoryInfoSpace,
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginLeft: 2,
+        }}>
+          {/* الصورة في الأعلى */}
+          <Image 
+            source={categoryImages[category]} 
+            style={{
+              width: imageSize,
+              height: imageSize,
+              borderRadius: 8,
+              marginBottom: 3,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            }}
+            resizeMode="cover"
+          />
+          
+          {/* اسم الفئة أسفل الصورة */}
+          <Text 
+            style={{
+              fontSize: fontSize,
+              fontWeight: '700',
+              textAlign: 'center',
+              width: '100%',
+              color: theme.colors.text?.primary || '#000',
+              fontFamily: 'ReadexPro_700Bold',
+              lineHeight: fontSize * 1.2,
+            }}
+            numberOfLines={2}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+          >
+            {category}
+          </Text>
+        </View>
+
+        {/* أزرار الأسئلة - صف واحد أو صفين */}
+        <View style={{
+          flexDirection: numRows === 1 ? 'row' : 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: verticalGaps,
+          flex: 1,
+          marginHorizontal: 3,
+        }}>
+          {numRows === 1 ? (
+            // صف واحد
+            <View style={{
+              flexDirection: 'row',
+              gap: horizontalGaps,
+            }}>
+              {difficultyOrder.map((difficulty) => {
+                const diffQuestions = questions[difficulty] || [];
+                return [0, 1].map((btnIndex) => {
+                  const question = diffQuestions[btnIndex];
+                  return question ? (
+                    <QuestionButton
+                      key={`${category}-${difficulty}-${btnIndex}`}
+                      difficulty={difficulty}
+                      isUsed={question?.isUsed || false}
+                      points={question?.points || 10}
+                      onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                      theme={theme}
+                      categories={categories}
+                      isLandscape={isLandscape}
+                      buttonSize={buttonSize}
+                      buttonFontSize={buttonFontSize}
+                    />
+                  ) : null;
+                });
+              }).flat()}
+            </View>
+          ) : (
+            // صفين
+            <>
+              <View style={{
+                flexDirection: 'row',
+                gap: horizontalGaps,
+              }}>
+                {difficultyOrder.slice(0, 2).map((difficulty) => {
+                  const diffQuestions = questions[difficulty] || [];
+                  return [0, 1].map((btnIndex) => {
+                    const question = diffQuestions[btnIndex];
+                    return question ? (
+                      <QuestionButton
+                        key={`${category}-${difficulty}-${btnIndex}`}
+                        difficulty={difficulty}
+                        isUsed={question?.isUsed || false}
+                        points={question?.points || 10}
+                        onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                        theme={theme}
+                        categories={categories}
+                        isLandscape={isLandscape}
+                        buttonSize={buttonSize}
+                        buttonFontSize={buttonFontSize}
+                      />
+                    ) : null;
+                  });
+                }).flat()}
+              </View>
+              <View style={{
+                flexDirection: 'row',
+                gap: horizontalGaps,
+              }}>
+                {difficultyOrder.slice(1, 3).map((difficulty) => {
+                  const diffQuestions = questions[difficulty] || [];
+                  return [0, 1].map((btnIndex) => {
+                    const question = diffQuestions[btnIndex];
+                    return question ? (
+                      <QuestionButton
+                        key={`${category}-${difficulty}-${btnIndex}`}
+                        difficulty={difficulty}
+                        isUsed={question?.isUsed || false}
+                        points={question?.points || 10}
+                        onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                        theme={theme}
+                        categories={categories}
+                        isLandscape={isLandscape}
+                        buttonSize={buttonSize}
+                        buttonFontSize={buttonFontSize}
+                      />
+                    ) : null;
+                  });
+                }).flat()}
+              </View>
+            </>
+          )}
+        </View>
+      </View>
+    );
+  }
+  
+  // الوضع الأفقي: بطاقات رأسية (صورة، اسم، أزرار في عمود)
+  const teamsHeaderWidth = 120;
+  const availableHeight = screenHeight - 60;
+  const availableWidth = screenWidth - teamsHeaderWidth - 50;
+  const numCategories = categories.length;
+  
+  // حساب عدد الأعمدة الممكنة
+  const minCardWidth = 60;
+  const maxColumns = Math.floor(availableWidth / minCardWidth);
+  const columns = Math.min(numCategories, maxColumns);
+  
+  const numButtons = 6;
+  const cardPadding = 8;
+  const verticalGaps = 3;
+  const totalGapSpace = verticalGaps * (numButtons - 1);
+  
+  const contentHeight = availableHeight - (cardPadding * 2);
+  
+  // توزيع المساحة: 15% صورة، 10% نص، 75% أزرار
+  const imageSize = Math.min(contentHeight * 0.15, 35);
+  const textSpace = contentHeight * 0.10;
+  const buttonsSpace = contentHeight * 0.75;
+  const buttonSize = Math.min((buttonsSpace - totalGapSpace) / numButtons, 45);
+  
+  const buttonFontSize = Math.min(buttonSize * 0.35, 15);
+  const fontSize = Math.min(textSpace * 0.4, 9);
+  
+  const cardWidth = buttonSize + (cardPadding * 2);
 
   return (
     <View style={[{
       backgroundColor: theme.colors.background?.surface || '#FFF',
-      borderRadius: 16,
-      marginVertical: 8,
-      marginHorizontal: 8,
-      paddingVertical: 16,
-      paddingHorizontal: 14,
+      borderRadius: 12,
+      padding: cardPadding,
       shadowColor: theme.colors.primary || '#2E5DB8',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.25,
-      shadowRadius: 8,
-      elevation: 6,
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      elevation: 5,
       borderWidth: 2,
       borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
       alignItems: 'center',
-      justifyContent: isLandscape ? 'center' : 'flex-start',
-      flex: 1,
-      flexDirection: isLandscape ? 'row' : 'column',
-      minHeight: isLandscape ? 130 : 'auto',
-      aspectRatio: isLandscape ? 2.5 : undefined,
+      justifyContent: 'flex-start',
+      width: cardWidth,
+      maxHeight: availableHeight - 8,
+      marginVertical: 3,
+      marginHorizontal: 3,
     }, style]}>
-      {/* الصورة واسم الفئة - في الطرف الأيسر */}
-      <View style={{
-        alignItems: 'center',
-        marginBottom: isLandscape ? 0 : 10,
-        marginRight: isLandscape ? 16 : 0,
-        width: isLandscape ? 'auto' : '100%',
-        minWidth: isLandscape ? 75 : undefined,
-      }}>
-        <Image 
-          source={categoryImages[category]} 
-          style={{
-            width: isLandscape ? 55 : 60,
-            height: isLandscape ? 55 : 60,
-            borderRadius: 14,
-            marginBottom: isLandscape ? 0 : 8,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          }}
-          resizeMode="cover"
-        />
-        <Text 
-          style={{
-            fontSize: isLandscape ? 12 : 14,
-            fontWeight: '700',
-            textAlign: 'center',
-            maxWidth: isLandscape ? 70 : '95%',
-            color: theme.colors.text?.primary || '#000',
-            fontFamily: 'ReadexPro_700Bold',
-          }}
-          numberOfLines={2}
-        >
-          {category}
-        </Text>
-      </View>
+      {/* الصورة - دائمًا في الأعلى */}
+      <Image 
+        source={categoryImages[category]} 
+        style={{
+          width: imageSize,
+          height: imageSize,
+          borderRadius: 6,
+          marginBottom: 3,
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        }}
+        resizeMode="cover"
+      />
+      
+      {/* اسم الفئة - تحت الصورة */}
+      <Text 
+        style={{
+          fontSize: fontSize,
+          fontWeight: '700',
+          textAlign: 'center',
+          width: '100%',
+          color: theme.colors.text?.primary || '#000',
+          fontFamily: 'ReadexPro_700Bold',
+          marginBottom: 3,
+          lineHeight: fontSize * 1.2,
+          height: textSpace,
+        }}
+        numberOfLines={2}
+        adjustsFontSizeToFit
+        minimumFontScale={0.5}
+      >
+        {category}
+      </Text>
 
-      {/* الأسئلة - منظمة حسب مستوى الصعوبة */}
+      {/* أزرار الأسئلة - في عمود واحد */}
       <View style={{
-        flexDirection: isLandscape ? 'column' : 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: isLandscape ? 8 : 6,
-        width: isLandscape ? 'auto' : '100%',
-        flex: isLandscape ? 1 : undefined,
+        gap: verticalGaps,
+        width: '100%',
       }}>
-        {/* ترتيب الأزرار حسب الصعوبة: سهل (0,1), متوسط (2,3), صعب (4,5) */}
-        {difficultyOrder.map((difficulty, diffIndex) => (
-          <View key={`row-${difficulty}`} style={{
-            flexDirection: isLandscape ? 'row' : 'column',
-            gap: isLandscape ? 5 : 4,
-            width: isLandscape ? 'auto' : '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-            {[0, 1].map((btnIndex) => {
-              const difficultyQuestions = questions[difficulty] || [];
-              const question = difficultyQuestions[btnIndex];
-              
-              return question ? (
-                <QuestionButton
-                  key={`${category}-${difficulty}-${btnIndex}`}
-                  difficulty={difficulty}
-                  isUsed={question?.isUsed || false}
-                  points={question?.points || 10}
-                  onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
-                  theme={theme}
-                  categories={categories}
-                  isLandscape={isLandscape}
-                />
-              ) : null;
-            })}
-          </View>
-        ))}
+        {difficultyOrder.map((difficulty) => {
+          const diffQuestions = questions[difficulty] || [];
+          return [0, 1].map((btnIndex) => {
+            const question = diffQuestions[btnIndex];
+            return question ? (
+              <QuestionButton
+                key={`${category}-${difficulty}-${btnIndex}`}
+                difficulty={difficulty}
+                isUsed={question?.isUsed || false}
+                points={question?.points || 10}
+                onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                theme={theme}
+                categories={categories}
+                isLandscape={isLandscape}
+                buttonSize={buttonSize}
+                buttonFontSize={buttonFontSize}
+              />
+            ) : null;
+          });
+        }).flat()}
       </View>
     </View>
   );
@@ -944,7 +1147,7 @@ const GameScreen = () => {
             zIndex: 0,
           }}
         />
-        <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 2, flexDirection: 'row-reverse' }]}>
+        <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 1, flexDirection: 'row-reverse' }]}>
           {/* التيم هيدر على الجانب الأيمن - رأسي مع خلفية متحركة احترافية */}
           <View style={{
             width: 120,
@@ -956,6 +1159,7 @@ const GameScreen = () => {
             position: 'relative',
             borderTopRightRadius: 22,
             borderBottomRightRadius: 22,
+            zIndex: 2,
           }}>
             {/* خلفية متحركة احترافية */}
             <View style={{
@@ -1015,7 +1219,7 @@ const GameScreen = () => {
             <View style={{
               flex: 1,
               position: 'relative',
-              zIndex: 1,
+              zIndex: 3,
               paddingHorizontal: 4,
               paddingVertical: 4,
             }}>
@@ -1042,67 +1246,43 @@ const GameScreen = () => {
             </View>
           </View>
 
-          {/* تخطيط أفقي: الفئات والأسئلة تملأ بقية المساحة */}
+          {/* تخطيط: الفئات والأسئلة */}
           <View style={{ 
             flex: 1,
             height: '100%',
             width: '100%',
-            paddingHorizontal: isLandscapeMode ? 2 : 4,
-            paddingVertical: isLandscapeMode ? 8 : 4,
-            paddingTop: isLandscapeMode ? 12 : 4,
-            justifyContent: isLandscapeMode ? 'flex-start' : 'flex-start',
+            paddingHorizontal: 4,
+            paddingVertical: 4,
+            justifyContent: 'center',
             alignItems: 'center',
+            zIndex: 1,
           }}>
-            {/* الجزء الرئيسي (الفئات والأسئلة) - Grid متعدد الأعمدة */}
+            {/* عرض الفئات والأسئلة في شبكة بدون سكرول */}
             <View
-                style={{
-                  flex: 1,
-                  width: '100%',
-                  flexDirection: isLandscapeMode ? 'row' : 'column',
-                  flexWrap: isLandscapeMode ? 'wrap' : 'nowrap',
-                  justifyContent: isLandscapeMode ? 'center' : 'flex-start',
-                  alignItems: isLandscapeMode ? 'flex-start' : 'center',
-                  paddingHorizontal: isLandscapeMode ? 4 : 6,
-                  paddingVertical: isLandscapeMode ? 4 : 6,
-                }}
+              style={{
+                width: '100%',
+                height: '100%',
+                flexDirection: isLandscapeMode ? 'row' : 'column',
+                flexWrap: isLandscapeMode ? 'wrap' : 'nowrap',
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignContent: 'center',
+              }}
             >
                 {(() => {
                   const categories = gameData.categories || [];
                   
-                  return (
-                    <View style={{ 
-                      flexDirection: isLandscapeMode ? 'row' : 'column', 
-                      flexWrap: 'wrap',
-                      justifyContent: 'center',
-                      alignItems: isLandscapeMode ? 'flex-start' : 'center',
-                      width: '100%',
-                      paddingHorizontal: 4,
-                    }}>
-                      {categories.map(category => (
-                        <TouchableOpacity
-                          key={category}
-                          style={{ 
-                            width: isLandscapeMode ? '25%' : '48%', 
-                            padding: 4,
-                            aspectRatio: isLandscapeMode ? 1.3 : 1,
-                          }}
-                          activeOpacity={0.7}
-                          onPress={() => handleQuestionPress(category, 0)}
-                        >
-                          <CategoryColumn
-                            category={category}
-                            questions={gameData.questions[category]}
-                            onQuestionPress={handleQuestionPress}
-                            style={{ 
-                              width: '100%',
-                            }}
-                            theme={theme}
-                            categories={categories}
-                          />
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  );
+                  return categories.map(category => (
+                    <CategoryCard
+                      key={category}
+                      category={category}
+                      questions={gameData.questions[category]}
+                      onQuestionPress={handleQuestionPress}
+                      theme={theme}
+                      categories={categories}
+                      isLandscape={isLandscapeMode}
+                    />
+                  ));
                 })()}
             </View>
           </View>
