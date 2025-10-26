@@ -128,19 +128,6 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
     'صعب': { bg: '#FFCDD2', border: '#C62828', text: '#B71C1C' },  
   };
 
-  // حساب حجم الزر بناءً على عدد الفئات
-  const getButtonSize = () => {
-    if (categories?.length === 6) {
-      return { width: 22, height: 22, margin: 2, fontSize: 7 };
-    } else if (categories?.length === 8) {
-      return { width: 20, height: 20, margin: 1.5, fontSize: 6.5 };
-    } else {
-      return { width: 21, height: 21, margin: 1.8, fontSize: 6.8 };
-    }
-  };
-
-  const buttonSize = getButtonSize();
-
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -148,20 +135,20 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
       style={[
         staticStyles.questionButton,
         {
-          width: buttonSize.width,
-          height: buttonSize.height,
-          margin: buttonSize.margin,
+          width: 52,
+          height: 52,
+          margin: 4,
           backgroundColor: isUsed ? '#F0F0F0' : difficultyColors[difficulty].bg,
           borderColor: isUsed ? '#D0D0D0' : difficultyColors[difficulty].border,
-          borderWidth: 1.8,
+          borderWidth: 2,
           justifyContent: 'center',
           alignItems: 'center',
-          borderRadius: 6,
-          elevation: isUsed ? 0 : 2,
+          borderRadius: 8,
+          elevation: isUsed ? 0 : 3,
           shadowColor: difficultyColors[difficulty].border,
-          shadowOffset: { width: 0, height: 0.8 },
-          shadowOpacity: isUsed ? 0 : 0.2,
-          shadowRadius: 1.5,
+          shadowOffset: { width: 0, height: 1.5 },
+          shadowOpacity: isUsed ? 0 : 0.25,
+          shadowRadius: 2,
         },
       ]}
     >
@@ -171,7 +158,7 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
           {
             color: isUsed ? '#B0B0B0' : difficultyColors[difficulty].text,
             opacity: 1,
-            fontSize: buttonSize.fontSize,
+            fontSize: 14,
             fontWeight: '700',
             fontFamily: 'ReadexPro_700Bold'
           }
@@ -191,47 +178,42 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
     <View style={[{
       backgroundColor: theme.colors.background?.surface || '#FFF',
       borderRadius: 10,
-      marginVertical: 2,
-      marginHorizontal: 2,
-      paddingVertical: isLandscape ? 8 : 6,
-      paddingHorizontal: isLandscape ? 6 : 10,
+      marginVertical: 3,
+      marginHorizontal: 3,
+      paddingVertical: 10,
+      paddingHorizontal: 10,
       shadowColor: theme.colors.primary || '#2E5DB8',
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
-      borderWidth: 1,
+      shadowOpacity: 0.15,
+      shadowRadius: 5,
+      elevation: 4,
+      borderWidth: 1.5,
       borderColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
       alignItems: 'center',
-      justifyContent: isLandscape ? 'center' : 'space-between',
+      justifyContent: 'center',
       flex: 1,
-      flexDirection: isLandscape ? 'column' : 'row',
+      flexDirection: 'column',
     }, style]}>
-      {/* الصورة واسم الفئة - في الأعلى (Landscape) أو اليسار (Portrait) */}
+      {/* الصورة واسم الفئة - في الأعلى */}
       <View style={{
         alignItems: 'center',
-        marginBottom: isLandscape ? 6 : 0,
-        marginRight: isLandscape ? 0 : 8,
-        width: isLandscape ? '100%' : 'auto',
-        minWidth: isLandscape ? 'auto' : 80,
-        paddingRight: isLandscape ? 0 : 6,
-        borderRightWidth: isLandscape ? 0 : 1,
-        borderRightColor: isLandscape ? 'transparent' : (theme.colors.border?.primary || theme.colors.primary || '#E8E8E8'),
+        marginBottom: 10,
+        width: '100%',
       }}>
         <Image 
           source={categoryImages[category]} 
           style={{
-            width: 32,
-            height: 32,
-            borderRadius: 10,
-            marginBottom: 3,
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            marginBottom: 6,
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
           }}
           resizeMode="cover"
         />
         <Text 
           style={{
-            fontSize: 10,
+            fontSize: 11,
             fontWeight: '700',
             textAlign: 'center',
             maxWidth: '95%',
@@ -246,20 +228,18 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
       {/* الأسئلة - منظمة حسب مستوى الصعوبة */}
       <View style={{
-        flexDirection: isLandscape ? 'column' : 'row',
-        flexWrap: isLandscape ? 'nowrap' : 'wrap',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: isLandscape ? 4 : 2,
+        gap: 6,
         width: '100%',
-        flex: isLandscape ? 0 : 1,
       }}>
         {/* ترتيب الأزرار حسب الصعوبة: سهل (0,1), متوسط (2,3), صعب (4,5) */}
         {[0, 2, 4].map(startIdx => (
           <View key={`row-${startIdx}`} style={{
-            flexDirection: isLandscape ? 'row' : 'column',
-            gap: isLandscape ? 2 : 2,
-            width: isLandscape ? '100%' : 'auto',
+            flexDirection: 'row',
+            gap: 4,
+            width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
           }}>
