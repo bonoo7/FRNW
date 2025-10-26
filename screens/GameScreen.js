@@ -246,20 +246,21 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
       {/* الأسئلة - منظمة حسب مستوى الصعوبة */}
       <View style={{
-        flexDirection: isLandscape ? 'column' : 'row',
-        flexWrap: 'wrap',
+        flexDirection: isLandscape ? 'row' : 'row',
+        flexWrap: isLandscape ? 'wrap' : 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: isLandscape ? 2 : 3,
+        gap: isLandscape ? 8 : 3,
         width: isLandscape ? '100%' : 'auto',
         flex: isLandscape ? 0 : 1,
       }}>
         {/* ترتيب الأزرار: سهل (0,1), متوسط (2,3), صعب (4,5) */}
         {[0, 2, 4].map(startIdx => (
           <View key={`row-${startIdx}`} style={{
-            flexDirection: 'row',
+            flexDirection: isLandscape ? 'column' : 'row',
             gap: isLandscape ? 2 : 3,
-            marginBottom: isLandscape ? 2 : 0,
+            marginBottom: isLandscape ? 0 : 0,
+            width: isLandscape ? '48%' : 'auto',
           }}>
             {[startIdx, startIdx + 1].map(index => {
               const question = questionList[index];
