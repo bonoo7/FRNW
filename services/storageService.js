@@ -9,10 +9,44 @@ const STORAGE_KEYS = {
   STATISTICS: 'statistics',
   USED_QUESTIONS: 'usedQuestions',
   SETTINGS: 'settings',
-  QUESTION_CYCLE: 'questionCycle'
+  QUESTION_CYCLE: 'questionCycle',
+  CACHE_TIMESTAMP: 'cacheTimestamp'
 };
 
 const storage = AsyncStorage;
+
+// نظام التخزين المؤقت المحسّن
+const memoryCache = new Map();
+const CACHE_EXPIRY = 5 * 60 * 1000; // 5 دقائق
+
+const CacheManager = {
+  set: (key, value) => {
+    memoryCache.set(key, {
+      data: value,
+      timestamp: Date.now()
+    });
+  },
+  
+  get: (key) => {
+    const cached = memoryCache.get(key);
+    if (!cached) return null;
+    
+    if (Date.now() - cached.timestamp > CACHE_EXPIRY) {
+      memoryCache.delete(key);
+      return null;
+    }
+    
+    return cached.data;
+  },
+  
+  clear: (key) => {
+    if (key) {
+      memoryCache.delete(key);
+    } else {
+      memoryCache.clear();
+    }
+  }
+};
 
 // إضافة تشفير للبيانات المحفوظة
 const secureStorage = {
@@ -64,6 +98,10 @@ const StorageService = {
           timestamp: new Date().toISOString()
         })
       );
+      
+      // تحديث التخزين المؤقت
+      CacheManager.set(STORAGE_KEYS.CURRENT_GAME, gameData);
+      
       console.log('Game data saved successfully to storage');
       return true;
     } catch (error) {
@@ -72,9 +110,16 @@ const StorageService = {
     }
   },
 
-  // استرجاع اللعبة الحالية
+  // استرجاع اللعبة الحالية مع التخزين المؤقت
   getCurrentGame: async () => {
     try {
+      // البحث في التخزين المؤقت أولاً
+      const cached = CacheManager.get(STORAGE_KEYS.CURRENT_GAME);
+      if (cached) {
+        console.log('Returning cached game data');
+        return cached;
+      }
+
       console.log('Attempting to get current game');
       const gameData = await storage.getItem(STORAGE_KEYS.CURRENT_GAME);
       console.log('Raw game data from storage:', gameData);
@@ -85,6 +130,10 @@ const StorageService = {
       }
 
       const parsedData = validateGame(JSON.parse(gameData));
+      
+      // تخزين في الذاكرة
+      CacheManager.set(STORAGE_KEYS.CURRENT_GAME, parsedData);
+      
       console.log('Parsed game data:', parsedData);
       return parsedData;
     } catch (error) {
@@ -424,7 +473,7 @@ const StorageService = {
         !usedQuestions.some(uq => 
           uq.category === category && 
           uq.difficulty === difficulty && 
-          uq.questionId === q.id && 
+          uq.questionId === q.id &&
           uq.cycle === currentCycle
         )
       );
@@ -441,6 +490,16 @@ const StorageService = {
       return null;
     }
   },
+
+  // مسح الـ cache
+  clearCache: (key) => {
+    CacheManager.clear(key);
+  },
+
+  // مسح كل الـ cache
+  clearAllCache: () => {
+    CacheManager.clear();
+  }
 };
 
 export default StorageService;

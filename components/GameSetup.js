@@ -23,10 +23,8 @@ import { useRouter } from 'expo-router';
 import { Stack } from 'expo-router';
 import BackgroundPattern from '../components/BackgroundPattern';
 import AnimatedGridPattern from '../components/AnimatedGridPattern';
-import Animated, { 
-  useAnimatedStyle, 
-  withSpring 
-} from 'react-native-reanimated';
+// React Reanimated removed - not actively used
+// import Animated from 'react-native-reanimated';
 import { CategoryCard } from '../components/CategoryCard';
 import { GameService } from '../services/gameService';
 

@@ -123,9 +123,9 @@ const staticStyles = StyleSheet.create({
 
 const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories, isLandscape }) => {
   const difficultyColors = {
-    'سهل': { bg: '#C8E6C9', border: '#2E7D32', text: '#1B5E20' },
-    'متوسط': { bg: '#FFE0B2', border: '#E65100', text: '#BF360C' },
-    'صعب': { bg: '#FFCDD2', border: '#C62828', text: '#B71C1C' },  
+    'سهل': { bg: '#E8F5E9', border: '#2E7D32', text: '#1B5E20' },
+    'متوسط': { bg: '#FFF3E0', border: '#E65100', text: '#BF360C' },
+    'صعب': { bg: '#FFEBEE', border: '#C62828', text: '#B71C1C' },  
   };
 
   return (
@@ -133,32 +133,34 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
       onPress={onPress}
       disabled={isUsed}
       style={{
-        width: 60,
-        height: 50,
-        margin: 4,
-        backgroundColor: isUsed ? '#F0F0F0' : difficultyColors[difficulty].bg,
+        width: isLandscape ? 68 : 70,
+        height: isLandscape ? 56 : 60,
+        backgroundColor: isUsed ? '#F5F5F5' : difficultyColors[difficulty].bg,
         borderColor: isUsed ? '#D0D0D0' : difficultyColors[difficulty].border,
         borderWidth: 2.5,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 8,
-        elevation: isUsed ? 0 : 3,
+        borderRadius: 10,
+        elevation: isUsed ? 0 : 4,
         shadowColor: difficultyColors[difficulty].border,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: isUsed ? 0 : 0.3,
-        shadowRadius: 3,
+        shadowOpacity: isUsed ? 0 : 0.35,
+        shadowRadius: 4,
       }}
     >
-      <Text
-        style={{
-          color: isUsed ? '#B0B0B0' : difficultyColors[difficulty].text,
-          fontSize: 16,
-          fontWeight: '700',
-          fontFamily: 'ReadexPro_700Bold'
-        }}
-      >
-        {points}
-      </Text>
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <Text
+          style={{
+            color: isUsed ? '#B8B8B8' : difficultyColors[difficulty].text,
+            fontSize: isLandscape ? 18 : 20,
+            fontWeight: '800',
+            fontFamily: 'ReadexPro_700Bold',
+            lineHeight: isLandscape ? 20 : 24,
+          }}
+        >
+          {points}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -171,50 +173,50 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
   return (
     <View style={[{
       backgroundColor: theme.colors.background?.surface || '#FFF',
-      borderRadius: 12,
-      marginVertical: 6,
-      marginHorizontal: 6,
-      paddingVertical: 12,
-      paddingHorizontal: 12,
+      borderRadius: 16,
+      marginVertical: 8,
+      marginHorizontal: 8,
+      paddingVertical: 16,
+      paddingHorizontal: 14,
       shadowColor: theme.colors.primary || '#2E5DB8',
-      shadowOffset: { width: 0, height: 3 },
-      shadowOpacity: 0.2,
-      shadowRadius: 6,
-      elevation: 5,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 8,
+      elevation: 6,
       borderWidth: 2,
-      borderColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
+      borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
       alignItems: 'center',
-      justifyContent: isLandscape ? 'space-between' : 'flex-start',
+      justifyContent: isLandscape ? 'center' : 'flex-start',
       flex: 1,
       flexDirection: isLandscape ? 'row' : 'column',
-      minHeight: isLandscape ? 110 : 'auto',
-      aspectRatio: isLandscape ? 2.8 : undefined,
+      minHeight: isLandscape ? 130 : 'auto',
+      aspectRatio: isLandscape ? 2.5 : undefined,
     }, style]}>
-      {/* الصورة واسم الفئة */}
+      {/* الصورة واسم الفئة - في الطرف الأيسر */}
       <View style={{
         alignItems: 'center',
-        marginBottom: isLandscape ? 0 : 8,
-        marginRight: isLandscape ? 12 : 0,
+        marginBottom: isLandscape ? 0 : 10,
+        marginRight: isLandscape ? 16 : 0,
         width: isLandscape ? 'auto' : '100%',
-        minWidth: isLandscape ? 70 : undefined,
+        minWidth: isLandscape ? 75 : undefined,
       }}>
         <Image 
           source={categoryImages[category]} 
           style={{
-            width: isLandscape ? 50 : 55,
-            height: isLandscape ? 50 : 55,
-            borderRadius: 12,
-            marginBottom: isLandscape ? 0 : 6,
+            width: isLandscape ? 55 : 60,
+            height: isLandscape ? 55 : 60,
+            borderRadius: 14,
+            marginBottom: isLandscape ? 0 : 8,
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
           }}
           resizeMode="cover"
         />
         <Text 
           style={{
-            fontSize: isLandscape ? 11 : 13,
+            fontSize: isLandscape ? 12 : 14,
             fontWeight: '700',
             textAlign: 'center',
-            maxWidth: isLandscape ? 65 : '95%',
+            maxWidth: isLandscape ? 70 : '95%',
             color: theme.colors.text?.primary || '#000',
             fontFamily: 'ReadexPro_700Bold',
           }}
@@ -227,9 +229,9 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
       {/* الأسئلة - منظمة حسب مستوى الصعوبة */}
       <View style={{
         flexDirection: isLandscape ? 'column' : 'row',
-        justifyContent: isLandscape ? 'center' : 'center',
+        justifyContent: 'center',
         alignItems: 'center',
-        gap: isLandscape ? 6 : 4,
+        gap: isLandscape ? 8 : 6,
         width: isLandscape ? 'auto' : '100%',
         flex: isLandscape ? 1 : undefined,
       }}>
@@ -237,13 +239,12 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
         {difficultyOrder.map((difficulty, diffIndex) => (
           <View key={`row-${difficulty}`} style={{
             flexDirection: isLandscape ? 'row' : 'column',
-            gap: isLandscape ? 4 : 3,
+            gap: isLandscape ? 5 : 4,
             width: isLandscape ? 'auto' : '100%',
             justifyContent: 'center',
             alignItems: 'center',
           }}>
             {[0, 1].map((btnIndex) => {
-              const questionIndex = diffIndex * 2 + btnIndex;
               const difficultyQuestions = questions[difficulty] || [];
               const question = difficultyQuestions[btnIndex];
               
