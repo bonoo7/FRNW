@@ -126,11 +126,10 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   imageContainer: {
-    flex: 5,
+    flex: 3.5,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 2,
   },
   image: {
     width: '100%',
