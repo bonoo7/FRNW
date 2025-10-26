@@ -48,23 +48,23 @@ const staticStyles = StyleSheet.create({
     marginBottom: 0,
   },
   categoryImage: {
-    width: 30,
-    height: 30,
-    marginBottom: 0,
-    marginRight: 6,
+    width: 50,
+    height: 50,
+    marginBottom: 8,
+    marginRight: 0,
     borderRadius: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: 1,
   },
   categoryTitle: {
     flex: 1,
-    fontSize: 8,
+    fontSize: 14,
     fontWeight: FONTS.weights.bold,
-    textAlign: 'left',
+    textAlign: 'center',
     letterSpacing: 0,
   },
   questionsContainer: {
-    padding: 2,
+    padding: 8,
     alignItems: 'center',
     width: '100%',
     borderRadius: 2,
@@ -76,9 +76,9 @@ const staticStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 1,
-    gap: 1,
-    padding: 1,
+    marginBottom: 4,
+    gap: 4,
+    padding: 4,
     borderRadius: 2,
     flexWrap: 'wrap',
   },
@@ -97,31 +97,31 @@ const staticStyles = StyleSheet.create({
     textAlign: 'center',
   },
   questionButton: {
-    width: 28,
-    height: 10,
-    margin: 0.5,
-    borderRadius: 4,
-    borderWidth: 1.2,
+    width: 60,
+    height: 50,
+    margin: 4,
+    borderRadius: 8,
+    borderWidth: 2,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
   },
   questionButtonGradient: {
     padding: 4,
-    borderRadius: 4,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
     width: '100%',
   },
   pointsText: {
-    fontSize: 7,
+    fontSize: 16,
     fontWeight: FONTS.weights.bold,
     textAlign: 'center',
   },
 });
 
-const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories }) => {
+const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories, isLandscape }) => {
   const difficultyColors = {
     'سهل': { bg: '#C8E6C9', border: '#2E7D32', text: '#1B5E20' },
     'متوسط': { bg: '#FFE0B2', border: '#E65100', text: '#BF360C' },
@@ -132,37 +132,30 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
     <TouchableOpacity
       onPress={onPress}
       disabled={isUsed}
-      style={[
-        staticStyles.questionButton,
-        {
-          width: 52,
-          height: 52,
-          margin: 4,
-          backgroundColor: isUsed ? '#F0F0F0' : difficultyColors[difficulty].bg,
-          borderColor: isUsed ? '#D0D0D0' : difficultyColors[difficulty].border,
-          borderWidth: 2,
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 8,
-          elevation: isUsed ? 0 : 3,
-          shadowColor: difficultyColors[difficulty].border,
-          shadowOffset: { width: 0, height: 1.5 },
-          shadowOpacity: isUsed ? 0 : 0.25,
-          shadowRadius: 2,
-        },
-      ]}
+      style={{
+        width: 60,
+        height: 50,
+        margin: 4,
+        backgroundColor: isUsed ? '#F0F0F0' : difficultyColors[difficulty].bg,
+        borderColor: isUsed ? '#D0D0D0' : difficultyColors[difficulty].border,
+        borderWidth: 2.5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 8,
+        elevation: isUsed ? 0 : 3,
+        shadowColor: difficultyColors[difficulty].border,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: isUsed ? 0 : 0.3,
+        shadowRadius: 3,
+      }}
     >
       <Text
-        style={[
-          staticStyles.pointsText,
-          {
-            color: isUsed ? '#B0B0B0' : difficultyColors[difficulty].text,
-            opacity: 1,
-            fontSize: 14,
-            fontWeight: '700',
-            fontFamily: 'ReadexPro_700Bold'
-          }
-        ]}
+        style={{
+          color: isUsed ? '#B0B0B0' : difficultyColors[difficulty].text,
+          fontSize: 16,
+          fontWeight: '700',
+          fontFamily: 'ReadexPro_700Bold'
+        }}
       >
         {points}
       </Text>
@@ -172,51 +165,56 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
 
 const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
   const isLandscape = useIsLandscape();
-  const questionList = Object.values(questions).flat();
+
+  const difficultyOrder = ['سهل', 'متوسط', 'صعب'];
 
   return (
     <View style={[{
       backgroundColor: theme.colors.background?.surface || '#FFF',
-      borderRadius: 10,
-      marginVertical: 3,
-      marginHorizontal: 3,
-      paddingVertical: 10,
-      paddingHorizontal: 10,
+      borderRadius: 12,
+      marginVertical: 6,
+      marginHorizontal: 6,
+      paddingVertical: 12,
+      paddingHorizontal: 12,
       shadowColor: theme.colors.primary || '#2E5DB8',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.15,
-      shadowRadius: 5,
-      elevation: 4,
-      borderWidth: 1.5,
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      elevation: 5,
+      borderWidth: 2,
       borderColor: theme.colors.border?.primary || theme.colors.primary || '#E8E8E8',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: isLandscape ? 'space-between' : 'flex-start',
       flex: 1,
-      flexDirection: 'column',
+      flexDirection: isLandscape ? 'row' : 'column',
+      minHeight: isLandscape ? 110 : 'auto',
+      aspectRatio: isLandscape ? 2.8 : undefined,
     }, style]}>
-      {/* الصورة واسم الفئة - في الأعلى */}
+      {/* الصورة واسم الفئة */}
       <View style={{
         alignItems: 'center',
-        marginBottom: 10,
-        width: '100%',
+        marginBottom: isLandscape ? 0 : 8,
+        marginRight: isLandscape ? 12 : 0,
+        width: isLandscape ? 'auto' : '100%',
+        minWidth: isLandscape ? 70 : undefined,
       }}>
         <Image 
           source={categoryImages[category]} 
           style={{
-            width: 44,
-            height: 44,
+            width: isLandscape ? 50 : 55,
+            height: isLandscape ? 50 : 55,
             borderRadius: 12,
-            marginBottom: 6,
+            marginBottom: isLandscape ? 0 : 6,
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
           }}
           resizeMode="cover"
         />
         <Text 
           style={{
-            fontSize: 11,
+            fontSize: isLandscape ? 11 : 13,
             fontWeight: '700',
             textAlign: 'center',
-            maxWidth: '95%',
+            maxWidth: isLandscape ? 65 : '95%',
             color: theme.colors.text?.primary || '#000',
             fontFamily: 'ReadexPro_700Bold',
           }}
@@ -228,32 +226,37 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
       {/* الأسئلة - منظمة حسب مستوى الصعوبة */}
       <View style={{
-        flexDirection: 'column',
-        justifyContent: 'center',
+        flexDirection: isLandscape ? 'column' : 'row',
+        justifyContent: isLandscape ? 'center' : 'center',
         alignItems: 'center',
-        gap: 6,
-        width: '100%',
+        gap: isLandscape ? 6 : 4,
+        width: isLandscape ? 'auto' : '100%',
+        flex: isLandscape ? 1 : undefined,
       }}>
         {/* ترتيب الأزرار حسب الصعوبة: سهل (0,1), متوسط (2,3), صعب (4,5) */}
-        {[0, 2, 4].map(startIdx => (
-          <View key={`row-${startIdx}`} style={{
-            flexDirection: 'row',
-            gap: 4,
-            width: '100%',
+        {difficultyOrder.map((difficulty, diffIndex) => (
+          <View key={`row-${difficulty}`} style={{
+            flexDirection: isLandscape ? 'row' : 'column',
+            gap: isLandscape ? 4 : 3,
+            width: isLandscape ? 'auto' : '100%',
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-            {[startIdx, startIdx + 1].map(index => {
-              const question = questionList[index];
+            {[0, 1].map((btnIndex) => {
+              const questionIndex = diffIndex * 2 + btnIndex;
+              const difficultyQuestions = questions[difficulty] || [];
+              const question = difficultyQuestions[btnIndex];
+              
               return question ? (
                 <QuestionButton
-                  key={`${category}-${index}`}
-                  difficulty={question?.difficulty || 'سهل'}
-                  isUsed={question?.used || false}
+                  key={`${category}-${difficulty}-${btnIndex}`}
+                  difficulty={difficulty}
+                  isUsed={question?.isUsed || false}
                   points={question?.points || 10}
-                  onPress={() => onQuestionPress?.(category, index)}
+                  onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
                   theme={theme}
                   categories={categories}
+                  isLandscape={isLandscape}
                 />
               ) : null;
             })}
@@ -1067,17 +1070,22 @@ const GameScreen = () => {
                   
                   return (
                     <View style={{ 
-                      flexDirection: 'row', 
+                      flexDirection: isLandscapeMode ? 'row' : 'column', 
                       flexWrap: 'wrap',
                       justifyContent: 'center',
-                      alignItems: 'flex-start',
+                      alignItems: isLandscapeMode ? 'flex-start' : 'center',
                       width: '100%',
                       paddingHorizontal: 4,
                     }}>
                       {categories.map(category => (
                         <TouchableOpacity
                           key={category}
-                          style={{ width: isLandscapeMode ? '25%' : '33.33%', padding: 4 }}
+                          style={{ 
+                            width: isLandscapeMode ? '25%' : '48%', 
+                            padding: 4,
+                            aspectRatio: isLandscapeMode ? 1.3 : 1,
+                          }}
+                          activeOpacity={0.7}
                           onPress={() => handleQuestionPress(category, 0)}
                         >
                           <CategoryColumn
