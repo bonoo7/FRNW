@@ -46,7 +46,8 @@
     "clean": "expo start --clear",
     "doctor": "expo doctor",
     "compress:images": "node scripts/compress-final.js",
-    "analyze:images": "node scripts/analyze-images.js"
+    "analyze:images": "node scripts/analyze-images.js",
+    "analyze:bundle": "node scripts/analyze-bundle.js"
   },
   "dependencies": {
     "@expo-google-fonts/mada": "^0.2.3",

@@ -246,20 +246,22 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
       {/* الأسئلة - منظمة حسب مستوى الصعوبة */}
       <View style={{
-        flexDirection: isLandscape ? 'row' : 'column',
-        flexWrap: isLandscape ? 'wrap' : 'nowrap',
+        flexDirection: isLandscape ? 'column' : 'row',
+        flexWrap: isLandscape ? 'nowrap' : 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: isLandscape ? 8 : 2,
-        width: isLandscape ? '100%' : 'auto',
+        gap: isLandscape ? 4 : 2,
+        width: '100%',
         flex: isLandscape ? 0 : 1,
       }}>
         {/* ترتيب الأزرار حسب الصعوبة: سهل (0,1), متوسط (2,3), صعب (4,5) */}
         {[0, 2, 4].map(startIdx => (
           <View key={`row-${startIdx}`} style={{
-            flexDirection: isLandscape ? 'column' : 'row',
+            flexDirection: isLandscape ? 'row' : 'column',
             gap: isLandscape ? 2 : 2,
-            width: isLandscape ? '48%' : 'auto',
+            width: isLandscape ? '100%' : 'auto',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
             {[startIdx, startIdx + 1].map(index => {
               const question = questionList[index];
@@ -1084,27 +1086,33 @@ const GameScreen = () => {
                   const categories = gameData.categories || [];
                   
                   return (
-                    <>
+                    <View style={{ 
+                      flexDirection: 'row', 
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      alignItems: 'flex-start',
+                      width: '100%',
+                      paddingHorizontal: 4,
+                    }}>
                       {categories.map(category => (
-                        <CategoryColumn
+                        <TouchableOpacity
                           key={category}
-                          category={category}
-                          questions={gameData.questions[category]}
-                          onQuestionPress={handleQuestionPress}
-                          style={{ 
-                            width: isLandscapeMode ? '32%' : '100%',
-                            marginHorizontal: isLandscapeMode ? '1%' : 0,
-                            marginBottom: isLandscapeMode ? 6 : 10,
-                            marginVertical: isLandscapeMode ? 4 : 6,
-                            flex: 0,
-                            minHeight: isLandscapeMode ? 220 : 'auto',
-                            height: isLandscapeMode ? 'auto' : undefined,
-                          }}
-                          theme={theme}
-                          categories={categories}
-                        />
+                          style={{ width: isLandscapeMode ? '25%' : '33.33%', padding: 4 }}
+                          onPress={() => handleQuestionPress(category, 0)}
+                        >
+                          <CategoryColumn
+                            category={category}
+                            questions={gameData.questions[category]}
+                            onQuestionPress={handleQuestionPress}
+                            style={{ 
+                              width: '100%',
+                            }}
+                            theme={theme}
+                            categories={categories}
+                          />
+                        </TouchableOpacity>
                       ))}
-                    </>
+                    </View>
                   );
                 })()}
             </View>
