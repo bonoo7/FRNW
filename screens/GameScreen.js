@@ -175,21 +175,21 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const availableHeight = (screenHeight - 60) / numCategories; // تقسيم الارتفاع على عدد الفئات
     
     const numButtons = 6;
-    const cardPadding = 4; // تقليل من 6 إلى 4
-    const containerMarginHorizontal = 8;
-    const containerMarginVertical = 6;
+    const cardPadding = 2; // تقليل من 4 إلى 2
+    const containerMarginHorizontal = 4; // تقليل من 8 إلى 4
+    const containerMarginVertical = 3; // تقليل من 6 إلى 3
     
-    // المسافات بين البطاقات
-    const horizontalGaps = 1; // تقليل من 2 إلى 1
-    const verticalGaps = 1; // تقليل من 2 إلى 1
+    // المسافات بين البطاقات - تقليل إلى 0
+    const horizontalGaps = 0; // تقليل من 1 إلى 0
+    const verticalGaps = 0; // تقليل من 1 إلى 0
     
     // حساب المساحة المتاحة بعد المسافات الحول البطاقة
     const contentWidth = availableWidth - (cardPadding * 2) - (containerMarginHorizontal * 2);
     const contentHeight = availableHeight - (cardPadding * 2) - (containerMarginVertical * 2);
     
     // توزيع المساحة الأفقية - تقليل مساحة الفئة لإفساح مجال للأزرار
-    const categoryInfoSpace = Math.min(contentWidth * 0.18, 70); // تقليل من 0.22 إلى 0.18 ومن 95 إلى 70
-    const buttonsSpace = contentWidth - categoryInfoSpace - 5;
+    const categoryInfoSpace = Math.min(contentWidth * 0.16, 60); // تقليل من 0.18 و 70 إلى 0.16 و 60
+    const buttonsSpace = contentWidth - categoryInfoSpace - 3; // تقليل من 5 إلى 3
     
     // حساب حجم الزر بناءً على المساحة المتاحة
     const buttonsPerRow = 3;
@@ -201,14 +201,14 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const totalVerticalGaps = verticalGaps * (numRows - 1);
     const maxButtonHeight = (contentHeight - totalVerticalGaps) / numRows;
     
-    const buttonSize = Math.min(maxButtonWidth, maxButtonHeight, 40); // تقليل من 45 إلى 40
-    const imageSize = Math.min(buttonSize * 0.85, 40); // تقليل من 0.9 و 50 إلى 0.85 و 40
+    const buttonSize = Math.min(maxButtonWidth, maxButtonHeight, 38); // تقليل من 40 إلى 38
+    const imageSize = Math.min(buttonSize * 0.8, 35); // تقليل من 0.85 و 40 إلى 0.8 و 35
     
-    const buttonFontSize = Math.min(buttonSize * 0.36, 13); // تقليل من 0.38 و 15 إلى 0.36 و 13
-    const fontSize = Math.min(categoryInfoSpace * 0.16, 10); // تقليل من 0.18 و 12 إلى 0.16 و 10
+    const buttonFontSize = Math.min(buttonSize * 0.34, 12); // تقليل من 0.36 و 13 إلى 0.34 و 12
+    const fontSize = Math.min(categoryInfoSpace * 0.15, 9); // تقليل من 0.16 و 10 إلى 0.15 و 9
     
     // ضمان أن البطاقة تملأ الارتفاع المتاح تماماً
-    const cardHeight = availableHeight - 4;
+    const cardHeight = availableHeight - 2; // تقليل من 4 إلى 2
     
     return (
       <View style={[{
@@ -227,8 +227,8 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         justifyContent: 'flex-start',
         height: cardHeight,
         width: Math.min(availableWidth - 8, contentWidth + (cardPadding * 2)),
-        marginVertical: 8,   // زيادة المسافة العمودية من 3 إلى 8
-        marginHorizontal: 8, // زيادة المسافة الأفقية من 4 إلى 8
+        marginVertical: 2,   // تقليل من 8 إلى 2
+        marginHorizontal: 2, // تقليل من 8 إلى 2
       }, style]}>
         {/* الصورة والاسم في عمود على اليمين */}
         <View style={{
@@ -377,28 +377,28 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
   const numCategories = categories.length;
   
   // جميع البطاقات في صف واحد - متجاوبة مع الحاوية
-  const containerMarginHorizontal = 8;
-  const containerMarginVertical = 6;
-  const cardMarginBetween = 4; // مسافة صغيرة بين البطاقات
+  const containerMarginHorizontal = 4; // تقليل من 8 إلى 4
+  const containerMarginVertical = 3; // تقليل من 6 إلى 3
+  const cardMarginBetween = 2; // تقليل من 4 إلى 2
   
   const numButtons = 6;
-  const cardPadding = 3; // تقليل من 6 إلى 3
-  const verticalGaps = 1; // تقليل من 2 إلى 1
+  const cardPadding = 2; // تقليل من 3 إلى 2
+  const verticalGaps = 0; // تقليل من 1 إلى 0
   
   // حساب المسافات الكلية
   const totalBetweenSpacing = cardMarginBetween * (numCategories - 1);
   const contentWidth = availableWidth - (containerMarginHorizontal * 2) - (cardPadding * 2) - totalBetweenSpacing;
   const contentHeight = availableHeight - (containerMarginVertical * 2) - (cardPadding * 2);
   
-  // توزيع المساحة: 12% صورة، 8% نص، 80% أزرار
-  const imageSize = Math.min(contentHeight * 0.12, 35); // تقليل من 0.15 و 40 إلى 0.12 و 35
-  const textSpace = contentHeight * 0.08;
-  const buttonsSpace = contentHeight * 0.80;
+  // توزيع المساحة: 10% صورة، 7% نص، 83% أزرار
+  const imageSize = Math.min(contentHeight * 0.10, 32); // تقليل من 0.12 و 35 إلى 0.10 و 32
+  const textSpace = contentHeight * 0.07;
+  const buttonsSpace = contentHeight * 0.83;
   const totalGapSpace = verticalGaps * (numButtons - 1);
-  const buttonSize = Math.min((buttonsSpace - totalGapSpace) / numButtons, 40); // تقليل من 45 إلى 40
+  const buttonSize = Math.min((buttonsSpace - totalGapSpace) / numButtons, 38); // تقليل من 40 إلى 38
   
-  const buttonFontSize = Math.min(buttonSize * 0.35, 13); // تقليل من 15 إلى 13
-  const fontSize = Math.min(textSpace * 0.4, 9); // تقليل من 10 إلى 9
+  const buttonFontSize = Math.min(buttonSize * 0.33, 12); // تقليل من 0.35 و 13 إلى 0.33 و 12
+  const fontSize = Math.min(textSpace * 0.4, 8); // تقليل من 9 إلى 8
   
   // حساب عرض البطاقة - متجاوبة مع الحاوية
   // نوزع العرض المتاح على جميع البطاقات بالتساوي
@@ -420,8 +420,8 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
       justifyContent: 'flex-start',
       width: cardWidth,
       maxHeight: availableHeight - 8,
-      marginVertical: 8,   // زيادة المسافة العمودية من 3 إلى 8
-      marginHorizontal: 8, // زيادة المسافة الأفقية من 3 إلى 8
+      marginVertical: 2,   // تقليل من 8 إلى 2
+      marginHorizontal: 1, // تقليل من 8 إلى 1
     }, style]}>
       {/* الصورة - دائمًا في الأعلى */}
       <Image 
@@ -1275,7 +1275,7 @@ const GameScreen = () => {
             alignItems: 'center',
             zIndex: 1,
           }}>
-            {/* عرض الفئات والأسئلة في صف واحد أفقي مع مسافات */}
+            {/* عرض الفئات والأسئلة في صف واحد أفقي مع مسافات قليلة */}
             <View
               style={{
                 width: '100%',
@@ -1286,8 +1286,8 @@ const GameScreen = () => {
                 alignItems: 'center',
                 alignContent: 'center',
                 overflow: isLandscapeMode ? 'scroll' : 'visible', // السماح بالتمرير الأفقي في الوضع الأفقي
-                paddingHorizontal: 12, // مسافة أفقية من الحواف
-                paddingVertical: 12,   // مسافة عمودية من الحواف
+                paddingHorizontal: 2, // تقليل من 12 إلى 2
+                paddingVertical: 2,   // تقليل من 12 إلى 2
               }}
             >
                 {(() => {
