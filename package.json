@@ -1,6 +1,6 @@
 {
   "name": "fakker",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "description": "لعبة مسابقات ثقافية تفاعلية بأكثر من 9,600 سؤال في 39 فئة مختلفة",
   "main": "expo-router/entry",
   "keywords": [
