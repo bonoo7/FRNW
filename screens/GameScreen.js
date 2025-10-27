@@ -6,6 +6,7 @@ import { Stack } from 'expo-router';
 import { GameService } from '../services/gameService';
 import { TeamsHeader } from '../components/TeamsHeader';
 import BackgroundPattern from '../components/BackgroundPattern';
+import AnimatedGridPattern from '../components/AnimatedGridPattern';
 import StorageService from '../services/storageService';
 import PentaPointsService from '../services/pentaPointsService';
 import { useTheme } from '../contexts/ThemeContext';
@@ -13,6 +14,7 @@ import { SPACING, FONTS } from '../styles/theme';
 import categoryImages from '../assets/categories';
 import QuestionDetailsModal from '../components/QuestionDetailsModal';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useOrientation, useIsLandscape } from '../hooks/useOrientation';
 
 const staticStyles = StyleSheet.create({
   container: {
@@ -20,13 +22,13 @@ const staticStyles = StyleSheet.create({
   },
   categoriesContainer: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 12,
     overflow: 'hidden',
-    marginTop: SPACING.md, // زيادة الهامش العلوي من SPACING.xs إلى SPACING.md
-    marginBottom: SPACING.md,
-    marginHorizontal: SPACING.xs,
-    width: '90%', // تقليل العرض إلى 90% من عرض الشاشة
-    alignSelf: 'center', // توسيط الحاوية
+    marginTop: SPACING.xs,
+    marginBottom: SPACING.xs,
+    marginHorizontal: SPACING.xxs,
+    width: '98%',
+    alignSelf: 'center',
   },
   scrollView: {
     flex: 1,
@@ -35,47 +37,50 @@ const staticStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: SPACING.xs,
-    padding: SPACING.xs,
+    gap: 4,
+    padding: 4,
   },
   categoryHeader: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: SPACING.xs,
-    borderBottomWidth: 1,
-    marginBottom: 2,
+    padding: 4,
+    borderBottomWidth: 0,
+    marginBottom: 0,
   },
   categoryImage: {
-    width: 44,
-    height: 44,
-    marginBottom: 2,
-    borderRadius: 18,
+    width: 50,
+    height: 50,
+    marginBottom: 8,
+    marginRight: 0,
+    borderRadius: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 2,
+    padding: 1,
   },
   categoryTitle: {
     flex: 1,
-    fontSize: 10, // تعديل حجم الخط إلى 10
+    fontSize: 14,
     fontWeight: FONTS.weights.bold,
     textAlign: 'center',
     letterSpacing: 0,
   },
   questionsContainer: {
-    padding: SPACING.xs,
+    padding: 8,
     alignItems: 'center',
     width: '100%',
-    borderRadius: 4,
-    margin: 2,
+    borderRadius: 2,
+    margin: 0,
+    flex: 1,
   },
   difficultyRow: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 0,
-    gap: 1,
-    padding: 1,
+    marginBottom: 4,
+    gap: 4,
+    padding: 4,
     borderRadius: 2,
+    flexWrap: 'wrap',
   },
   loadingContainer: {
     flex: 1,
@@ -92,263 +97,438 @@ const staticStyles = StyleSheet.create({
     textAlign: 'center',
   },
   questionButton: {
-    width: 36,
-    height: 9,
-    margin: 0.5,
-    borderRadius: 36,
+    width: 60,
+    height: 50,
+    margin: 4,
+    borderRadius: 8,
     borderWidth: 2,
     overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   questionButtonGradient: {
-    padding: 2,
-    borderRadius: 2,
+    padding: 4,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
+    width: '100%',
   },
   pointsText: {
-    fontSize: 8,
+    fontSize: 16,
     fontWeight: FONTS.weights.bold,
+    textAlign: 'center',
   },
 });
 
-const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories }) => {
+const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories, isLandscape, buttonSize = 50, buttonFontSize = 17 }) => {
   const difficultyColors = {
-    'سهل': theme.colors.gradient?.success || ['#4CAF50', '#388E3C'],
-    'متوسط': theme.colors.gradient?.warning || ['#FFA000', '#FFD740'],
-    'صعب': ['#FF0000', '#D32F2F'],  
-  };
-
-  const difficultyBackgrounds = {
-    'سهل': `${theme.colors.success}20`,
-    'متوسط': `${theme.colors.warning}20`,
-    'صعب': `${theme.colors.error}20`,
-  };
-
-  const difficultyBorders = {
-    'سهل': theme.colors.border?.primary || theme.colors.success,
-    'متوسط': theme.colors.border?.primary || theme.colors.warning,
-    'صعب': theme.colors.border?.primary || theme.colors.error,  
+    'سهل': { bg: '#E8F5E9', border: '#2E7D32', text: '#1B5E20' },
+    'متوسط': { bg: '#FFF3E0', border: '#E65100', text: '#BF360C' },
+    'صعب': { bg: '#FFEBEE', border: '#C62828', text: '#B71C1C' },  
   };
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[
-        staticStyles.questionButton,
-        {
-          width: categories?.length === 6 ? 60 : 36,
-          height: categories?.length === 6 ? 12 : 9,
-          margin: categories?.length === 6 ? 2 : 0.5,
-          backgroundColor: isUsed ? `${theme.colors.background.card}80` : difficultyBackgrounds[difficulty],
-          borderColor: isUsed ? theme.colors.border : difficultyBorders[difficulty],
-          justifyContent: 'center',
-          alignItems: 'center',
-        },
-      ]}
+      disabled={isUsed}
+      style={{
+        width: buttonSize,
+        height: buttonSize,
+        backgroundColor: isUsed ? '#F5F5F5' : difficultyColors[difficulty].bg,
+        borderColor: isUsed ? '#D0D0D0' : difficultyColors[difficulty].border,
+        borderWidth: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        elevation: isUsed ? 0 : 4,
+        shadowColor: difficultyColors[difficulty].border,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: isUsed ? 0 : 0.35,
+        shadowRadius: 4,
+      }}
     >
-      <LinearGradient
-        colors={[
-          isUsed ? `${theme.colors.background.card}00` : `${difficultyColors[difficulty][0]}20`,
-          isUsed ? `${theme.colors.background.card}00` : `${difficultyColors[difficulty][1]}10`
-        ]}
-        style={[
-          staticStyles.questionButtonGradient,
-          {
-            width: '100%',
-            height: '100%',
-          }
-        ]}
+      <Text
+        style={{
+          color: isUsed ? '#B8B8B8' : difficultyColors[difficulty].text,
+          fontSize: buttonFontSize,
+          fontWeight: '800',
+          fontFamily: 'ReadexPro_700Bold',
+        }}
       >
-        <Text
-          style={[
-            staticStyles.pointsText,
-            {
-              color: isUsed ? theme.colors.text.secondary : theme.colors.text.primary,
-              opacity: isUsed ? 0.6 : 1,
-              fontSize: 10,
-              fontFamily: 'ReadexPro_700Bold'
-            }
-          ]}
-        >
-          {points}
-        </Text>
-      </LinearGradient>
+        {points}
+      </Text>
     </TouchableOpacity>
   );
 };
 
-const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, theme, categories }) => {
-  const primaryColorWithOpacity = `${theme.colors.primary}80`; // إضافة 80 للشفافية (حوالي 50%)
+const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme, categories, isLandscape }) => {
+  const difficultyOrder = ['سهل', 'متوسط', 'صعب'];
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
   
-  const columnStyles = StyleSheet.create({
-    column: {
-      flex: 0,
-      minWidth: categories?.length === 6 ? 150 : 100, // زيادة عرض البطاقة عند وجود 6 فئات
-      minHeight: 160,
-      borderRadius: 12,
-      overflow: 'hidden',
-      elevation: 2,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 4,
-      borderWidth: 0,
-      borderColor: primaryColorWithOpacity,
-      paddingBottom: 4,
-      margin: 2,
-      position: 'relative', 
-    },
-    backgroundImage: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: '100%',
-      height: '100%',
-      opacity: 0.15, 
-      zIndex: -1, 
-    },
-    categoryHeader: {
-      ...staticStyles.categoryHeader,
-      padding: SPACING.xs,
-      minHeight: 36, // تقليل الارتفاع الأدنى لرأس الفئة من 40 إلى 36
-      height: 70, // تقليل ارتفاع رأس الفئة من 80 إلى 70
-      alignItems: 'center',
-      justifyContent: 'center', // إضافة محاذاة رأسية للمنتصف
-      flexDirection: 'column',
-      backgroundColor: 'transparent',
-      borderBottomWidth: 2, 
-      borderBottomColor: primaryColorWithOpacity, // استخدام اللون نصف الشفاف
-    },
-    categoryImage: {
-      ...staticStyles.categoryImage,
-      width: 40, // تقليل عرض الصورة من 46 إلى 40
-      height: 40, // تقليل ارتفاع الصورة من 46 إلى 40
-      marginBottom: 2, // تقليل الهامش السفلي من 4 إلى 2
-      borderRadius: 18,
-      padding: 2,
-      borderWidth: 2, 
-      borderColor: primaryColorWithOpacity, // استخدام اللون نصف الشفاف
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-    },
-    categoryTitle: {
-      ...staticStyles.categoryTitle,
-      fontSize: 10, // تعديل حجم الخط إلى 10
-      textAlign: 'center',
-      marginTop: 2,
-      marginHorizontal: 2,
-      letterSpacing: 0,
-      flexWrap: 'wrap',
-      // إزالة الظلال
-      textShadowColor: undefined,
-      textShadowOffset: undefined,
-      textShadowRadius: undefined,
-      width: '100%',
-      height: 24, // تقليل ارتفاع اسم الفئة من 30 إلى 24
-      fontFamily: 'ReadexPro_600SemiBold'
-    },
-    questionsContainer: {
-      ...staticStyles.questionsContainer,
-      padding: 2,
-      marginBottom: 1,
-      backgroundColor: 'rgba(255, 255, 255, 0.3)', 
-      flex: 1, // إضافة خاصية flex لملء المساحة المتبقية
-      justifyContent: 'space-around', // توزيع الأسئلة بالتساوي
-      height: 80, // تقليل ارتفاع حاوية الأسئلة من 90 إلى 80
-    },
-    difficultyRow: {
-      ...staticStyles.difficultyRow,
-      marginBottom: 0,
-      justifyContent: 'center',
-      padding: categories?.length === 6 ? 4 : 1,
-      gap: categories?.length === 6 ? 4 : 2,
-      flexDirection: 'row', // تغيير من 'column' إلى 'row' لجعل الأزرار في نفس السطر
-      flexWrap: 'wrap', // إضافة خاصية التفاف عند الحاجة
-      alignItems: 'center'
-    }
-  });
+  if (!isLandscape) {
+    // الوضع الرأسي: بطاقات أفقية - متجاوبة تماماً مع الحاوية
+    const numCategories = categories.length;
+    const teamsHeaderWidth = 120;
+    const availableWidth = screenWidth - teamsHeaderWidth - 50;
+    const availableHeight = (screenHeight - 60) / numCategories;
+    
+    // مسافات حول البطاقات
+    const outerPadding = 8; // تقليل من 12 إلى 8
+    const cardMarginBetween = 6; // تقليل من 10 إلى 6
+    const innerCardPadding = 6; // تقليل من 8 إلى 6
+    
+    // المساحة المتاحة بعد الهوامش الخارجية
+    const cardContainerWidth = availableWidth - (outerPadding * 2);
+    const cardContainerHeight = availableHeight - (outerPadding * 2);
+    
+    // حساب حجم البطاقة مع المسافات بينها
+    const cardHeight = cardContainerHeight;
+    const cardWidth = cardContainerWidth;
+    
+    // حساب المساحة المتاحة داخل البطاقة
+    const cardInnerWidth = cardWidth - (innerCardPadding * 2);
+    const cardInnerHeight = cardHeight - (innerCardPadding * 2);
+    
+    // توزيع المساحة: 16% للصورة والاسم، 84% للأزرار
+    const categoryInfoSpace = Math.min(cardInnerWidth * 0.16, 60);
+    const buttonsSpace = cardInnerWidth - categoryInfoSpace - 2;
+    
+    // حساب حجم الزر - أكبر قليلاً
+    const buttonsPerRow = 3;
+    const numRows = 2;
+    const buttonSize = Math.min(buttonsSpace / buttonsPerRow, cardInnerHeight / numRows, 45);
+    const buttonFontSize = Math.min(buttonSize * 0.36, 13);
+    const fontSize = Math.min(categoryInfoSpace * 0.16, 10);
+    
+    return (
+      <View style={[{
+        borderRadius: 12,
+        padding: 0,
+        shadowColor: theme.colors.primary || '#2E5DB8',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 5,
+        borderWidth: 2,
+        borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        height: cardHeight,
+        width: cardWidth,
+        marginVertical: outerPadding,
+        marginHorizontal: outerPadding,
+        overflow: 'hidden',
+        position: 'relative',
+      }, style]}>
+        {/* الصورة كخلفية تغطي كل البطاقة */}
+        <Image 
+          source={categoryImages[category]} 
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+          }}
+          resizeMode="cover"
+        />
+        
+        {/* طبقة داكنة نصف شفافة فوق الصورة */}
+        <View style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          zIndex: 1,
+        }} />
+
+        {/* اسم الفئة في حاوية فاتحة - عريضة وطويلة - نسبة 60% من ارتفاع البطاقة */}
+        <View style={{
+          backgroundColor: '#FFFFFF',
+          paddingHorizontal: 8,
+          paddingVertical: 8,
+          borderRadius: 10,
+          marginTop: 4,
+          marginLeft: 2,
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: cardWidth * 0.22,
+          height: cardHeight * 0.60,
+          borderWidth: 2,
+          borderColor: 'rgba(46, 93, 184, 0.3)',
+          zIndex: 2,
+        }}>
+          <Text 
+            style={{
+              fontSize: Math.max(Math.min((cardHeight * 0.60) * 0.2, 9), 5),
+              fontWeight: '700',
+              textAlign: 'center',
+              width: '100%',
+              color: '#1a1a1a',
+              fontFamily: 'ReadexPro_700Bold',
+              lineHeight: Math.max(Math.min((cardHeight * 0.60) * 0.2, 9), 5) * 1.2,
+            }}
+            numberOfLines={3}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+          >
+            {category}
+          </Text>
+        </View>
+
+        {/* أزرار الأسئلة - ثلاث أعمدة، كل عمود مستوى صعوبة واحد */}
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 2,
+          flex: 1,
+          marginHorizontal: 4,
+          zIndex: 2,
+          position: 'relative',
+        }}>
+          {/* عمود سهل */}
+          <View style={{
+            flexDirection: 'column',
+            gap: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            {(() => {
+              const easyQuestions = questions['سهل'] || [];
+              return [0, 1].map((btnIndex) => {
+                const question = easyQuestions[btnIndex];
+                return question ? (
+                  <QuestionButton
+                    key={`${category}-سهل-${btnIndex}`}
+                    difficulty="سهل"
+                    isUsed={question?.isUsed || false}
+                    points={question?.points || 10}
+                    onPress={() => onQuestionPress?.(category, 'سهل', btnIndex)}
+                    theme={theme}
+                    categories={categories}
+                    isLandscape={isLandscape}
+                    buttonSize={buttonSize}
+                    buttonFontSize={buttonFontSize}
+                  />
+                ) : null;
+              });
+            })()}
+          </View>
+
+           {/* عمود متوسط */}
+           <View style={{
+             flexDirection: 'column',
+             gap: 2,
+             justifyContent: 'center',
+             alignItems: 'center',
+           }}>
+            {(() => {
+              const mediumQuestions = questions['متوسط'] || [];
+              return [0, 1].map((btnIndex) => {
+                const question = mediumQuestions[btnIndex];
+                return question ? (
+                  <QuestionButton
+                    key={`${category}-متوسط-${btnIndex}`}
+                    difficulty="متوسط"
+                    isUsed={question?.isUsed || false}
+                    points={question?.points || 10}
+                    onPress={() => onQuestionPress?.(category, 'متوسط', btnIndex)}
+                    theme={theme}
+                    categories={categories}
+                    isLandscape={isLandscape}
+                    buttonSize={buttonSize}
+                    buttonFontSize={buttonFontSize}
+                  />
+                ) : null;
+              });
+            })()}
+          </View>
+
+          {/* عمود صعب */}
+          <View style={{
+            flexDirection: 'column',
+            gap: 2,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            {(() => {
+              const hardQuestions = questions['صعب'] || [];
+              return [0, 1].map((btnIndex) => {
+                const question = hardQuestions[btnIndex];
+                return question ? (
+                  <QuestionButton
+                    key={`${category}-صعب-${btnIndex}`}
+                    difficulty="صعب"
+                    isUsed={question?.isUsed || false}
+                    points={question?.points || 10}
+                    onPress={() => onQuestionPress?.(category, 'صعب', btnIndex)}
+                    theme={theme}
+                    categories={categories}
+                    isLandscape={isLandscape}
+                    buttonSize={buttonSize}
+                    buttonFontSize={buttonFontSize}
+                  />
+                ) : null;
+              });
+            })()}
+          </View>
+        </View>
+      </View>
+    );
+  }
+  
+  // الوضع الأفقي: بطاقات رأسية - متجاوبة تماماً مع الحاوية
+  const teamsHeaderWidth = 120;
+  const availableHeight = screenHeight - 60;
+  const availableWidth = screenWidth - teamsHeaderWidth - 50;
+  const numCategories = categories.length;
+  
+  // مسافات حول البطاقات
+  const outerPadding = 8; // تقليل من 12 إلى 8
+  const cardMarginBetween = 6; // تقليل من 10 إلى 6
+  const innerCardPadding = 6; // تقليل من 8 إلى 6
+  
+  // المساحة المتاحة بعد الهوامش الخارجية
+  const cardsContainerWidth = availableWidth - (outerPadding * 2);
+  const cardsContainerHeight = availableHeight - (outerPadding * 2);
+  
+  // حساب حجم البطاقة - توزيع متساوي
+  const cardWidth = (cardsContainerWidth - (cardMarginBetween * (numCategories - 1))) / numCategories;
+  const cardHeight = cardsContainerHeight;
+  
+  // حساب المساحة المتاحة داخل البطاقة
+  const cardInnerWidth = cardWidth - (innerCardPadding * 2);
+  const cardInnerHeight = cardHeight - (innerCardPadding * 2);
+  
+  // توزيع المساحة العمودية - 18% للعنوان، 82% للأزرار
+  const titleHeight = cardInnerHeight * 0.18;
+  const buttonsHeight = cardInnerHeight * 0.82;
+  
+  const buttonSize = Math.min((buttonsHeight / 6) - 1, cardInnerWidth - 2, 40);
+  const buttonFontSize = Math.min(buttonSize * 0.36, 13);
+  const fontSize = Math.min(titleHeight * 0.5, 11);
 
   return (
-    <View style={[columnStyles.column, style]}>
+    <View style={[{
+      borderRadius: 12,
+      padding: 0,
+      shadowColor: theme.colors.primary || '#2E5DB8',
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      elevation: 5,
+      borderWidth: 2,
+      borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      width: cardWidth,
+      height: cardHeight,
+      marginVertical: outerPadding,
+      marginHorizontal: outerPadding / 2,
+      overflow: 'hidden',
+      position: 'relative',
+    }, style]}>
+      {/* الصورة كخلفية تغطي كل البطاقة */}
       <Image 
         source={categoryImages[category]} 
-        style={columnStyles.backgroundImage}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
+        }}
         resizeMode="cover"
       />
       
-      <View style={[
-        columnStyles.categoryHeader,
-        { 
-          borderBottomColor: theme.colors.border,
-        }
-      ]}>
-        <Image 
-          source={categoryImages[category]} 
-          style={columnStyles.categoryImage}
-          resizeMode="contain"
-        />
+      {/* طبقة داكنة نصف شفافة فوق الصورة */}
+      <View style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        zIndex: 1,
+      }} />
+      
+      {/* اسم الفئة - في حاوية فاتحة - نسبة 15% من ارتفاع البطاقة */}
+      <View style={{
+        backgroundColor: '#FFFFFF',
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        borderRadius: 10,
+        marginTop: 4,
+        marginBottom: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '95%',
+        height: cardHeight * 0.15,
+        borderWidth: 2,
+        borderColor: 'rgba(46, 93, 184, 0.3)',
+        zIndex: 2,
+        position: 'relative',
+      }}>
         <Text 
-          style={[columnStyles.categoryTitle, { color: theme.colors.text.primary }]}
-          adjustsFontSizeToFit={true}
-          numberOfLines={2} // السماح بسطرين للنص
-          minimumFontScale={0.5} // زيادة الحد الأدنى لحجم الخط
+          style={{
+            fontSize: Math.max(Math.min((cardHeight * 0.15) * 0.4, 9), 5),
+            fontWeight: '700',
+            textAlign: 'center',
+            width: '100%',
+            color: '#1a1a1a',
+            fontFamily: 'ReadexPro_700Bold',
+            lineHeight: Math.max(Math.min((cardHeight * 0.15) * 0.4, 9), 5) * 1.2,
+          }}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+          minimumFontScale={0.6}
         >
           {category}
         </Text>
       </View>
-      
-      <View style={[
-        staticStyles.questionsContainer,
-        columnStyles.questionsContainer
-      ]}>
-        {['سهل', 'متوسط', 'صعب'].map((difficulty) => {
-          const questions_by_difficulty = questions[difficulty] || [];
-          // تقسيم الأسئلة إلى مجموعات من زرين في كل سطر
-          const rows = [];
-          for (let i = 0; i < questions_by_difficulty.length; i += 2) {
-            rows.push(questions_by_difficulty.slice(i, i + 2));
-          }
-          
-          return (
-            <View key={difficulty} style={[
-              staticStyles.difficultyRow,
-              { 
-                marginBottom: 0,
-                backgroundColor: difficulty === 'سهل' 
-                  ? `${theme.colors.success}20` 
-                  : difficulty === 'متوسط' 
-                    ? `${theme.colors.warning}20` 
-                    : `${theme.colors.error}20`
-              }
-            ]}>
-              {rows.map((row, rowIndex) => (
-                <View 
-                  key={`row-${rowIndex}`} 
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    width: '100%',
-                    paddingVertical: 1
-                  }}
-                >
-                  {row.map((question, qIndex) => (
-                    <QuestionButton
-                      key={`${difficulty}-${rowIndex * 2 + qIndex}`}
-                      difficulty={difficulty}
-                      isUsed={question.isUsed}
-                      points={question.points}
-                      onPress={() => onQuestionPress(category, difficulty, rowIndex * 2 + qIndex)}
-                      theme={theme}
-                      categories={categories}
-                    />
-                  ))}
-                </View>
-              ))}
-            </View>
-          );
-        })}
+
+      {/* أزرار الأسئلة - في عمود واحد */}
+      <View style={{
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 2,
+        width: '100%',
+        zIndex: 2,
+        position: 'relative',
+      }}>
+        {difficultyOrder.map((difficulty) => {
+          const diffQuestions = questions[difficulty] || [];
+          return [0, 1].map((btnIndex) => {
+            const question = diffQuestions[btnIndex];
+            return question ? (
+              <QuestionButton
+                key={`${category}-${difficulty}-${btnIndex}`}
+                difficulty={difficulty}
+                isUsed={question?.isUsed || false}
+                points={question?.points || 10}
+                onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                theme={theme}
+                categories={categories}
+                isLandscape={isLandscape}
+                buttonSize={buttonSize}
+                buttonFontSize={buttonFontSize}
+              />
+            ) : null;
+          });
+        }).flat()}
       </View>
     </View>
   );
@@ -356,6 +536,7 @@ const CategoryColumn = ({ category, questions = {}, onQuestionPress, style, them
 
 const GameScreen = () => {
   const { theme } = useTheme();
+  const isLandscapeMode = useIsLandscape();
   const params = useLocalSearchParams();
   const styles = StyleSheet.create({
     ...staticStyles,
@@ -382,10 +563,22 @@ const GameScreen = () => {
   const [rewardsEnabled, setRewardsEnabled] = useState(true);
   const [pentaPointsEnabled, setPentaPointsEnabled] = useState(true);
   const [isNavigatingToResults, setIsNavigatingToResults] = useState(false);
+  const [orientation, setOrientation] = useState('portrait');
 
   const screenWidth = Dimensions.get('window').width;
-  const isLandscape = screenWidth > Dimensions.get('window').height;
+  const screenHeight = Dimensions.get('window').height;
+  const isLandscape = screenWidth > screenHeight;
   const isSmallScreen = screenWidth < 768;
+
+  // الاستماع لتغيير الاتجاه
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window: { width, height } }) => {
+      const newOrientation = width > height ? 'landscape' : 'portrait';
+      setOrientation(newOrientation);
+    });
+    
+    return () => subscription?.remove();
+  }, []);
 
   const getCategoriesPerRow = () => {
     const teamCount = teams.length;
@@ -910,148 +1103,188 @@ const GameScreen = () => {
   }
 
   return (
-    <BackgroundPattern
-      style={{ flex: 1 }}
-      patternId="gameScreenPattern"
-    >
+    <View style={{ flex: 1, backgroundColor: '#0F1C3F' }}>
+      {/* خلفية احترافية متعددة الطبقات */}
+      <View style={{ 
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+        pointerEvents: 'none'
+      }}>
+        {/* تدرج رئيسي */}
+        <LinearGradient
+          colors={['#1a3a5e', '#0F1C3F', '#0a1220']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ 
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 0
+          }}
+        />
+        
+        {/* تدرج ثانوي للحواف */}
+        <LinearGradient
+          colors={['#4A90E2', 'transparent']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 0.3 }}
+          style={{ 
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            height: '30%',
+            zIndex: 0,
+            opacity: 0.15,
+          }}
+        />
+        
+        {/* نمط شبكة متحرك مع حجم أصغر للتفاصيل */}
+        <AnimatedGridPattern
+          width={120}
+          height={120}
+          dotSize={12}
+          dotColor="#64B5F6"
+          dotOpacity={0.20}
+          animationDuration={5000}
+          animationDelay={0}
+          variant="background"
+          isAnimated={true}
+        />
+        
+        {/* نمط إضافي للعمق */}
+        <AnimatedGridPattern
+          width={200}
+          height={200}
+          dotSize={20}
+          dotColor="#2196F3"
+          dotOpacity={0.08}
+          animationDuration={8000}
+          animationDelay={1000}
+          variant="background"
+          isAnimated={true}
+        />
+      </View>
+      
       <Stack.Screen 
         options={{ 
           headerShown: false,
           animation: 'none'
         }} 
       />
-      {/* إضافة حاوية شفافة ذات إطار ذهبي تحيط بكل المحتويات */}
+      {/* حاوية رئيسية احترافية مع تأثيرات عميقة */}
       <View style={{
         flex: 1,
-        margin: 8,
-        borderRadius: 18,
-        borderWidth: 3, // إطار سميك واحد
-        borderColor: theme.colors.border?.primary || theme.colors.primary,
-        backgroundColor: 'rgba(255, 255, 255, 0.12)',
+        margin: 20,
+        borderRadius: 28,
+        borderWidth: 3,
+        borderColor: '#2E5DB8',
+        backgroundColor: 'rgba(227, 240, 255, 0.6)',
         overflow: 'hidden',
-        // إضافة ظل خفيف لتحسين المظهر
-        shadowColor: theme.colors.border?.primary || theme.colors.primary,
-        shadowOffset: { width: 0, height: 0 },
+        shadowColor: '#2E5DB8',
+        shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.3,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 24,
+        elevation: 28,
+        position: 'relative',
+        zIndex: 2,
+        justifyContent: 'center',
       }}>
-        <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 2 }]}>
-          {/* تخطيط أفقي: التيم هيدر على اليمين والفئات على اليسار */}
-          <View style={{ 
-            flexDirection: 'row',
-            width: '100%',
+        {/* تدرج داخلي للحاوية */}
+        <LinearGradient
+          colors={['#E3F0FF', '#D6E9FF', '#CDDBF0']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 0,
+          }}
+        />
+        <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 1, flexDirection: 'row-reverse' }]}>
+          {/* التيم هيدر على الجانب الأيمن - رأسي مع خلفية متحركة احترافية */}
+          <View style={{
+            width: 120,
             height: '100%',
-            paddingHorizontal: 4,
-            paddingVertical: 4
+            borderLeftWidth: 2,
+            borderLeftColor: '#4A90E2',
+            backgroundColor: '#D6E9FF',
+            overflow: 'hidden',
+            position: 'relative',
+            borderTopRightRadius: 22,
+            borderBottomRightRadius: 22,
+            zIndex: 2,
           }}>
-            {/* الجزء الرئيسي (الفئات والأسئلة) - على اليسار */}
-            <View style={{ 
-              flex: 3,
-              marginRight: 4
+            {/* خلفية متحركة احترافية */}
+            <View style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 0,
             }}>
-              <ScrollView
-                style={staticStyles.scrollView}
-                contentContainerStyle={[
-                  staticStyles.gridContainer,
-                  {
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-                    paddingHorizontal: SPACING.xs,
-                    paddingVertical: 2,
-                  }
-                ]}
-                horizontal={false}
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-              >
-                {(() => {
-                  const categories = gameData.categories || [];
-                  const totalCategories = categories.length;
-                  const categoriesPerRow = Math.ceil(totalCategories / 2); // تقسيم الفئات بالتساوي على سطرين
-                  
-                  // تقسيم الفئات إلى سطرين
-                  const row1 = categories.slice(0, categoriesPerRow);
-                  const row2 = categories.slice(categoriesPerRow);
-                  
-                  // حساب عرض البطاقة
-                  const availableWidth = screenWidth * 0.7;
-                  const itemSpacing = 4;
-                  const totalSpacing = itemSpacing * (categoriesPerRow - 1);
-                  const itemWidth = (availableWidth - totalSpacing) / categoriesPerRow;
-                  
-                  return (
-                    <>
-                      {/* السطر الأول */}
-                      <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center', // تغيير من flex-start إلى center
-                        marginBottom: 4,
-                        width: '100%',
-                      }}>
-                        {row1.map(category => (
-                          <CategoryColumn
-                            key={category}
-                            category={category}
-                            questions={gameData.questions[category]}
-                            onQuestionPress={handleQuestionPress}
-                            style={{ 
-                              width: itemWidth,
-                              marginHorizontal: 2,
-                              backgroundColor: `${theme.colors.background.surface}80`, 
-                              borderColor: theme.colors.border?.primary || theme.colors.primary,
-                              borderWidth: 1,
-                              shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                              shadowOffset: { width: 0, height: 1 },
-                              shadowOpacity: 0.1,
-                              shadowRadius: 2,
-                              elevation: 2,
-                            }}
-                            theme={theme}
-                            categories={categories}
-                          />
-                        ))}
-                      </View>
-                      
-                      {/* السطر الثاني */}
-                      <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center', // تغيير من flex-start إلى center
-                        width: '100%',
-                      }}>
-                        {row2.map(category => (
-                          <CategoryColumn
-                            key={category}
-                            category={category}
-                            questions={gameData.questions[category]}
-                            onQuestionPress={handleQuestionPress}
-                            style={{ 
-                              width: itemWidth,
-                              marginHorizontal: 2,
-                              backgroundColor: `${theme.colors.background.surface}80`, 
-                              borderColor: theme.colors.border?.primary || theme.colors.primary,
-                              borderWidth: 1,
-                              shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                              shadowOffset: { width: 0, height: 1 },
-                              shadowOpacity: 0.1,
-                              shadowRadius: 2,
-                              elevation: 2,
-                            }}
-                            theme={theme}
-                            categories={categories}
-                          />
-                        ))}
-                      </View>
-                    </>
-                  );
-                })()}
-              </ScrollView>
+              {/* تدرج رئيسي */}
+              <LinearGradient
+                colors={['#E8F4FF', '#D6E9FF', '#C8E0F7']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  zIndex: 0,
+                }}
+              />
+              
+              {/* تدرج إضافي من الأعلى */}
+              <LinearGradient
+                colors={['#4A90E2', 'transparent']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '40%',
+                  opacity: 0.08,
+                  zIndex: 0,
+                }}
+              />
+              
+              {/* نمط شبكة متحرك للتيم هيدر */}
+              <AnimatedGridPattern
+                width={120}
+                height={120}
+                dotSize={5}
+                dotColor="#4A90E2"
+                dotOpacity={0.08}
+                animationDuration={5000}
+                animationDelay={0}
+                variant="background"
+                isAnimated={true}
+              />
             </View>
 
-            {/* التيم هيدر - على اليمين */}
-            <View style={{ 
+            {/* محتوى التيم هيدر */}
+            <View style={{
               flex: 1,
-              marginLeft: 2
+              position: 'relative',
+              zIndex: 3,
+              paddingHorizontal: 4,
+              paddingVertical: 4,
             }}>
               <TeamsHeader
                 teams={gameData.teams}
@@ -1067,27 +1300,68 @@ const GameScreen = () => {
                 usedDoublePoints={usedDoublePoints}
                 usedPentaPoints={usedPentaPoints}
                 style={{
-                  width: '100%',
+                  backgroundColor: 'transparent',
+                  borderWidth: 0,
                   height: '100%',
-                  borderRadius: 16,
-                  overflow: 'hidden',
-                  borderWidth: 1.5,
-                  borderColor: theme.colors.gold || '#FFD700',
                 }}
                 vertical={true}
               />
             </View>
           </View>
+
+          {/* تخطيط: الفئات والأسئلة */}
+          <View style={{ 
+            flex: 1,
+            height: '100%',
+            width: '100%',
+            paddingHorizontal: 4,
+            paddingVertical: 4,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1,
+          }}>
+            {/* عرض الفئات والأسئلة في صف واحد أفقي مع مسافات قليلة */}
+            <View
+              style={{
+                width: '100%',
+                height: '100%',
+                flexDirection: isLandscapeMode ? 'row' : 'column',
+                flexWrap: 'nowrap', // منع الالتفاف - جميع البطاقات في صف واحد
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignContent: 'center',
+                overflow: isLandscapeMode ? 'scroll' : 'visible', // السماح بالتمرير الأفقي في الوضع الأفقي
+                paddingHorizontal: 2, // تقليل من 12 إلى 2
+                paddingVertical: 2,   // تقليل من 12 إلى 2
+              }}
+            >
+                {(() => {
+                  const categories = gameData.categories || [];
+                  
+                  return categories.map(category => (
+                    <CategoryCard
+                      key={category}
+                      category={category}
+                      questions={gameData.questions[category]}
+                      onQuestionPress={handleQuestionPress}
+                      theme={theme}
+                      categories={categories}
+                      isLandscape={isLandscapeMode}
+                    />
+                  ));
+                })()}
+            </View>
+          </View>
         </View>
+
+        <QuestionDetailsModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          details={selectedQuestionDetails}
+          theme={theme}
+        />
       </View>
-      
-      <QuestionDetailsModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        details={selectedQuestionDetails}
-        theme={theme}
-      />
-    </BackgroundPattern>
+    </View>
   );
 };
 

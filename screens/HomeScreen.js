@@ -16,7 +16,8 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   BackHandler,
-  ImageBackground
+  ImageBackground,
+  Alert
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SPACING, FONTS, SHADOWS, BORDER_RADIUS } from '../styles/theme';
@@ -37,6 +38,7 @@ import {
   breakpoints
 } from '../styles/responsive';
 import BackgroundPattern from '../components/BackgroundPattern';
+import AnimatedGridPattern from '../components/AnimatedGridPattern';
 import { useRouter, Link, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -348,7 +350,27 @@ const HomeScreen = () => {
   const [settingsMenuVisible, setSettingsMenuVisible] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
 
+  // التحقق من تسجيل الدخول
+  useEffect(() => {
+    if (!authLoading && !currentUser) {
+      router.replace('/auth');
+    }
+  }, [currentUser, authLoading]);
+
   if (!theme) {
+    return null;
+  }
+
+  // عرض شاشة التحميل أثناء التحقق من المصادقة
+  if (authLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background?.primary }}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
+
+  if (!currentUser) {
     return null;
   }
 
@@ -517,8 +539,8 @@ const HomeScreen = () => {
         teamCount: finalTeams.length,
         categories: [],
         questions: {},
-        rewardsEnabled: settings.rewardsEnabled,
-        pentaPointsEnabled: settings.pentaPointsEnabled,
+        rewardsEnabled: gameSettings.rewardsEnabled,
+        pentaPointsEnabled: gameSettings.pentaPointsEnabled,
         scores: finalTeams.reduce((acc, team) => ({
           ...acc,
           [team]: 0
@@ -567,7 +589,7 @@ const HomeScreen = () => {
 
   const switchThumbColorByPlatform = Platform.select({
     ios: '#FFFFFF',
-    android: settings.rewardsEnabled ? theme.colors.text.light : '#f4f3f4',
+    android: gameSettings.rewardsEnabled ? theme.colors.text.light : '#f4f3f4',
     default: '#FFFFFF',
   });
 
@@ -904,335 +926,274 @@ const HomeScreen = () => {
   };
 
   return (
-    <BackgroundPattern
-      key={patternKey}
-      style={{ flex: 1 }}
-      patternId={`homeScreenPattern-${patternKey}`}
-    >
+    <SafeAreaView style={{ 
+      flex: 1, 
+      backgroundColor: '#0a1929'
+    }}>
       <Stack.Screen
         options={{
           headerShown: false
         }}
       />
-      
-      {/* شريط المستخدم في الأعلى يسار */}
-      <View style={{
-        position: 'absolute',
-        top: Platform.OS === 'web' ? 20 : 50,
-        left: 20,
-        zIndex: 1000,
-      }}>
-        <UserMenu />
-      </View>
+
+      {/* الخلفية الزرقاء الغامقة مع نمط شبكة متحرك جديد - تغطي كل الشاشة */}
       <View style={{ 
-        flexDirection: 'row',
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        paddingHorizontal: SPACING.lg,
-        marginBottom: 12
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+        pointerEvents: 'none'
       }}>
-        <View style={{ width: 60 }}/>
-        <View style={{ 
-          flexDirection: 'row',
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          paddingHorizontal: 0,
-          marginTop: 0,
-          marginBottom: 0
-        }}>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'transparent', 
-            borderRadius: BORDER_RADIUS.lg,
-            paddingHorizontal: SPACING.xxs,
-            paddingVertical: 0
+        <LinearGradient
+          colors={['#1a3a52', '#0f2438', '#0a1929']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ 
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 0
+          }}
+        />
+        
+        {/* نمط شبكة متحرك مختلف للخلفية الخارجية - دوائر فقط - يغطي كل الشاشة */}
+        <AnimatedGridPattern
+          width={100}
+          height={100}
+          dotSize={14}
+          dotColor="#64B5F6"
+          dotOpacity={0.25}
+          animationDuration={4000}
+          animationDelay={0}
+          variant="background"
+          isAnimated={true}
+        />
+      </View>
+
+      <ScrollView 
+        style={{ flex: 1, backgroundColor: 'transparent', zIndex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, padding: 20 }}
+        showsVerticalScrollIndicator={false}
+        scrollIndicatorInsets={{ right: 1 }}
+      >
+        {/* رأس الصفحة مع أيقونة الملف الشخصي */}
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8 }}>
+          <UserMenu style={{ position: 'relative', zIndex: 10 }} />
+        </View>
+
+        <Animated.View style={{ opacity: fadeAnim }}>
+          {/* رأس البرنامج */}
+          <View style={{ 
+            marginBottom: 30, 
+            marginTop: 10,
+            backgroundColor: 'transparent',
+            borderRadius: 15,
+            padding: 20
           }}>
-            <Text style={[
-              staticStyles.welcomeText,
-              { 
-                color: theme.colors.border?.primary || '#f7e189',
-                textAlign: 'right',
-                fontSize: 20, 
-                fontWeight: FONTS.weights.bold,
-                marginLeft: 0,
-                marginRight: 0,
-                fontFamily: FONTS.families.secondary,
-              }
-            ]}>
-              {"المعلومات سلاحك.. فهل فريقك مستعد للمعركة؟\nتحدَّى بفريقك.. واربح حرب المعلومات!"}
+            <Text style={{
+              fontSize: 32,
+              fontWeight: 'bold',
+              color: '#64B5F6',
+              textAlign: 'center',
+              fontFamily: FONTS.families.secondary,
+              marginBottom: 10
+            }}>
+              🎮 فكّر
             </Text>
-            <Image
-              source={require('../assets/logo.png')}
-              style={{ 
-                width: 120, 
-                height: 120, 
-                marginLeft: 0,
-                borderRadius: BORDER_RADIUS.xl
+            <Text style={{
+              fontSize: 16,
+              color: '#B3E5FC',
+              textAlign: 'center',
+              fontFamily: FONTS.families.secondary
+            }}>
+              إعداد لعبة جديدة
+            </Text>
+          </View>
+
+          {/* قالب واحد يحتوي على جميع الأقسام */}
+          <View style={{ 
+            marginBottom: 30, 
+            backgroundColor: '#D6E9FF', 
+            borderRadius: 15, 
+            padding: 20, 
+            borderWidth: 2, 
+            borderColor: '#4A90E2', 
+            position: 'relative', 
+            overflow: 'hidden',
+            width: '90%',
+            alignSelf: 'center',
+            shadowColor: '#4A90E2',
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.8,
+            shadowRadius: 15,
+            elevation: 20
+          }}>
+            
+            {/* المحتوى */}
+            <View style={{ position: 'relative', zIndex: 1 }}>
+
+          {/* قسم عدد الفرق */}
+          <View style={{ marginBottom: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+              <Text style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: '#333',
+                fontFamily: FONTS.families.secondary,
+                marginLeft: 10
+              }}>
+                عدد الفرق
+              </Text>
+            </View>
+
+            <View style={{
+              flexDirection: 'row-reverse',
+              justifyContent: 'space-around',
+              backgroundColor: 'transparent',
+              borderRadius: 15,
+              padding: 0
+            }}>
+              {[2, 3, 4, 5].map(count => (
+                <TouchableOpacity
+                  key={count}
+                  onPress={() => updateTeamCount(count)}
+                  style={{
+                    paddingHorizontal: 16,
+                    paddingVertical: 10,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: gameSettings.teamCount === count ? '#1E40AF' : '#DDD',
+                    backgroundColor: gameSettings.teamCount === count ? '#1E40AF' : '#F8FBFF',
+                  }}
+                >
+                  <Text style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    color: gameSettings.teamCount === count ? '#FFF' : '#333',
+                    fontFamily: FONTS.families.secondary,
+                  }}>
+                    {count}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          {/* قسم اسم الجولة */}
+          <View style={{ marginBottom: 20 }}>
+            <TextInput
+              style={{
+                borderWidth: 2,
+                borderColor: '#1E40AF',
+                borderRadius: 12,
+                paddingHorizontal: 16,
+                paddingVertical: 14,
+                fontSize: 16,
+                fontFamily: FONTS.families.secondary,
+                color: '#333',
+                textAlign: 'right',
+                backgroundColor: '#F8FBFF',
+                minHeight: 50,
               }}
+              placeholder="الجولة الأولى"
+              placeholderTextColor="#CCC"
+              value={gameSettings.roundName}
+              onChangeText={(value) => setGameSettings(prev => ({ ...prev, roundName: value }))}
             />
           </View>
-        </View>
-        <View style={{ 
-          alignSelf: 'flex-start', 
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginLeft: 40,
-          marginTop: 20
-        }}>
-          <TouchableOpacity
-            style={{ 
-              backgroundColor: 'transparent',
-              marginBottom: 4,
-              padding: 0
-            }}
-          >
-            <ThemeSelector 
-              customIcon={
-                <MaterialIcons 
-                  name="palette" 
-                  size={30} 
-                  color={theme.colors.border?.primary || theme.colors.primary} 
-                />
-              }
-              noContainer={true}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.menuButton, { 
-              backgroundColor: 'transparent',
-              marginBottom: 0,
-              padding: SPACING.xxs
-            }]}
-          >
-            <SettingsSelector />
-          </TouchableOpacity>
-        </View>
-      </View>
-      
-      <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: 15 }]}
-        showsVerticalScrollIndicator={false}
-      >
-        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
-          <View style={[styles.gameContainer, staticStyles.container, {
-            marginTop: 0,
-            paddingTop: SPACING.xxs,
-            overflow: 'hidden',
-            borderRadius: BORDER_RADIUS.lg
-          }]}>
-            <ContainerBackground style={[
-              staticStyles.card, 
-              {
-                backgroundColor: 'transparent', 
-                borderColor: theme.colors.border?.primary || theme.colors.primary,
-                borderWidth: 6, // إطار سميك
-                borderRadius: BORDER_RADIUS.lg,
-                position: 'relative',
-                elevation: 4,
-                shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-                marginBottom: 4,
-                padding: 8, // إعادة الـpadding
-                width: '100%' // إعادة العرض
-              }
-            ]}>
-              {/* إطار سميك */}
-              <View style={[staticStyles.row]}>
-                <View style={[staticStyles.inputContainer, { marginLeft: 0, marginRight: SPACING.xl }]}>
-                  <Text style={[
-                    staticStyles.label,
-                    { 
-                      color: theme.colors.text.primary,
-                      fontFamily: FONTS.families.secondary,
-                      fontWeight: FONTS.weights.bold,
-                      fontSize: FONTS.sizes.small,
-                      marginBottom: 6
-                    }
-                  ]}>
-                    {`عدد الفرق`}
-                  </Text>
-                  <View style={[staticStyles.teamCountContainer, { backgroundColor: theme.colors.background.surface }]}>
-                    {[2, 3, 4, 5].map(count => (
-                      <TouchableOpacity
-                        key={count}
-                        style={[
-                          staticStyles.teamCountButton,
-                          gameSettings.teamCount === count && { 
-                            backgroundColor: theme.colors.primary,
-                            transform: [{ scale: 1.05 }]
-                          }
-                        ]}
-                        onPress={() => updateTeamCount(count)}
-                      >
-                        <Text style={[
-                          staticStyles.teamCountText,
-                          { 
-                            color: gameSettings.teamCount === count ? theme.colors.text.light : theme.colors.text.primary,
-                            fontFamily: FONTS.families.secondary,
-                            fontWeight: FONTS.weights.bold
-                          }
-                        ]}>
-                          {count}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
 
-                <View style={[staticStyles.inputContainer, { marginRight: SPACING.xl }]}>
-                  <Text style={[
-                    staticStyles.label,
-                    { 
-                      color: theme.colors.text.primary,
-                      fontFamily: FONTS.families.secondary,
-                      fontWeight: FONTS.weights.bold,
-                      marginBottom: 6
-                    }
-                  ]}>اسم الجولة</Text>
+          {/* قسم أسماء الفرق */}
+          <View style={{ marginBottom: 20 }}>
+            <View style={{
+              flexDirection: 'row-reverse',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+            }}>
+              {Array.from({ length: gameSettings.teamCount }).map((_, index) => (
+                <View
+                  key={index}
+                  style={{
+                    width: gameSettings.teamCount <= 2 ? '48%' : gameSettings.teamCount === 3 ? '31%' : '23%',
+                    marginBottom: 16,
+                  }}
+                >
+                  <Text style={{
+                    fontSize: 14,
+                    fontWeight: '600',
+                    color: '#666',
+                    marginBottom: 8,
+                    fontFamily: FONTS.families.secondary,
+                    textAlign: 'right',
+                  }}>
+                    الفريق {index + 1}
+                  </Text>
                   <TextInput
-                    style={[
-                      staticStyles.input,
-                      { 
-                        color: theme.colors.text.primary,
-                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                        borderColor: theme.colors.border?.primary || theme.colors.primary,
-                        fontFamily: FONTS.families.secondary,
-                        fontWeight: FONTS.weights.medium
-                      }
-                    ]}
-                    value={gameSettings.roundName}
-                    onChangeText={(value) => setGameSettings(prev => ({ ...prev, roundName: value }))}
-                    placeholder={showHints ? "مثال: الجولة الأولى" : ""}
-                    placeholderTextColor={theme.colors.text.secondary}
+                    style={{
+                      borderWidth: 2,
+                      borderColor: '#1E40AF',
+                      borderRadius: 10,
+                      paddingHorizontal: 12,
+                      paddingVertical: 10,
+                      fontSize: 14,
+                      fontFamily: FONTS.families.secondary,
+                      color: '#333',
+                      textAlign: 'right',
+                      backgroundColor: '#F8FBFF',
+                      minHeight: 45,
+                    }}
+                    placeholder={getDefaultTeamName(index)}
+                    placeholderTextColor="#CCC"
+                    value={gameSettings.teams[index]}
+                    onChangeText={(value) => updateTeam(index, value)}
                   />
                 </View>
-              </View>
+              ))}
+            </View>
+          </View>
 
-              <View style={[styles.teamsGrid, { justifyContent: 'center' }]}>
-                {Array.from({ length: gameSettings.teamCount }).map((_, index) => (
-                  <View key={index} style={[
-                    staticStyles.teamInputContainer,
-                    { 
-                      width: `${Math.floor(98 / gameSettings.teamCount)}%`,
-                      margin: 1
-                    }
-                  ]}>
-                    <Text style={[
-                      staticStyles.label,
-                      { 
-                        color: theme.colors.text.primary,
-                        fontFamily: FONTS.families.secondary,
-                        fontWeight: FONTS.weights.bold,
-                        fontSize: FONTS.sizes.small,
-                        marginBottom: 6
-                      }
-                    ]}>
-                      {`الفريق ${index + 1}`}
-                    </Text>
-                    <TextInput
-                      style={[
-                        staticStyles.input,
-                        { 
-                          color: theme.colors.text.primary,
-                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                          borderColor: theme.colors.border?.primary || theme.colors.primary,
-                          height: 28, 
-                          fontFamily: FONTS.families.secondary,
-                          fontWeight: FONTS.weights.medium
-                        }
-                      ]}
-                      value={gameSettings.teams[index]}
-                      onChangeText={(value) => updateTeam(index, value)}
-                      placeholder={getDefaultTeamName(index)}
-                      placeholderTextColor={theme.colors.text.secondary}
-                    />
-                  </View>
-                ))}
-              </View>
-
-              <TouchableOpacity
-                style={[
-                  staticStyles.startButton,
-                  isLoading && staticStyles.startButtonDisabled
-                ]}
-                onPress={handleStartGame}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <ActivityIndicator color={theme.colors.text.light} />
-                ) : (
-                  <LinearGradient
-                    colors={theme.colors.gradient.primary}
-                    style={staticStyles.startButtonContent}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                  >
-                    <Text style={[
-                      styles.startButtonText,
-                      { color: theme.colors.text.light }
-                    ]}>
-                      بدء اللعبة
-                    </Text>
-                  </LinearGradient>
-                )}
-              </TouchableOpacity>
-
-              <View style={{ marginTop: 2 }}>
-                <View style={styles.settingsSection}>
-
-                  <View style={styles.settingItem}>
-                    <View style={styles.settingRow}>
-                      <Text style={styles.settingLabel}>
-                        {/* تم نقل هذه الإعدادات إلى قائمة الإعدادات */}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </ContainerBackground>
-            
-            {/* رابط سياسة الخصوصية */}
-            <TouchableOpacity 
-              onPress={() => router.push('/privacy-policy')}
+          {/* زر البدء */}
+          <View style={{ marginBottom: 0 }}>
+            <TouchableOpacity
+              onPress={handleStartGame}
+              disabled={isLoading}
               style={{
-                alignSelf: 'center',
-                marginTop: 4,
-                marginBottom: 8,
-                opacity: 0.7
+                backgroundColor: '#1E40AF',
+                borderRadius: 12,
+                paddingVertical: 16,
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: isLoading ? 0.7 : 1,
+                elevation: 4,
+                shadowColor: '#1E40AF',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
               }}
             >
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
               <Text style={{
-                fontSize: 11,
-                color: theme.colors.text.secondary,
-                textAlign: 'center',
-                fontFamily: FONTS.families.secondary
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: '#FFFFFF',
+                fontFamily: FONTS.families.secondary,
               }}>
-                سياسة الخصوصية
+                بدء اللعبة
               </Text>
-            </TouchableOpacity>
+            )}
+          </TouchableOpacity>
+          </View>
+            </View>
           </View>
         </Animated.View>
       </ScrollView>
-      {showRewardsGuide && (
-        <RewardsGuide
-          visible={showRewardsGuide}
-          onClose={() => setShowRewardsGuide(false)}
-        />
-      )}
-
-      {showPentaPointsGuide && (
-        <PentaPointsGuide
-          visible={showPentaPointsGuide}
-          onClose={() => setShowPentaPointsGuide(false)}
-        />
-      )}
-    </BackgroundPattern>
+    </SafeAreaView>
   );
 };
 
-export default HomeScreen; 
+export default HomeScreen;

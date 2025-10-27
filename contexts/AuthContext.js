@@ -52,6 +52,11 @@ export const AuthProvider = ({ children }) => {
   const signin = async (email, password) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Create or load user profile
+      await createUserProfile(user);
+      
       return userCredential;
     } catch (error) {
       console.error('Signin error:', error);
@@ -205,10 +210,58 @@ export const AuthProvider = ({ children }) => {
       if (!currentUser) return;
       
       const userRef = doc(db, 'users', currentUser.uid);
-      await updateDoc(userRef, {
-        ...updates,
-        updatedAt: new Date().toISOString()
-      });
+      
+      // First, check if the document exists
+      const userSnap = await getDoc(userRef);
+      
+      if (!userSnap.exists()) {
+        // If document doesn't exist, create it with the updates
+        await setDoc(userRef, {
+          uid: currentUser.uid,
+          displayName: currentUser.displayName || '',
+          email: currentUser.email,
+          photoURL: currentUser.photoURL || '',
+          createdAt: new Date().toISOString(),
+          lastLoginAt: new Date().toISOString(),
+          statistics: {
+            totalGames: 0,
+            totalQuestionsAnswered: 0,
+            totalCorrectAnswers: 0,
+            totalScore: 0,
+            averageScore: 0,
+            favoriteCategories: [],
+            gamesWon: 0,
+            streakRecord: 0,
+            playtimeMinutes: 0
+          },
+          preferences: {
+            rewardsEnabled: true,
+            pentaPointsEnabled: true,
+            theme: 'blue',
+            language: 'ar',
+            soundEnabled: true,
+            notifications: true
+          },
+          achievements: {
+            firstGame: false,
+            first100Points: false,
+            first500Points: false,
+            first1000Points: false,
+            categoryMaster: [],
+            speedDemon: false,
+            perfectGame: false,
+            socialPlayer: false,
+          },
+          ...updates,
+          updatedAt: new Date().toISOString()
+        });
+      } else {
+        // If document exists, update it
+        await updateDoc(userRef, {
+          ...updates,
+          updatedAt: new Date().toISOString()
+        });
+      }
       
       // Update local state
       setUserProfile(prev => ({ ...prev, ...updates }));
@@ -224,8 +277,14 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
       
       if (user) {
-        // Load user profile when user signs in
-        await loadUserProfile(user.uid);
+        // Create or load user profile when user signs in
+        try {
+          await createUserProfile(user);
+        } catch (error) {
+          console.error('Error creating/loading user profile:', error);
+          // Still load existing profile even if update fails
+          await loadUserProfile(user.uid);
+        }
       } else {
         setUserProfile(null);
       }

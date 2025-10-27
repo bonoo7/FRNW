@@ -22,10 +22,9 @@ import { getResponsiveStyles, wp } from '../styles/responsive';
 import { useRouter } from 'expo-router';
 import { Stack } from 'expo-router';
 import BackgroundPattern from '../components/BackgroundPattern';
-import Animated, { 
-  useAnimatedStyle, 
-  withSpring 
-} from 'react-native-reanimated';
+import AnimatedGridPattern from '../components/AnimatedGridPattern';
+// React Reanimated removed - not actively used
+// import Animated from 'react-native-reanimated';
 import { CategoryCard } from '../components/CategoryCard';
 import { GameService } from '../services/gameService';
 
@@ -47,38 +46,44 @@ const staticStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: SPACING.md,
+    padding: 0,
     backgroundColor: 'transparent',
+    justifyContent: 'flex-start',
   },
   gridContainer: {
-    gap: SPACING.sm,
-    padding: SPACING.md,
-    paddingBottom: 100,
+    gap: 0,
+    padding: 0,
+    paddingBottom: 0,
+    flexGrow: 0,
+    justifyContent: 'flex-start',
   },
   categoriesContainer: {
-    flex: 1,
+    height: '38%',
     borderRadius: 16,
-    padding: SPACING.md,
-    marginBottom: SPACING.md,
+    padding: 0,
+    marginBottom: SPACING.xl,
+    marginTop: SPACING.xl,
+    marginHorizontal: SPACING.xxl,
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: 'transparent', // سيتم تحديد اللون ديناميكيًا في الكود
+    borderColor: 'transparent',
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
-    width: '35%', // تحديد عرض الحاوية هنا
-    alignSelf: 'center', // توسيط الحاوية
+    width: '85%',
+    alignSelf: 'center',
+    overflow: 'hidden',
   },
   categoriesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: SPACING.xs,
-    padding: SPACING.sm,
+    gap: 0,
+    padding: 0,
   },
   categoryItem: {
-    padding: 1,
-    margin: 1,
+    padding: 0,
+    margin: 0,
   },
   progressContainer: {
     position: 'absolute',
@@ -257,7 +262,7 @@ const ContainerBackground = ({ style, children }) => {
 
   // استخراج borderRadius وباقي الأنماط من style
   const flatStyle = StyleSheet.flatten(style || {});
-  const { borderRadius, ...restStyle } = flatStyle;
+  const { borderRadius, backgroundColor, ...restStyle } = flatStyle;
 
   // نمط الحاوية الخارجية (للقص والحواف الدائرية)
   const wrapperStyle = {
@@ -270,19 +275,20 @@ const ContainerBackground = ({ style, children }) => {
     width: '100%', // ضمان امتداد العرض
   };
 
-  // نمط الخلفية الموحدة
+  // نمط الخلفية الموحدة - استخدام backgroundColor المُمرر أو اللون من theme
   const backgroundStyle = {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: theme.colors.background?.card || 
+    backgroundColor: backgroundColor || 
+                     theme.colors.background?.card || 
                      theme.colors.background?.light || 
                      theme.colors.secondary || 
                      '#A0C6FF', // احتياطي في حال عدم وجود الألوان
     borderWidth: 1.5,
-    borderColor: theme.colors.gold || '#FFD700',
+    borderColor: '#2E5DB8',
   };
 
   return (
@@ -290,7 +296,7 @@ const ContainerBackground = ({ style, children }) => {
       {/* خلفية موحدة بلون الثيم */}
       <View style={backgroundStyle} />
       
-      {/* صورة الخلفية (إذا كانت موجودة) */}
+      {/* صورة الخلفية (النقش) - تملأ كل القالب */}
       {imageSource && (
         <ImageBackground
           source={imageSource}
@@ -300,10 +306,13 @@ const ContainerBackground = ({ style, children }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            opacity: 0.2, // تقليل الشفافية لتظهر الخلفية الملونة
+            opacity: 0.35,
           }}
-          imageStyle={{ opacity: 0.5 }}
-          resizeMode="cover"
+          imageStyle={{ 
+            opacity: 0.6,
+            resizeMode: 'repeat',
+          }}
+          resizeMode="repeat"
         />
       )}
       {children}
@@ -321,11 +330,15 @@ const GameSetup = () => {
 
   const responsiveStyles = getResponsiveStyles();
   
-  // تعديل الأنماط بناءً على اتجاه الشاشة
+  // تعديل الأنماط بناءً على اتجاه الشاشة وحجم الشاشة
   const dynamicStyles = {
     categoriesContainer: {
-      width: responsiveStyles.isLandscape ? '85%' : '55%',
-      maxWidth: responsiveStyles.isLandscape ? '85%' : '55%', // زيادة العرض أكثر
+      width: responsiveStyles.isLandscape ? '90%' : '85%',
+      maxWidth: responsiveStyles.isLandscape ? '90%' : '85%',
+      height: responsiveStyles.isLandscape ? '45%' : '38%',
+      paddingVertical: 0,
+      paddingHorizontal: 0,
+      overflow: 'hidden',
     }
   };
 
@@ -542,36 +555,85 @@ const GameSetup = () => {
   }
 
   return (
-    <BackgroundPattern
-      style={{ backgroundColor: theme.colors.background.primary }}
-      patternId="gameSetupPattern"
-    >
+    <View style={{ flex: 1, backgroundColor: '#0a1929' }}>
+      {/* الخلفية الزرقاء الغامقة مع نمط شبكة متحرك جديد - تغطي كل الشاشة */}
+      <View style={{ 
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+        pointerEvents: 'none'
+      }}>
+        <LinearGradient
+          colors={['#1a3a52', '#0f2438', '#0a1929']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ 
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 0
+          }}
+        />
+        
+        {/* نمط شبكة متحرك مختلف للخلفية الخارجية - دوائر فقط - يغطي كل الشاشة */}
+        <AnimatedGridPattern
+          width={100}
+          height={100}
+          dotSize={14}
+          dotColor="#64B5F6"
+          dotOpacity={0.25}
+          animationDuration={4000}
+          animationDelay={0}
+          variant="background"
+          isAnimated={true}
+        />
+      </View>
+      
       <Stack.Screen options={{ headerShown: false }} />
-      <View style={staticStyles.container}>
+      <View style={[staticStyles.container, { position: 'relative', zIndex: 2 }]}>
         <ScrollView 
-          contentContainerStyle={staticStyles.gridContainer}
+          contentContainerStyle={[staticStyles.gridContainer, { paddingBottom: 80 }]}
           showsVerticalScrollIndicator={false}
+          style={{ backgroundColor: 'transparent' }}
         >
           <ContainerBackground
             style={[
               staticStyles.categoriesContainer,
               dynamicStyles.categoriesContainer,
               { 
-                backgroundColor: `${theme.colors.background.card}60`,
-                // استخدام لون الثيم للإطار
-                borderColor: theme.colors.border?.primary || theme.colors.primary,
-                borderWidth: 4, // إبقاء سمك الإطار متساوي في جميع الثيمات
-                // إضافة ظل للإطار
-                elevation: 4,
-                shadowColor: theme.colors.border?.primary || theme.colors.primary,
-                shadowOffset: theme.currentTheme === 'dark' ? theme.colors.shadow.offset : { width: 0, height: 2 },
-                shadowOpacity: theme.currentTheme === 'dark' ? theme.colors.shadow.opacity : 0.1,
-                shadowRadius: theme.currentTheme === 'dark' ? theme.colors.shadow.radius : 4,
-                flex: 1, // إضافة flex: 1 لضمان امتداد الحاوية
-                alignSelf: 'center', // توسيط الحاوية
+                backgroundColor: '#D6E9FF',
+                borderColor: '#4A90E2',
+                borderWidth: 2,
+                elevation: 20,
+                shadowColor: '#4A90E2',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.8,
+                shadowRadius: 15,
+                width: '90%',
+                alignSelf: 'center',
+                position: 'relative',
+                overflow: 'hidden',
+                marginBottom: 0,
+                height: responsiveStyles.isLandscape ? '45%' : '38%',
               }
             ]}
           >
+            {/* المحتوى - ScrollView داخل حاوية ثابتة */}
+            <ScrollView 
+              style={{ position: 'relative', zIndex: 1, width: '100%', flex: 1 }}
+              contentContainerStyle={{ 
+                alignItems: 'center',
+                paddingVertical: SPACING.md,
+                paddingHorizontal: SPACING.md,
+              }}
+              showsVerticalScrollIndicator={true}
+              scrollEnabled={true}
+            >
             {/* عرض الفئات مقسمة حسب المجموعات */}
             {Object.entries(categoryGroups).map(([groupName, groupCategories]) => (
               <View key={groupName} style={styles.categoryGroupContainer}>
@@ -614,6 +676,7 @@ const GameSetup = () => {
                 </View>
               </View>
             ))}
+            </ScrollView>
           </ContainerBackground>
         </ScrollView>
 
@@ -711,24 +774,24 @@ const GameSetup = () => {
           </View>
         </View>
       </View>
-    </BackgroundPattern>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   categoryGroupContainer: {
-    marginBottom: SPACING.xxs,
+    marginBottom: 0,
     width: '100%',
   },
   groupHeaderContainer: {
-    marginBottom: SPACING.xxs,
+    marginBottom: 0,
     width: '100%',
     overflow: 'hidden',
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: SPACING.xxs,
+    paddingHorizontal: 0,
   },
   groupHeaderGradient: {
     paddingVertical: SPACING.xxs,
@@ -751,8 +814,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 6,
-    marginBottom: SPACING.xxs,
+    gap: 0,
+    marginBottom: 0,
   },
   headerLine: {
     height: 1,

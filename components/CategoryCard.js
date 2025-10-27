@@ -1,12 +1,23 @@
 import React from 'react';
-import { TouchableOpacity, View, Text, Image, StyleSheet, Platform } from 'react-native';
+import { TouchableOpacity, View, Text, Image, StyleSheet, Platform, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { SPACING, FONTS } from '../styles/theme';
 import categoryImages from '../assets/categories.js';
 import { useTheme } from '../contexts/ThemeContext';
 import { withThemeStyles } from '../styles/styles';
-import { wp } from '../styles/responsive';
+import { wp, hp } from '../styles/responsive';
+
+// دالة لحساب حجم الخط بناءً على حجم الشاشة
+const getResponsiveFontSize = () => {
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
+  const isLandscape = screenWidth > screenHeight;
+  
+  if (screenWidth < 400) return 8;
+  if (screenWidth < 600) return isLandscape ? 7 : 9;
+  if (screenWidth < 800) return isLandscape ? 8 : 10;
+  return isLandscape ? 9 : 11;
+};
 
 // التأكد من وجود الصورة
 const getCategoryImage = (category) => {
@@ -26,12 +37,8 @@ export const CategoryCard = ({
   onLongPress,
 }) => {
   const { theme } = useTheme();
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: withSpring(isSelected ? 1.05 : 1) },
-    ],
-  }));
-
+  const responsiveFontSize = getResponsiveFontSize();
+  
   const platformStyles = Platform.select({
     web: {
       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -42,13 +49,13 @@ export const CategoryCard = ({
   });
 
   return (
-    <Animated.View style={[
+    <View style={[
       styles.container, 
       { 
         borderColor: isSelected ? theme.colors.primary : theme.colors.border?.primary || theme.colors.border,
         borderWidth: isSelected ? 2 : 1,
+        transform: [{ scale: isSelected ? 1.05 : 1 }],
       },
-      animatedStyle
     ]}>
       <TouchableOpacity 
         onPress={onPress}
@@ -84,27 +91,30 @@ export const CategoryCard = ({
           >
             <Text style={[
               styles.title,
-              { color: theme.colors.text.light }
+              { 
+                color: theme.colors.text.light,
+                fontSize: responsiveFontSize,
+              }
             ]}>
               {category}
             </Text>
           </LinearGradient>
         </View>
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: wp(10), // تقليل العرض من 12% إلى 10%
-    aspectRatio: 0.7, // تعديل النسبة لتناسب التصميم الجديد
-    borderRadius: 8, // تقليل نصف قطر الحواف
-    margin: 1, // تقليل المسافة بين البطاقات
+    width: wp(12), // جعل الحجم متناسباً مع عرض الشاشة
+    aspectRatio: 0.75,
+    borderRadius: 10,
+    margin: 4,
     overflow: 'hidden',
-    borderWidth: 1.5, // زيادة سماكة الإطار
-    borderColor: 'transparent', // سيتم تحديد اللون ديناميكيًا في الكود
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    borderWidth: 2,
+    borderColor: 'transparent',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   touchable: {
     flex: 1,
@@ -112,11 +122,11 @@ const styles = StyleSheet.create({
   categoryContent: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
   },
   imageContainer: {
-    flex: 4,
+    flex: 3.5,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -127,24 +137,26 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: '100%',
-    padding: SPACING.sm, // زيادة الهامش الداخلي من xs إلى sm
+    paddingHorizontal: 4,
+    paddingVertical: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 40, // تحديد ارتفاع ثابت لخلفية العنوان
+    flex: 0,
   },
   title: {
-    fontSize: FONTS.sizes.small, // تصغير حجم الخط من body إلى small
-    fontWeight: FONTS.weights.bold, // جعل الخط أكثر سماكة
+    fontSize: FONTS.sizes.caption,
+    fontWeight: FONTS.weights.bold,
     fontFamily: 'ReadexPro_700Bold',
     textAlign: 'center',
+    numberOfLines: 1,
   },
   orderBadge: {
     position: 'absolute',
     top: SPACING.xs,
     right: SPACING.xs,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: 'rgba(255,255,255,0.95)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -152,7 +164,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   orderText: {
-    fontSize: FONTS.sizes.caption,
+    fontSize: 8,
     fontWeight: FONTS.weights.bold,
     fontFamily: 'ReadexPro_700Bold',
     color: '#000',

@@ -32,11 +32,11 @@ export const modernThemes = {
       },
 
       border: {
-        primary: '#FFD700',
-        secondary: '#FFD700',
-        light: '#FFD700',
-        dark: '#FFD700',
-        accent: '#FFD700'
+        primary: '#2E5DB8',
+        secondary: '#2E5DB8',
+        light: '#2E5DB8',
+        dark: '#2E5DB8',
+        accent: '#2E5DB8'
       },
       overlay: 'rgba(0, 0, 0, 0.5)',
 
@@ -129,7 +129,7 @@ export const modernThemes = {
         secondary: '#8D99AE',
         light: '#FFFFFF',
         disabled: 'rgba(45, 45, 45, 0.38)',
-        accent: '#FFD700',
+        accent: '#2E5DB8',
       },
 
       background: {
@@ -137,7 +137,7 @@ export const modernThemes = {
         secondary: 'rgba(253, 248, 235, 0.98)',
         card: 'rgba(255, 255, 255, 0.9)',
         surface: 'rgba(255, 252, 245, 0.9)',
-        accent: 'rgba(255, 215, 0, 0.05)',
+        accent: 'rgba(46, 93, 184, 0.05)',
         pattern: {
           type: 'image',
           opacity: 1,
@@ -150,16 +150,16 @@ export const modernThemes = {
         }
       },
       border: {
-        primary: '#FFFFFF',
-        secondary: '#FFD700',
-        light: '#FFE57F',
-        dark: '#FF9D3E',
-        accent: '#A2FF76'
+        primary: '#2E5DB8',
+        secondary: '#2E5DB8',
+        light: '#2E5DB8',
+        dark: '#2E5DB8',
+        accent: '#2E5DB8'
       },
       overlay: 'rgba(0, 0, 0, 0.5)',
 
       gradient: {
-        primary: ['#FFD700', '#FFA000'],
+        primary: ['#2E5DB8', '#1E40AF'],
         success: ['#4CAF50', '#388E3C'],
         error: ['#F72585', '#B5179E'],
         card: ['rgba(255,252,240,0.9)', 'rgba(255,252,240,0.95)']

@@ -11,7 +11,7 @@
 
 **لعبة مسابقات ثقافية تفاعلية بأكثر من 9,600 سؤال في 39 فئة مختلفة**
 
-[📱 تجربة التطبيق](https://fakker.net) • [📚 الدليل](./DEPLOYMENT.md) • [🐛 الإبلاغ عن خطأ](https://github.com/bonoo7/FRNW/issues)
+[📱 تجربة التطبيق](https://fakker.net) • [📚 الوثائق](./DOCS.md) • [🚀 البدء](./GETTING_STARTED.md) • [🐛 الإبلاغ عن خطأ](https://github.com/bonoo7/FRNW/issues)
 
 </div>
 
