@@ -107,7 +107,7 @@ export const TeamsHeader = ({
     teamsScroll: {
       flexDirection: vertical ? 'column' : 'row',
       alignItems: 'center',
-      justifyContent: vertical ? 'center' : 'flex-start',
+      justifyContent: 'center',
       gap: vertical ? 1 : SPACING.xxs,
       paddingVertical: vertical ? 1 : 2,
       paddingHorizontal: 0,
@@ -230,57 +230,62 @@ export const TeamsHeader = ({
                 colors={isCurrentTeam ? ['#5BA3F5', '#3D7EC8'] : ['#F8FAFB', '#FFFFFF']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={styles.teamCardContent}
+                style={[styles.teamCardContent, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 1 }]}
               >
-                <Text style={[
-                  styles.teamName,
-                  { color: isCurrentTeam ? '#FFFFFF' : '#333333' }
-                ]}>
-                  {teamName}
-                </Text>
-                <Text style={[
-                  styles.teamScore,
-                  { color: isCurrentTeam ? '#FFFFFF' : '#4A90E2' }
-                ]}>
-                  {teamScore}
-                </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 1.5, marginTop: 0.5 }}>
-                  <TouchableOpacity
-                    style={{
-                      width: 12,
-                      height: 12,
-                      borderRadius: 6,
-                      backgroundColor: isCurrentTeam ? 'rgba(255, 255, 255, 0.2)' : '#FF6B6B',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      elevation: 1,
-                    }}
-                    onPress={() => onScoreChange?.(teamName, (validScores[teamName] || 0) - 50)}
-                  >
-                    <Text style={{ color: '#FFF', fontSize: 8, fontWeight: 'bold', lineHeight: 12 }}>−</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      width: 12,
-                      height: 12,
-                      borderRadius: 6,
-                      backgroundColor: isCurrentTeam ? 'rgba(255, 255, 255, 0.2)' : '#51CF66',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      elevation: 1,
-                    }}
-                    onPress={() => onScoreChange?.(teamName, (validScores[teamName] || 0) + 50)}
-                  >
-                    <Text style={{ color: '#FFF', fontSize: 9, fontWeight: 'bold', lineHeight: 14 }}>+</Text>
-                  </TouchableOpacity>
+                {/* زر الطرح على اليسار */}
+                <TouchableOpacity
+                  style={{
+                    width: 14,
+                    height: 14,
+                    borderRadius: 7,
+                    backgroundColor: isCurrentTeam ? 'rgba(255, 255, 255, 0.2)' : '#FF6B6B',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    elevation: 1,
+                  }}
+                  onPress={() => onScoreChange?.(teamName, (validScores[teamName] || 0) - 50)}
+                >
+                  <Text style={{ color: '#FFF', fontSize: 9, fontWeight: 'bold', lineHeight: 14 }}>−</Text>
+                </TouchableOpacity>
+
+                {/* المحتوى في المنتصف */}
+                <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                  <Text style={[
+                    styles.teamName,
+                    { color: isCurrentTeam ? '#FFFFFF' : '#333333' }
+                  ]}>
+                    {teamName}
+                  </Text>
+                  <Text style={[
+                    styles.teamScore,
+                    { color: isCurrentTeam ? '#FFFFFF' : '#4A90E2' }
+                  ]}>
+                    {teamScore}
+                  </Text>
+                  {isCurrentTeam && (
+                    <View style={styles.activeTeamBadge}>
+                      <Text style={styles.activeTeamBadgeText}>
+                        نشط
+                      </Text>
+                    </View>
+                  )}
                 </View>
-                {isCurrentTeam && (
-                  <View style={styles.activeTeamBadge}>
-                    <Text style={styles.activeTeamBadgeText}>
-                      نشط
-                    </Text>
-                  </View>
-                )}
+
+                {/* زر الجمع على اليمين */}
+                <TouchableOpacity
+                  style={{
+                    width: 14,
+                    height: 14,
+                    borderRadius: 7,
+                    backgroundColor: isCurrentTeam ? 'rgba(255, 255, 255, 0.2)' : '#51CF66',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    elevation: 1,
+                  }}
+                  onPress={() => onScoreChange?.(teamName, (validScores[teamName] || 0) + 50)}
+                >
+                  <Text style={{ color: '#FFF', fontSize: 9, fontWeight: 'bold', lineHeight: 14 }}>+</Text>
+                </TouchableOpacity>
               </LinearGradient>
             </TouchableOpacity>
           );
