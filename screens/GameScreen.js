@@ -275,23 +275,23 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
           flex: 1,
           marginHorizontal: 3,
         }}>
-          {/* الصف الأول: سهل وأول متوسط */}
+          {/* الصف الأول: سهل (أول وثاني) */}
           <View style={{
             flexDirection: 'row',
             gap: horizontalGaps,
             justifyContent: 'center',
           }}>
-            {difficultyOrder.slice(0, 2).map((difficulty) => {
-              const diffQuestions = questions[difficulty] || [];
+            {(() => {
+              const easyQuestions = questions['سهل'] || [];
               return [0, 1].map((btnIndex) => {
-                const question = diffQuestions[btnIndex];
+                const question = easyQuestions[btnIndex];
                 return question ? (
                   <QuestionButton
-                    key={`${category}-${difficulty}-${btnIndex}`}
-                    difficulty={difficulty}
+                    key={`${category}-سهل-${btnIndex}`}
+                    difficulty="سهل"
                     isUsed={question?.isUsed || false}
                     points={question?.points || 10}
-                    onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                    onPress={() => onQuestionPress?.(category, 'سهل', btnIndex)}
                     theme={theme}
                     categories={categories}
                     isLandscape={isLandscape}
@@ -300,25 +300,61 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
                   />
                 ) : null;
               });
-            }).flat()}
+            })()}
+            {(() => {
+              const mediumQuestions = questions['متوسط'] || [];
+              const question = mediumQuestions[0];
+              return question ? (
+                <QuestionButton
+                  key={`${category}-متوسط-0`}
+                  difficulty="متوسط"
+                  isUsed={question?.isUsed || false}
+                  points={question?.points || 10}
+                  onPress={() => onQuestionPress?.(category, 'متوسط', 0)}
+                  theme={theme}
+                  categories={categories}
+                  isLandscape={isLandscape}
+                  buttonSize={buttonSize}
+                  buttonFontSize={buttonFontSize}
+                />
+              ) : null;
+            })()}
           </View>
-          {/* الصف الثاني: باقي الأزرار */}
+          {/* الصف الثاني: متوسط (ثاني) + صعب (أول وثاني) */}
           <View style={{
             flexDirection: 'row',
             gap: horizontalGaps,
             justifyContent: 'center',
           }}>
-            {difficultyOrder.slice(1, 3).map((difficulty) => {
-              const diffQuestions = questions[difficulty] || [];
+            {(() => {
+              const mediumQuestions = questions['متوسط'] || [];
+              const question = mediumQuestions[1];
+              return question ? (
+                <QuestionButton
+                  key={`${category}-متوسط-1`}
+                  difficulty="متوسط"
+                  isUsed={question?.isUsed || false}
+                  points={question?.points || 10}
+                  onPress={() => onQuestionPress?.(category, 'متوسط', 1)}
+                  theme={theme}
+                  categories={categories}
+                  isLandscape={isLandscape}
+                  buttonSize={buttonSize}
+                  buttonFontSize={buttonFontSize}
+                />
+              ) : null;
+            })()}
+            {(() => {
+              const hardQuestions = questions['صعب'] || [];
               return [0, 1].map((btnIndex) => {
-                const question = diffQuestions[btnIndex];
+                const question = hardQuestions[btnIndex];
                 return question ? (
                   <QuestionButton
-                    key={`${category}-${difficulty}-${btnIndex}`}
-                    difficulty={difficulty}
+                    key={`${category}-صعب-${btnIndex}`}
+                    difficulty="صعب"
                     isUsed={question?.isUsed || false}
                     points={question?.points || 10}
-                    onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                    onPress={() => onQuestionPress?.(category, 'صعب', btnIndex)}
                     theme={theme}
                     categories={categories}
                     isLandscape={isLandscape}
@@ -327,7 +363,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
                   />
                 ) : null;
               });
-            }).flat()}
+            })()}
           </View>
         </View>
       </View>
