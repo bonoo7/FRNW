@@ -136,14 +136,14 @@ export const TeamsHeader = ({
       flex: 1,
     },
     teamName: {
-      fontSize: vertical ? 6.5 : 9,
+      fontSize: vertical ? 8 : 9,
       fontWeight: FONTS.weights.bold,
       fontFamily: 'ReadexPro_700Bold',
-      marginBottom: 0.5,
+      marginBottom: 0.8,
       textAlign: 'center',
     },
     teamScore: {
-      fontSize: vertical ? 9 : 16,
+      fontSize: vertical ? 12 : 16,
       fontWeight: FONTS.weights.bold,
       fontFamily: 'ReadexPro_700Bold',
       marginBottom: 0.5,
@@ -230,7 +230,7 @@ export const TeamsHeader = ({
                 colors={isCurrentTeam ? ['#5BA3F5', '#3D7EC8'] : ['#F8FAFB', '#FFFFFF']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={[styles.teamCardContent, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 1 }]}
+                style={[styles.teamCardContent, { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 3, paddingHorizontal: 0 }]}
               >
                 {/* زر الطرح على اليسار */}
                 <TouchableOpacity
