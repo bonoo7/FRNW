@@ -250,7 +250,7 @@ export const TeamsHeader = ({
                 </TouchableOpacity>
 
                 {/* المحتوى في المنتصف */}
-                <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                <View style={{ alignItems: 'center', justifyContent: 'center', maxWidth: '60%' }}>
                   <Text style={[
                     styles.teamName,
                     { color: isCurrentTeam ? '#FFFFFF' : '#333333' }
