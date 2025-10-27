@@ -175,31 +175,36 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const availableHeight = (screenHeight - 60) / numCategories; // تقسيم الارتفاع على عدد الفئات
     
     const numButtons = 6;
-    const cardPadding = 8;
+    const cardPadding = 6;
     
     // تحديد عدد الصفوف بناءً على الارتفاع المتاح
-    const minButtonSize = 35;
-    const maxButtonsPerRow = Math.floor(availableHeight / (minButtonSize + 10)) >= 2 ? 6 : 3;
-    const numRows = maxButtonsPerRow === 6 ? 1 : 2;
-    const buttonsPerRow = Math.ceil(numButtons / numRows);
-    
-    const horizontalGaps = 3;
-    const verticalGaps = 3;
+    const horizontalGaps = 2;
+    const verticalGaps = 2;
     
     const contentWidth = availableWidth - (cardPadding * 2);
+    const contentHeight = availableHeight - (cardPadding * 2);
     
     // توزيع المساحة الأفقية
-    const categoryInfoSpace = Math.min(contentWidth * 0.15, 80); // مساحة الصورة والاسم معاً
-    const buttonsSpace = contentWidth - categoryInfoSpace - 20;
+    const categoryInfoSpace = Math.min(contentWidth * 0.16, 75); // مساحة الصورة والاسم معاً
+    const buttonsSpace = contentWidth - categoryInfoSpace - 10;
+    
+    // حساب حجم الزر بناءً على المساحة المتاحة
+    const buttonsPerRow = 3;
+    const numRows = 2;
     
     const totalHorizontalGaps = horizontalGaps * (buttonsPerRow - 1);
-    const buttonSize = Math.min((buttonsSpace - totalHorizontalGaps) / buttonsPerRow, 50);
-    const imageSize = Math.min(buttonSize * 0.8, 40);
+    const maxButtonWidth = (buttonsSpace - totalHorizontalGaps) / buttonsPerRow;
     
-    const buttonFontSize = Math.min(buttonSize * 0.35, 17);
-    const fontSize = Math.min(categoryInfoSpace * 0.15, 10);
+    const totalVerticalGaps = verticalGaps * (numRows - 1);
+    const maxButtonHeight = (contentHeight - totalVerticalGaps) / numRows;
     
-    const cardHeight = Math.min(buttonSize * numRows + (verticalGaps * (numRows - 1)) + (cardPadding * 2), availableHeight - 8);
+    const buttonSize = Math.min(maxButtonWidth, maxButtonHeight, 45);
+    const imageSize = Math.min(buttonSize * 0.7, 35);
+    
+    const buttonFontSize = Math.min(buttonSize * 0.38, 15);
+    const fontSize = Math.min(categoryInfoSpace * 0.12, 9);
+    
+    const cardHeight = Math.min(buttonSize * numRows + (verticalGaps * (numRows - 1)) + (cardPadding * 2), availableHeight - 4);
     
     return (
       <View style={[{
@@ -217,7 +222,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         alignItems: 'center',
         justifyContent: 'flex-start',
         height: cardHeight,
-        width: availableWidth - 8,
+        width: Math.min(availableWidth - 8, contentWidth + (cardPadding * 2)),
         marginVertical: 3,
         marginHorizontal: 4,
       }, style]}>
@@ -261,97 +266,69 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
           </Text>
         </View>
 
-        {/* أزرار الأسئلة - صف واحد أو صفين */}
+        {/* أزرار الأسئلة - صفين على 3 أزرار لكل صف */}
         <View style={{
-          flexDirection: numRows === 1 ? 'row' : 'column',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           gap: verticalGaps,
           flex: 1,
           marginHorizontal: 3,
         }}>
-          {numRows === 1 ? (
-            // صف واحد
-            <View style={{
-              flexDirection: 'row',
-              gap: horizontalGaps,
-            }}>
-              {difficultyOrder.map((difficulty) => {
-                const diffQuestions = questions[difficulty] || [];
-                return [0, 1].map((btnIndex) => {
-                  const question = diffQuestions[btnIndex];
-                  return question ? (
-                    <QuestionButton
-                      key={`${category}-${difficulty}-${btnIndex}`}
-                      difficulty={difficulty}
-                      isUsed={question?.isUsed || false}
-                      points={question?.points || 10}
-                      onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
-                      theme={theme}
-                      categories={categories}
-                      isLandscape={isLandscape}
-                      buttonSize={buttonSize}
-                      buttonFontSize={buttonFontSize}
-                    />
-                  ) : null;
-                });
-              }).flat()}
-            </View>
-          ) : (
-            // صفين
-            <>
-              <View style={{
-                flexDirection: 'row',
-                gap: horizontalGaps,
-              }}>
-                {difficultyOrder.slice(0, 2).map((difficulty) => {
-                  const diffQuestions = questions[difficulty] || [];
-                  return [0, 1].map((btnIndex) => {
-                    const question = diffQuestions[btnIndex];
-                    return question ? (
-                      <QuestionButton
-                        key={`${category}-${difficulty}-${btnIndex}`}
-                        difficulty={difficulty}
-                        isUsed={question?.isUsed || false}
-                        points={question?.points || 10}
-                        onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
-                        theme={theme}
-                        categories={categories}
-                        isLandscape={isLandscape}
-                        buttonSize={buttonSize}
-                        buttonFontSize={buttonFontSize}
-                      />
-                    ) : null;
-                  });
-                }).flat()}
-              </View>
-              <View style={{
-                flexDirection: 'row',
-                gap: horizontalGaps,
-              }}>
-                {difficultyOrder.slice(1, 3).map((difficulty) => {
-                  const diffQuestions = questions[difficulty] || [];
-                  return [0, 1].map((btnIndex) => {
-                    const question = diffQuestions[btnIndex];
-                    return question ? (
-                      <QuestionButton
-                        key={`${category}-${difficulty}-${btnIndex}`}
-                        difficulty={difficulty}
-                        isUsed={question?.isUsed || false}
-                        points={question?.points || 10}
-                        onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
-                        theme={theme}
-                        categories={categories}
-                        isLandscape={isLandscape}
-                        buttonSize={buttonSize}
-                        buttonFontSize={buttonFontSize}
-                      />
-                    ) : null;
-                  });
-                }).flat()}
-              </View>
-            </>
-          )}
+          {/* الصف الأول: سهل وأول متوسط */}
+          <View style={{
+            flexDirection: 'row',
+            gap: horizontalGaps,
+            justifyContent: 'center',
+          }}>
+            {difficultyOrder.slice(0, 2).map((difficulty) => {
+              const diffQuestions = questions[difficulty] || [];
+              return [0, 1].map((btnIndex) => {
+                const question = diffQuestions[btnIndex];
+                return question ? (
+                  <QuestionButton
+                    key={`${category}-${difficulty}-${btnIndex}`}
+                    difficulty={difficulty}
+                    isUsed={question?.isUsed || false}
+                    points={question?.points || 10}
+                    onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                    theme={theme}
+                    categories={categories}
+                    isLandscape={isLandscape}
+                    buttonSize={buttonSize}
+                    buttonFontSize={buttonFontSize}
+                  />
+                ) : null;
+              });
+            }).flat()}
+          </View>
+          {/* الصف الثاني: باقي الأزرار */}
+          <View style={{
+            flexDirection: 'row',
+            gap: horizontalGaps,
+            justifyContent: 'center',
+          }}>
+            {difficultyOrder.slice(1, 3).map((difficulty) => {
+              const diffQuestions = questions[difficulty] || [];
+              return [0, 1].map((btnIndex) => {
+                const question = diffQuestions[btnIndex];
+                return question ? (
+                  <QuestionButton
+                    key={`${category}-${difficulty}-${btnIndex}`}
+                    difficulty={difficulty}
+                    isUsed={question?.isUsed || false}
+                    points={question?.points || 10}
+                    onPress={() => onQuestionPress?.(category, difficulty, btnIndex)}
+                    theme={theme}
+                    categories={categories}
+                    isLandscape={isLandscape}
+                    buttonSize={buttonSize}
+                    buttonFontSize={buttonFontSize}
+                  />
+                ) : null;
+              });
+            }).flat()}
+          </View>
         </View>
       </View>
     );
