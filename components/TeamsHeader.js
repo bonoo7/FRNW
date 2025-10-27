@@ -230,7 +230,7 @@ export const TeamsHeader = ({
                 colors={isCurrentTeam ? ['#5BA3F5', '#3D7EC8'] : ['#F8FAFB', '#FFFFFF']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={[styles.teamCardContent, { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 3, paddingHorizontal: 0 }]}
+                style={[styles.teamCardContent, { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 5, paddingHorizontal: 2 }]}
               >
                 {/* زر الطرح على اليسار */}
                 <TouchableOpacity
@@ -242,6 +242,7 @@ export const TeamsHeader = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                     elevation: 1,
+                    marginRight: 2,
                   }}
                   onPress={() => onScoreChange?.(teamName, (validScores[teamName] || 0) - 50)}
                 >
@@ -281,6 +282,7 @@ export const TeamsHeader = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                     elevation: 1,
+                    marginLeft: 2,
                   }}
                   onPress={() => onScoreChange?.(teamName, (validScores[teamName] || 0) + 50)}
                 >
