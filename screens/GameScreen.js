@@ -372,28 +372,30 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
   const availableWidth = screenWidth - teamsHeaderWidth - 50;
   const numCategories = categories.length;
   
-  // حساب عدد الأعمدة الممكنة
-  const minCardWidth = 60;
-  const maxColumns = Math.floor(availableWidth / minCardWidth);
-  const columns = Math.min(numCategories, maxColumns);
+  // يجب أن تكون جميع البطاقات في صف واحد
+  // نحسب عرض البطاقة بناءً على عدد الفئات
+  const horizontalPadding = 4; // مسافة بين البطاقات
+  const totalHorizontalPadding = horizontalPadding * (numCategories - 1);
   
   const numButtons = 6;
-  const cardPadding = 8;
-  const verticalGaps = 3;
+  const cardPadding = 6;
+  const verticalGaps = 2;
   const totalGapSpace = verticalGaps * (numButtons - 1);
   
   const contentHeight = availableHeight - (cardPadding * 2);
   
   // توزيع المساحة: 15% صورة، 10% نص، 75% أزرار
-  const imageSize = Math.min(contentHeight * 0.15, 35);
+  const imageSize = Math.min(contentHeight * 0.15, 40);
   const textSpace = contentHeight * 0.10;
   const buttonsSpace = contentHeight * 0.75;
   const buttonSize = Math.min((buttonsSpace - totalGapSpace) / numButtons, 45);
   
   const buttonFontSize = Math.min(buttonSize * 0.35, 15);
-  const fontSize = Math.min(textSpace * 0.4, 9);
+  const fontSize = Math.min(textSpace * 0.4, 10);
   
-  const cardWidth = buttonSize + (cardPadding * 2);
+  // حساب عرض البطاقة بناءً على عدد الفئات
+  // نوزع العرض المتاح على جميع البطاقات بالتساوي
+  const cardWidth = (availableWidth - totalHorizontalPadding) / numCategories;
 
   return (
     <View style={[{
@@ -1266,16 +1268,17 @@ const GameScreen = () => {
             alignItems: 'center',
             zIndex: 1,
           }}>
-            {/* عرض الفئات والأسئلة في شبكة بدون سكرول */}
+            {/* عرض الفئات والأسئلة في صف واحد أفقي */}
             <View
               style={{
                 width: '100%',
                 height: '100%',
                 flexDirection: isLandscapeMode ? 'row' : 'column',
-                flexWrap: isLandscapeMode ? 'wrap' : 'nowrap',
+                flexWrap: 'nowrap', // منع الالتفاف - جميع البطاقات في صف واحد
                 justifyContent: 'center',
                 alignItems: 'center',
                 alignContent: 'center',
+                overflow: isLandscapeMode ? 'scroll' : 'visible', // السماح بالتمرير الأفقي في الوضع الأفقي
               }}
             >
                 {(() => {
