@@ -168,25 +168,28 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
   const screenHeight = Dimensions.get('window').height;
   
   if (!isLandscape) {
-    // الوضع الرأسي: بطاقات أفقية
+    // الوضع الرأسي: بطاقات أفقية - متجاوبة تماماً مع الحاوية
     const numCategories = categories.length;
     const teamsHeaderWidth = 120;
     const availableWidth = screenWidth - teamsHeaderWidth - 50;
     const availableHeight = (screenHeight - 60) / numCategories; // تقسيم الارتفاع على عدد الفئات
     
     const numButtons = 6;
-    const cardPadding = 6;
+    const cardPadding = 4; // تقليل من 6 إلى 4
+    const containerMarginHorizontal = 8;
+    const containerMarginVertical = 6;
     
-    // تحديد عدد الصفوف بناءً على الارتفاع المتاح
-    const horizontalGaps = 2;
-    const verticalGaps = 2;
+    // المسافات بين البطاقات
+    const horizontalGaps = 1; // تقليل من 2 إلى 1
+    const verticalGaps = 1; // تقليل من 2 إلى 1
     
-    const contentWidth = availableWidth - (cardPadding * 2);
-    const contentHeight = availableHeight - (cardPadding * 2);
+    // حساب المساحة المتاحة بعد المسافات الحول البطاقة
+    const contentWidth = availableWidth - (cardPadding * 2) - (containerMarginHorizontal * 2);
+    const contentHeight = availableHeight - (cardPadding * 2) - (containerMarginVertical * 2);
     
-    // توزيع المساحة الأفقية
-    const categoryInfoSpace = Math.min(contentWidth * 0.22, 95); // تكبير من 0.16 إلى 0.22 ومن 75 إلى 95
-    const buttonsSpace = contentWidth - categoryInfoSpace - 10;
+    // توزيع المساحة الأفقية - تقليل مساحة الفئة لإفساح مجال للأزرار
+    const categoryInfoSpace = Math.min(contentWidth * 0.18, 70); // تقليل من 0.22 إلى 0.18 ومن 95 إلى 70
+    const buttonsSpace = contentWidth - categoryInfoSpace - 5;
     
     // حساب حجم الزر بناءً على المساحة المتاحة
     const buttonsPerRow = 3;
@@ -198,13 +201,14 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const totalVerticalGaps = verticalGaps * (numRows - 1);
     const maxButtonHeight = (contentHeight - totalVerticalGaps) / numRows;
     
-    const buttonSize = Math.min(maxButtonWidth, maxButtonHeight, 45);
-    const imageSize = Math.min(buttonSize * 0.9, 50); // تكبير من 0.7 إلى 0.9 ومن 35 إلى 50
+    const buttonSize = Math.min(maxButtonWidth, maxButtonHeight, 40); // تقليل من 45 إلى 40
+    const imageSize = Math.min(buttonSize * 0.85, 40); // تقليل من 0.9 و 50 إلى 0.85 و 40
     
-    const buttonFontSize = Math.min(buttonSize * 0.38, 15);
-    const fontSize = Math.min(categoryInfoSpace * 0.18, 12); // تكبير من 0.12 إلى 0.18 ومن 9 إلى 12
+    const buttonFontSize = Math.min(buttonSize * 0.36, 13); // تقليل من 0.38 و 15 إلى 0.36 و 13
+    const fontSize = Math.min(categoryInfoSpace * 0.16, 10); // تقليل من 0.18 و 12 إلى 0.16 و 10
     
-    const cardHeight = Math.min(buttonSize * numRows + (verticalGaps * (numRows - 1)) + (cardPadding * 2), availableHeight - 4);
+    // ضمان أن البطاقة تملأ الارتفاع المتاح تماماً
+    const cardHeight = availableHeight - 4;
     
     return (
       <View style={[{
@@ -366,36 +370,39 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     );
   }
   
-  // الوضع الأفقي: بطاقات رأسية (صورة، اسم، أزرار في عمود)
+  // الوضع الأفقي: بطاقات رأسية - متجاوبة تماماً مع الحاوية
   const teamsHeaderWidth = 120;
   const availableHeight = screenHeight - 60;
   const availableWidth = screenWidth - teamsHeaderWidth - 50;
   const numCategories = categories.length;
   
-  // يجب أن تكون جميع البطاقات في صف واحد
-  // نحسب عرض البطاقة بناءً على عدد الفئات
-  const horizontalPadding = 4; // مسافة بين البطاقات
-  const totalHorizontalPadding = horizontalPadding * (numCategories - 1);
+  // جميع البطاقات في صف واحد - متجاوبة مع الحاوية
+  const containerMarginHorizontal = 8;
+  const containerMarginVertical = 6;
+  const cardMarginBetween = 4; // مسافة صغيرة بين البطاقات
   
   const numButtons = 6;
-  const cardPadding = 6;
-  const verticalGaps = 2;
+  const cardPadding = 3; // تقليل من 6 إلى 3
+  const verticalGaps = 1; // تقليل من 2 إلى 1
+  
+  // حساب المسافات الكلية
+  const totalBetweenSpacing = cardMarginBetween * (numCategories - 1);
+  const contentWidth = availableWidth - (containerMarginHorizontal * 2) - (cardPadding * 2) - totalBetweenSpacing;
+  const contentHeight = availableHeight - (containerMarginVertical * 2) - (cardPadding * 2);
+  
+  // توزيع المساحة: 12% صورة، 8% نص، 80% أزرار
+  const imageSize = Math.min(contentHeight * 0.12, 35); // تقليل من 0.15 و 40 إلى 0.12 و 35
+  const textSpace = contentHeight * 0.08;
+  const buttonsSpace = contentHeight * 0.80;
   const totalGapSpace = verticalGaps * (numButtons - 1);
+  const buttonSize = Math.min((buttonsSpace - totalGapSpace) / numButtons, 40); // تقليل من 45 إلى 40
   
-  const contentHeight = availableHeight - (cardPadding * 2);
+  const buttonFontSize = Math.min(buttonSize * 0.35, 13); // تقليل من 15 إلى 13
+  const fontSize = Math.min(textSpace * 0.4, 9); // تقليل من 10 إلى 9
   
-  // توزيع المساحة: 15% صورة، 10% نص، 75% أزرار
-  const imageSize = Math.min(contentHeight * 0.15, 40);
-  const textSpace = contentHeight * 0.10;
-  const buttonsSpace = contentHeight * 0.75;
-  const buttonSize = Math.min((buttonsSpace - totalGapSpace) / numButtons, 45);
-  
-  const buttonFontSize = Math.min(buttonSize * 0.35, 15);
-  const fontSize = Math.min(textSpace * 0.4, 10);
-  
-  // حساب عرض البطاقة بناءً على عدد الفئات
+  // حساب عرض البطاقة - متجاوبة مع الحاوية
   // نوزع العرض المتاح على جميع البطاقات بالتساوي
-  const cardWidth = (availableWidth - totalHorizontalPadding) / numCategories;
+  const cardWidth = contentWidth / numCategories;
 
   return (
     <View style={[{
