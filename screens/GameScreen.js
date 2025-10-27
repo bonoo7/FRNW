@@ -266,20 +266,21 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
           </Text>
         </View>
 
-        {/* أزرار الأسئلة - صفين على 3 أزرار لكل صف */}
+        {/* أزرار الأسئلة - ثلاث أعمدة، كل عمود مستوى صعوبة واحد */}
         <View style={{
-          flexDirection: 'column',
+          flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: verticalGaps,
+          gap: horizontalGaps,
           flex: 1,
           marginHorizontal: 3,
         }}>
-          {/* الصف الأول: سهل (أول وثاني) */}
+          {/* عمود سهل */}
           <View style={{
-            flexDirection: 'row',
-            gap: horizontalGaps,
+            flexDirection: 'column',
+            gap: verticalGaps,
             justifyContent: 'center',
+            alignItems: 'center',
           }}>
             {(() => {
               const easyQuestions = questions['سهل'] || [];
@@ -301,49 +302,44 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
                 ) : null;
               });
             })()}
-            {(() => {
-              const mediumQuestions = questions['متوسط'] || [];
-              const question = mediumQuestions[0];
-              return question ? (
-                <QuestionButton
-                  key={`${category}-متوسط-0`}
-                  difficulty="متوسط"
-                  isUsed={question?.isUsed || false}
-                  points={question?.points || 10}
-                  onPress={() => onQuestionPress?.(category, 'متوسط', 0)}
-                  theme={theme}
-                  categories={categories}
-                  isLandscape={isLandscape}
-                  buttonSize={buttonSize}
-                  buttonFontSize={buttonFontSize}
-                />
-              ) : null;
-            })()}
           </View>
-          {/* الصف الثاني: متوسط (ثاني) + صعب (أول وثاني) */}
+
+          {/* عمود متوسط */}
           <View style={{
-            flexDirection: 'row',
-            gap: horizontalGaps,
+            flexDirection: 'column',
+            gap: verticalGaps,
             justifyContent: 'center',
+            alignItems: 'center',
           }}>
             {(() => {
               const mediumQuestions = questions['متوسط'] || [];
-              const question = mediumQuestions[1];
-              return question ? (
-                <QuestionButton
-                  key={`${category}-متوسط-1`}
-                  difficulty="متوسط"
-                  isUsed={question?.isUsed || false}
-                  points={question?.points || 10}
-                  onPress={() => onQuestionPress?.(category, 'متوسط', 1)}
-                  theme={theme}
-                  categories={categories}
-                  isLandscape={isLandscape}
-                  buttonSize={buttonSize}
-                  buttonFontSize={buttonFontSize}
-                />
-              ) : null;
+              return [0, 1].map((btnIndex) => {
+                const question = mediumQuestions[btnIndex];
+                return question ? (
+                  <QuestionButton
+                    key={`${category}-متوسط-${btnIndex}`}
+                    difficulty="متوسط"
+                    isUsed={question?.isUsed || false}
+                    points={question?.points || 10}
+                    onPress={() => onQuestionPress?.(category, 'متوسط', btnIndex)}
+                    theme={theme}
+                    categories={categories}
+                    isLandscape={isLandscape}
+                    buttonSize={buttonSize}
+                    buttonFontSize={buttonFontSize}
+                  />
+                ) : null;
+              });
             })()}
+          </View>
+
+          {/* عمود صعب */}
+          <View style={{
+            flexDirection: 'column',
+            gap: verticalGaps,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
             {(() => {
               const hardQuestions = questions['صعب'] || [];
               return [0, 1].map((btnIndex) => {
