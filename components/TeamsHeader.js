@@ -92,12 +92,12 @@ export const TeamsHeader = ({
       backgroundColor: 'transparent',
       flexDirection: vertical ? 'column' : 'row',
       alignItems: vertical ? 'stretch' : 'center',
-      justifyContent: vertical ? 'flex-start' : 'space-between',
-      paddingHorizontal: vertical ? 0.5 : SPACING.md,
-      paddingVertical: vertical ? 0.5 : SPACING.xs,
+      justifyContent: vertical ? 'center' : 'space-between',
+      paddingHorizontal: vertical ? 1 : SPACING.md,
+      paddingVertical: vertical ? 1 : SPACING.xs,
       width: vertical ? '100%' : '100%',
       height: vertical ? '100%' : 'auto',
-      gap: vertical ? 0.5 : SPACING.xs,
+      gap: vertical ? 1 : SPACING.xs,
     },
     teamsScrollContainer: {
       flex: vertical ? 1 : 0,
@@ -107,14 +107,15 @@ export const TeamsHeader = ({
     teamsScroll: {
       flexDirection: vertical ? 'column' : 'row',
       alignItems: 'center',
-      gap: vertical ? 0.5 : SPACING.xxs,
-      paddingVertical: vertical ? 0.5 : 2,
+      justifyContent: vertical ? 'center' : 'flex-start',
+      gap: vertical ? 1 : SPACING.xxs,
+      paddingVertical: vertical ? 1 : 2,
       paddingHorizontal: 0,
     },
     teamCard: {
       minWidth: vertical ? '100%' : 70,
-      minHeight: vertical ? 26 : 60,
-      maxHeight: vertical ? 26 : 60,
+      minHeight: vertical ? 45 : 60,
+      maxHeight: vertical ? 45 : 60,
       borderRadius: 6,
       overflow: 'hidden',
       elevation: 2,
@@ -123,29 +124,29 @@ export const TeamsHeader = ({
       shadowOpacity: 0.1,
       shadowRadius: 1.5,
       borderWidth: 1.5,
-      marginBottom: vertical ? 0.5 : 0,
+      marginBottom: vertical ? 1 : 0,
     },
     teamCardContent: {
-      paddingVertical: vertical ? 1 : SPACING.xxs,
+      paddingVertical: vertical ? 2 : SPACING.xxs,
       paddingHorizontal: vertical ? 2 : SPACING.xs,
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: vertical ? 26 : 60,
-      maxHeight: vertical ? 26 : 60,
+      minHeight: vertical ? 45 : 60,
+      maxHeight: vertical ? 45 : 60,
       flex: 1,
     },
     teamName: {
-      fontSize: vertical ? 5 : 9,
+      fontSize: vertical ? 6.5 : 9,
       fontWeight: FONTS.weights.bold,
       fontFamily: 'ReadexPro_700Bold',
-      marginBottom: 0.2,
+      marginBottom: 0.5,
       textAlign: 'center',
     },
     teamScore: {
-      fontSize: vertical ? 7 : 16,
+      fontSize: vertical ? 9 : 16,
       fontWeight: FONTS.weights.bold,
       fontFamily: 'ReadexPro_700Bold',
-      marginBottom: 0.2,
+      marginBottom: 0.5,
     },
     activeTeamBadge: {
       paddingHorizontal: 1.5,
@@ -169,14 +170,14 @@ export const TeamsHeader = ({
       width: vertical ? '100%' : 'auto',
     },
     actionButton: {
-      paddingVertical: vertical ? 0.8 : 4,
-      paddingHorizontal: vertical ? 2 : 6,
-      borderRadius: 3,
+      paddingVertical: vertical ? 1.2 : 4,
+      paddingHorizontal: vertical ? 3 : 6,
+      borderRadius: 4,
       overflow: 'hidden',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: vertical ? 18 : 34,
-      minWidth: vertical ? 28 : 34,
+      minHeight: vertical ? 24 : 34,
+      minWidth: vertical ? 36 : 34,
       elevation: 1,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 0.5 },
@@ -186,7 +187,7 @@ export const TeamsHeader = ({
       borderColor: 'rgba(255, 255, 255, 0.1)',
     },
     actionButtonText: {
-      fontSize: vertical ? 5.5 : 11,
+      fontSize: vertical ? 7 : 11,
       fontWeight: FONTS.weights.bold,
       fontFamily: 'ReadexPro_700Bold',
       color: '#FFF',
@@ -243,12 +244,12 @@ export const TeamsHeader = ({
                 ]}>
                   {teamScore}
                 </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 1, marginTop: 0.2 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 1.5, marginTop: 0.5 }}>
                   <TouchableOpacity
                     style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 5,
+                      width: 12,
+                      height: 12,
+                      borderRadius: 6,
                       backgroundColor: isCurrentTeam ? 'rgba(255, 255, 255, 0.2)' : '#FF6B6B',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -256,13 +257,13 @@ export const TeamsHeader = ({
                     }}
                     onPress={() => onScoreChange?.(teamName, (validScores[teamName] || 0) - 50)}
                   >
-                    <Text style={{ color: '#FFF', fontSize: 7, fontWeight: 'bold', lineHeight: 10 }}>−</Text>
+                    <Text style={{ color: '#FFF', fontSize: 8, fontWeight: 'bold', lineHeight: 12 }}>−</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: 5,
+                      width: 12,
+                      height: 12,
+                      borderRadius: 6,
                       backgroundColor: isCurrentTeam ? 'rgba(255, 255, 255, 0.2)' : '#51CF66',
                       alignItems: 'center',
                       justifyContent: 'center',
