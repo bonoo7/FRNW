@@ -93,11 +93,11 @@ export const TeamsHeader = ({
       flexDirection: vertical ? 'column' : 'row',
       alignItems: vertical ? 'stretch' : 'center',
       justifyContent: vertical ? 'flex-start' : 'space-between',
-      paddingHorizontal: vertical ? 2 : SPACING.md,
-      paddingVertical: vertical ? 2 : SPACING.xs,
+      paddingHorizontal: vertical ? 1 : SPACING.md,
+      paddingVertical: vertical ? 1 : SPACING.xs,
       width: vertical ? '100%' : '100%',
       height: vertical ? '100%' : 'auto',
-      gap: vertical ? 2 : SPACING.xs,
+      gap: vertical ? 1 : SPACING.xs,
     },
     teamsScrollContainer: {
       flex: vertical ? 1 : 0,
@@ -107,14 +107,14 @@ export const TeamsHeader = ({
     teamsScroll: {
       flexDirection: vertical ? 'column' : 'row',
       alignItems: 'center',
-      gap: vertical ? 1 : SPACING.xxs,
-      paddingVertical: vertical ? 2 : 2,
+      gap: vertical ? 0.8 : SPACING.xxs,
+      paddingVertical: vertical ? 1 : 2,
       paddingHorizontal: 0,
     },
     teamCard: {
       minWidth: vertical ? '100%' : 85,
-      minHeight: vertical ? 48 : 60,
-      borderRadius: 10,
+      minHeight: vertical ? 32 : 60,
+      borderRadius: 8,
       overflow: 'hidden',
       elevation: 2,
       shadowColor: '#000',
@@ -122,39 +122,39 @@ export const TeamsHeader = ({
       shadowOpacity: 0.1,
       shadowRadius: 1.5,
       borderWidth: 1.5,
-      marginBottom: vertical ? 2 : 0,
+      marginBottom: vertical ? 1 : 0,
     },
     teamCardContent: {
-      paddingVertical: vertical ? 3 : SPACING.xxs,
-      paddingHorizontal: vertical ? SPACING.xs : SPACING.xs,
+      paddingVertical: vertical ? 2 : SPACING.xxs,
+      paddingHorizontal: vertical ? 3 : SPACING.xs,
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: vertical ? 48 : 60,
+      minHeight: vertical ? 32 : 60,
       flex: 1,
     },
     teamName: {
-      fontSize: vertical ? 7.5 : 9,
+      fontSize: vertical ? 6 : 9,
       fontWeight: FONTS.weights.bold,
       fontFamily: 'ReadexPro_700Bold',
-      marginBottom: 1,
+      marginBottom: 0.5,
       textAlign: 'center',
     },
     teamScore: {
-      fontSize: vertical ? 11 : 16,
+      fontSize: vertical ? 9 : 16,
       fontWeight: FONTS.weights.bold,
       fontFamily: 'ReadexPro_700Bold',
-      marginBottom: 1,
+      marginBottom: 0.5,
     },
     activeTeamBadge: {
-      paddingHorizontal: 2,
-      paddingVertical: 0.3,
+      paddingHorizontal: 1.5,
+      paddingVertical: 0.2,
       backgroundColor: 'rgba(255, 255, 255, 0.15)',
       borderRadius: 2,
       borderWidth: 0.5,
       borderColor: 'rgba(255, 255, 255, 0.25)',
     },
     activeTeamBadgeText: {
-      fontSize: 4.5,
+      fontSize: 4,
       fontWeight: FONTS.weights.bold,
       color: '#FFFFFF',
       fontFamily: 'ReadexPro_700Bold',
@@ -167,14 +167,14 @@ export const TeamsHeader = ({
       width: vertical ? '100%' : 'auto',
     },
     actionButton: {
-      paddingVertical: vertical ? 1.2 : 4,
-      paddingHorizontal: vertical ? 3 : 6,
-      borderRadius: 5,
+      paddingVertical: vertical ? 1 : 4,
+      paddingHorizontal: vertical ? 2.5 : 6,
+      borderRadius: 4,
       overflow: 'hidden',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: vertical ? 22 : 34,
-      minWidth: vertical ? 36 : 34,
+      minHeight: vertical ? 20 : 34,
+      minWidth: vertical ? 32 : 34,
       elevation: 1,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 0.5 },
@@ -184,7 +184,7 @@ export const TeamsHeader = ({
       borderColor: 'rgba(255, 255, 255, 0.1)',
     },
     actionButtonText: {
-      fontSize: vertical ? 6.5 : 11,
+      fontSize: vertical ? 6 : 11,
       fontWeight: FONTS.weights.bold,
       fontFamily: 'ReadexPro_700Bold',
       color: '#FFF',
@@ -241,12 +241,12 @@ export const TeamsHeader = ({
                 ]}>
                   {teamScore}
                 </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 4, marginTop: 1 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 2, marginTop: 0.5 }}>
                   <TouchableOpacity
                     style={{
-                      width: 14,
-                      height: 14,
-                      borderRadius: 7,
+                      width: 12,
+                      height: 12,
+                      borderRadius: 6,
                       backgroundColor: isCurrentTeam ? 'rgba(255, 255, 255, 0.2)' : '#FF6B6B',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -254,13 +254,13 @@ export const TeamsHeader = ({
                     }}
                     onPress={() => onScoreChange?.(teamName, (validScores[teamName] || 0) - 50)}
                   >
-                    <Text style={{ color: '#FFF', fontSize: 9, fontWeight: 'bold', lineHeight: 14 }}>−</Text>
+                    <Text style={{ color: '#FFF', fontSize: 8, fontWeight: 'bold', lineHeight: 12 }}>−</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={{
-                      width: 14,
-                      height: 14,
-                      borderRadius: 7,
+                      width: 12,
+                      height: 12,
+                      borderRadius: 6,
                       backgroundColor: isCurrentTeam ? 'rgba(255, 255, 255, 0.2)' : '#51CF66',
                       alignItems: 'center',
                       justifyContent: 'center',
