@@ -223,8 +223,8 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         justifyContent: 'flex-start',
         height: cardHeight,
         width: Math.min(availableWidth - 8, contentWidth + (cardPadding * 2)),
-        marginVertical: 3,
-        marginHorizontal: 4,
+        marginVertical: 8,   // زيادة المسافة العمودية من 3 إلى 8
+        marginHorizontal: 8, // زيادة المسافة الأفقية من 4 إلى 8
       }, style]}>
         {/* الصورة والاسم في عمود على اليمين */}
         <View style={{
@@ -413,8 +413,8 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
       justifyContent: 'flex-start',
       width: cardWidth,
       maxHeight: availableHeight - 8,
-      marginVertical: 3,
-      marginHorizontal: 3,
+      marginVertical: 8,   // زيادة المسافة العمودية من 3 إلى 8
+      marginHorizontal: 8, // زيادة المسافة الأفقية من 3 إلى 8
     }, style]}>
       {/* الصورة - دائمًا في الأعلى */}
       <Image 
@@ -1268,7 +1268,7 @@ const GameScreen = () => {
             alignItems: 'center',
             zIndex: 1,
           }}>
-            {/* عرض الفئات والأسئلة في صف واحد أفقي */}
+            {/* عرض الفئات والأسئلة في صف واحد أفقي مع مسافات */}
             <View
               style={{
                 width: '100%',
@@ -1279,6 +1279,8 @@ const GameScreen = () => {
                 alignItems: 'center',
                 alignContent: 'center',
                 overflow: isLandscapeMode ? 'scroll' : 'visible', // السماح بالتمرير الأفقي في الوضع الأفقي
+                paddingHorizontal: 12, // مسافة أفقية من الحواف
+                paddingVertical: 12,   // مسافة عمودية من الحواف
               }}
             >
                 {(() => {
