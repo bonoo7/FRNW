@@ -34,11 +34,16 @@ const ConfettiPiece = ({ delay, color }) => {
     return () => clearTimeout(timer);
   }, [delay, translateY, rotate, opacity]);
 
+  const rotateString = rotate.interpolate({
+    inputRange: [0, 360],
+    outputRange: ['0deg', '360deg']
+  });
+
   const style = {
     transform: [
       { translateY },
       { translateX },
-      { rotate: rotate.__getValue ? rotate.__getValue() : 0 }
+      { rotate: rotateString }
     ],
     opacity
   };

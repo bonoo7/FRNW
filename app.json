@@ -21,7 +21,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "net.fakker.app",
-      "orientation": "all"
+      "orientation": "all",
+      "infoPlist": {
+        "UIViewControllerBasedStatusBarAppearance": false,
+        "UIStatusBarHidden": true,
+        "UIStatusBarStyle": "UIStatusBarStyleLightContent"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -33,7 +38,9 @@
       "permissions": [
         "INTERNET"
       ],
-      "screenOrientation": "sensor"
+      "screenOrientation": "sensor",
+      "fullScreen": true,
+      "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
       "favicon": "./assets/favicon.png"

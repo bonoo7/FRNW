@@ -172,49 +172,40 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const numCategories = categories.length;
     const teamsHeaderWidth = 120;
     const availableWidth = screenWidth - teamsHeaderWidth - 50;
-    const availableHeight = (screenHeight - 60) / numCategories; // تقسيم الارتفاع على عدد الفئات
+    const availableHeight = (screenHeight - 60) / numCategories;
     
-    const numButtons = 6;
-    const cardPadding = 2; // تقليل من 4 إلى 2
-    const containerMarginHorizontal = 4; // تقليل من 8 إلى 4
-    const containerMarginVertical = 3; // تقليل من 6 إلى 3
+    // مسافات حول البطاقات
+    const outerPadding = 8; // تقليل من 12 إلى 8
+    const cardMarginBetween = 6; // تقليل من 10 إلى 6
+    const innerCardPadding = 6; // تقليل من 8 إلى 6
     
-    // المسافات بين البطاقات - تقليل إلى 0
-    const horizontalGaps = 0; // تقليل من 1 إلى 0
-    const verticalGaps = 0; // تقليل من 1 إلى 0
+    // المساحة المتاحة بعد الهوامش الخارجية
+    const cardContainerWidth = availableWidth - (outerPadding * 2);
+    const cardContainerHeight = availableHeight - (outerPadding * 2);
     
-    // حساب المساحة المتاحة بعد المسافات الحول البطاقة
-    const contentWidth = availableWidth - (cardPadding * 2) - (containerMarginHorizontal * 2);
-    const contentHeight = availableHeight - (cardPadding * 2) - (containerMarginVertical * 2);
+    // حساب حجم البطاقة مع المسافات بينها
+    const cardHeight = cardContainerHeight;
+    const cardWidth = cardContainerWidth;
     
-    // توزيع المساحة الأفقية - تقليل مساحة الفئة لإفساح مجال للأزرار
-    const categoryInfoSpace = Math.min(contentWidth * 0.16, 60); // تقليل من 0.18 و 70 إلى 0.16 و 60
-    const buttonsSpace = contentWidth - categoryInfoSpace - 3; // تقليل من 5 إلى 3
+    // حساب المساحة المتاحة داخل البطاقة
+    const cardInnerWidth = cardWidth - (innerCardPadding * 2);
+    const cardInnerHeight = cardHeight - (innerCardPadding * 2);
     
-    // حساب حجم الزر بناءً على المساحة المتاحة
+    // توزيع المساحة: 16% للصورة والاسم، 84% للأزرار
+    const categoryInfoSpace = Math.min(cardInnerWidth * 0.16, 60);
+    const buttonsSpace = cardInnerWidth - categoryInfoSpace - 2;
+    
+    // حساب حجم الزر - أكبر قليلاً
     const buttonsPerRow = 3;
     const numRows = 2;
-    
-    const totalHorizontalGaps = horizontalGaps * (buttonsPerRow - 1);
-    const maxButtonWidth = (buttonsSpace - totalHorizontalGaps) / buttonsPerRow;
-    
-    const totalVerticalGaps = verticalGaps * (numRows - 1);
-    const maxButtonHeight = (contentHeight - totalVerticalGaps) / numRows;
-    
-    const buttonSize = Math.min(maxButtonWidth, maxButtonHeight, 38); // تقليل من 40 إلى 38
-    const imageSize = Math.min(buttonSize * 0.8, 35); // تقليل من 0.85 و 40 إلى 0.8 و 35
-    
-    const buttonFontSize = Math.min(buttonSize * 0.34, 12); // تقليل من 0.36 و 13 إلى 0.34 و 12
-    const fontSize = Math.min(categoryInfoSpace * 0.15, 9); // تقليل من 0.16 و 10 إلى 0.15 و 9
-    
-    // ضمان أن البطاقة تملأ الارتفاع المتاح تماماً
-    const cardHeight = availableHeight - 2; // تقليل من 4 إلى 2
+    const buttonSize = Math.min(buttonsSpace / buttonsPerRow, cardInnerHeight / numRows, 45);
+    const buttonFontSize = Math.min(buttonSize * 0.36, 13);
+    const fontSize = Math.min(categoryInfoSpace * 0.16, 10);
     
     return (
       <View style={[{
-        backgroundColor: theme.colors.background?.surface || '#FFF',
         borderRadius: 12,
-        padding: cardPadding,
+        padding: 0,
         shadowColor: theme.colors.primary || '#2E5DB8',
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.2,
@@ -226,43 +217,66 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         alignItems: 'center',
         justifyContent: 'flex-start',
         height: cardHeight,
-        width: Math.min(availableWidth - 8, contentWidth + (cardPadding * 2)),
-        marginVertical: 2,   // تقليل من 8 إلى 2
-        marginHorizontal: 2, // تقليل من 8 إلى 2
+        width: cardWidth,
+        marginVertical: outerPadding,
+        marginHorizontal: outerPadding,
+        overflow: 'hidden',
+        position: 'relative',
       }, style]}>
-        {/* الصورة والاسم في عمود على اليمين */}
+        {/* الصورة كخلفية تغطي كل البطاقة */}
+        <Image 
+          source={categoryImages[category]} 
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+          }}
+          resizeMode="cover"
+        />
+        
+        {/* طبقة داكنة نصف شفافة فوق الصورة */}
         <View style={{
-          width: categoryInfoSpace,
-          height: '100%',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          zIndex: 1,
+        }} />
+
+        {/* اسم الفئة في حاوية فاتحة - عريضة وطويلة - نسبة 60% من ارتفاع البطاقة */}
+        <View style={{
+          backgroundColor: '#FFFFFF',
+          paddingHorizontal: 8,
+          paddingVertical: 8,
+          borderRadius: 10,
+          marginTop: 4,
+          marginLeft: 2,
           justifyContent: 'center',
           alignItems: 'center',
-          marginLeft: 2,
+          width: cardWidth * 0.22,
+          height: cardHeight * 0.60,
+          borderWidth: 2,
+          borderColor: 'rgba(46, 93, 184, 0.3)',
+          zIndex: 2,
         }}>
-          {/* الصورة في الأعلى */}
-          <Image 
-            source={categoryImages[category]} 
-            style={{
-              width: imageSize,
-              height: imageSize,
-              borderRadius: 8,
-              marginBottom: 3,
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            }}
-            resizeMode="cover"
-          />
-          
-          {/* اسم الفئة أسفل الصورة */}
           <Text 
             style={{
-              fontSize: fontSize,
+              fontSize: Math.max(Math.min((cardHeight * 0.60) * 0.2, 9), 5),
               fontWeight: '700',
               textAlign: 'center',
               width: '100%',
-              color: theme.colors.text?.primary || '#000',
+              color: '#1a1a1a',
               fontFamily: 'ReadexPro_700Bold',
-              lineHeight: fontSize * 1.2,
+              lineHeight: Math.max(Math.min((cardHeight * 0.60) * 0.2, 9), 5) * 1.2,
             }}
-            numberOfLines={2}
+            numberOfLines={3}
             adjustsFontSizeToFit
             minimumFontScale={0.5}
           >
@@ -275,14 +289,16 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: horizontalGaps,
+          gap: 2,
           flex: 1,
-          marginHorizontal: 3,
+          marginHorizontal: 4,
+          zIndex: 2,
+          position: 'relative',
         }}>
           {/* عمود سهل */}
           <View style={{
             flexDirection: 'column',
-            gap: verticalGaps,
+            gap: 2,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
@@ -308,13 +324,13 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
             })()}
           </View>
 
-          {/* عمود متوسط */}
-          <View style={{
-            flexDirection: 'column',
-            gap: verticalGaps,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+           {/* عمود متوسط */}
+           <View style={{
+             flexDirection: 'column',
+             gap: 2,
+             justifyContent: 'center',
+             alignItems: 'center',
+           }}>
             {(() => {
               const mediumQuestions = questions['متوسط'] || [];
               return [0, 1].map((btnIndex) => {
@@ -340,7 +356,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
           {/* عمود صعب */}
           <View style={{
             flexDirection: 'column',
-            gap: verticalGaps,
+            gap: 2,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
@@ -376,39 +392,35 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
   const availableWidth = screenWidth - teamsHeaderWidth - 50;
   const numCategories = categories.length;
   
-  // جميع البطاقات في صف واحد - متجاوبة مع الحاوية
-  const containerMarginHorizontal = 4; // تقليل من 8 إلى 4
-  const containerMarginVertical = 3; // تقليل من 6 إلى 3
-  const cardMarginBetween = 2; // تقليل من 4 إلى 2
+  // مسافات حول البطاقات
+  const outerPadding = 8; // تقليل من 12 إلى 8
+  const cardMarginBetween = 6; // تقليل من 10 إلى 6
+  const innerCardPadding = 6; // تقليل من 8 إلى 6
   
-  const numButtons = 6;
-  const cardPadding = 2; // تقليل من 3 إلى 2
-  const verticalGaps = 0; // تقليل من 1 إلى 0
+  // المساحة المتاحة بعد الهوامش الخارجية
+  const cardsContainerWidth = availableWidth - (outerPadding * 2);
+  const cardsContainerHeight = availableHeight - (outerPadding * 2);
   
-  // حساب المسافات الكلية
-  const totalBetweenSpacing = cardMarginBetween * (numCategories - 1);
-  const contentWidth = availableWidth - (containerMarginHorizontal * 2) - (cardPadding * 2) - totalBetweenSpacing;
-  const contentHeight = availableHeight - (containerMarginVertical * 2) - (cardPadding * 2);
+  // حساب حجم البطاقة - توزيع متساوي
+  const cardWidth = (cardsContainerWidth - (cardMarginBetween * (numCategories - 1))) / numCategories;
+  const cardHeight = cardsContainerHeight;
   
-  // توزيع المساحة: 10% صورة، 7% نص، 83% أزرار
-  const imageSize = Math.min(contentHeight * 0.10, 32); // تقليل من 0.12 و 35 إلى 0.10 و 32
-  const textSpace = contentHeight * 0.07;
-  const buttonsSpace = contentHeight * 0.83;
-  const totalGapSpace = verticalGaps * (numButtons - 1);
-  const buttonSize = Math.min((buttonsSpace - totalGapSpace) / numButtons, 38); // تقليل من 40 إلى 38
+  // حساب المساحة المتاحة داخل البطاقة
+  const cardInnerWidth = cardWidth - (innerCardPadding * 2);
+  const cardInnerHeight = cardHeight - (innerCardPadding * 2);
   
-  const buttonFontSize = Math.min(buttonSize * 0.33, 12); // تقليل من 0.35 و 13 إلى 0.33 و 12
-  const fontSize = Math.min(textSpace * 0.4, 8); // تقليل من 9 إلى 8
+  // توزيع المساحة العمودية - 18% للعنوان، 82% للأزرار
+  const titleHeight = cardInnerHeight * 0.18;
+  const buttonsHeight = cardInnerHeight * 0.82;
   
-  // حساب عرض البطاقة - متجاوبة مع الحاوية
-  // نوزع العرض المتاح على جميع البطاقات بالتساوي
-  const cardWidth = contentWidth / numCategories;
+  const buttonSize = Math.min((buttonsHeight / 6) - 1, cardInnerWidth - 2, 40);
+  const buttonFontSize = Math.min(buttonSize * 0.36, 13);
+  const fontSize = Math.min(titleHeight * 0.5, 11);
 
   return (
     <View style={[{
-      backgroundColor: theme.colors.background?.surface || '#FFF',
       borderRadius: 12,
-      padding: cardPadding,
+      padding: 0,
       shadowColor: theme.colors.primary || '#2E5DB8',
       shadowOffset: { width: 0, height: 3 },
       shadowOpacity: 0.2,
@@ -419,50 +431,83 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
       alignItems: 'center',
       justifyContent: 'flex-start',
       width: cardWidth,
-      maxHeight: availableHeight - 8,
-      marginVertical: 2,   // تقليل من 8 إلى 2
-      marginHorizontal: 1, // تقليل من 8 إلى 1
+      height: cardHeight,
+      marginVertical: outerPadding,
+      marginHorizontal: outerPadding / 2,
+      overflow: 'hidden',
+      position: 'relative',
     }, style]}>
-      {/* الصورة - دائمًا في الأعلى */}
+      {/* الصورة كخلفية تغطي كل البطاقة */}
       <Image 
         source={categoryImages[category]} 
         style={{
-          width: imageSize,
-          height: imageSize,
-          borderRadius: 6,
-          marginBottom: 3,
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
         }}
         resizeMode="cover"
       />
       
-      {/* اسم الفئة - تحت الصورة */}
-      <Text 
-        style={{
-          fontSize: fontSize,
-          fontWeight: '700',
-          textAlign: 'center',
-          width: '100%',
-          color: theme.colors.text?.primary || '#000',
-          fontFamily: 'ReadexPro_700Bold',
-          marginBottom: 3,
-          lineHeight: fontSize * 1.2,
-          height: textSpace,
-        }}
-        numberOfLines={2}
-        adjustsFontSizeToFit
-        minimumFontScale={0.5}
-      >
-        {category}
-      </Text>
+      {/* طبقة داكنة نصف شفافة فوق الصورة */}
+      <View style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        zIndex: 1,
+      }} />
+      
+      {/* اسم الفئة - في حاوية فاتحة - نسبة 15% من ارتفاع البطاقة */}
+      <View style={{
+        backgroundColor: '#FFFFFF',
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        borderRadius: 10,
+        marginTop: 4,
+        marginBottom: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '95%',
+        height: cardHeight * 0.15,
+        borderWidth: 2,
+        borderColor: 'rgba(46, 93, 184, 0.3)',
+        zIndex: 2,
+        position: 'relative',
+      }}>
+        <Text 
+          style={{
+            fontSize: Math.max(Math.min((cardHeight * 0.15) * 0.4, 9), 5),
+            fontWeight: '700',
+            textAlign: 'center',
+            width: '100%',
+            color: '#1a1a1a',
+            fontFamily: 'ReadexPro_700Bold',
+            lineHeight: Math.max(Math.min((cardHeight * 0.15) * 0.4, 9), 5) * 1.2,
+          }}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+          minimumFontScale={0.6}
+        >
+          {category}
+        </Text>
+      </View>
 
       {/* أزرار الأسئلة - في عمود واحد */}
       <View style={{
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: verticalGaps,
+        gap: 2,
         width: '100%',
+        zIndex: 2,
+        position: 'relative',
       }}>
         {difficultyOrder.map((difficulty) => {
           const diffQuestions = questions[difficulty] || [];

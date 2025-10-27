@@ -138,7 +138,12 @@ const RoundResults = () => {
   
   // تنفيذ تأثير الوميض بشكل متكرر
   useEffect(() => {
+    let animationId = null;
+    let isMounted = true;
+    
     const pulse = () => {
+      if (!isMounted) return;
+      
       Animated.sequence([
         Animated.timing(glowAnimation, {
           toValue: 1,
@@ -150,15 +155,22 @@ const RoundResults = () => {
           duration: 1000,
           useNativeDriver: false,
         })
-      ]).start(() => pulse());
+      ]).start(({ finished }) => {
+        if (finished && isMounted) {
+          animationId = setTimeout(() => pulse(), 0);
+        }
+      });
     };
     
     pulse();
     
     return () => {
+      isMounted = false;
+      if (animationId) clearTimeout(animationId);
+      glowAnimation.setValue(0);
       glowAnimation.stopAnimation();
     };
-  }, []);
+  }, [glowAnimation]);
   
   // قيم الظل الرسومية المتغيرة بناءً على الحركة
   const glowShadowOpacity = glowAnimation.interpolate({
@@ -206,6 +218,10 @@ const RoundResults = () => {
 
   const handleNewRound = async () => {
     try {
+      // إيقاف الحركات
+      glowAnimation.setValue(0);
+      glowAnimation.stopAnimation();
+      
       // حذف بيانات اللعبة الحالية
       await StorageService.clearCurrentGame();
       

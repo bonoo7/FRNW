@@ -8,6 +8,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import ErrorBoundary from '../contexts/ErrorBoundary';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import * as NavigationBar from 'expo-navigation-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { 
   useFonts as useReadexPro,
   ReadexPro_400Regular,
@@ -31,16 +33,29 @@ const RootLayoutContent = () => {
   } catch (e) {
     // fallback
   }
+
+  // إخفاء شريط الإشعارات والنيفيجيشن
+  StatusBar.setHidden(true, 'none');
+  
+  // إخفاء شريط النيفيجيشن السفلي في Android
+  try {
+    NavigationBar.setVisibilityAsync('hidden');
+    NavigationBar.setButtonStyleAsync('light');
+  } catch (e) {
+    // قد لا يكون متاحاً في جميع الإصدارات
+  }
   
   return (
     <View style={{ flex: 1, backgroundColor }}>
-      <StatusBar style={backgroundColor === '#1E40AF' ? 'light' : 'auto'} />
       <Stack
         screenOptions={{
           headerShown: false,
           animation: 'fade',
           contentStyle: { 
             backgroundColor: backgroundColor,
+            flex: 1
+          },
+          sceneContainerStyle: {
             flex: 1
           }
         }}
