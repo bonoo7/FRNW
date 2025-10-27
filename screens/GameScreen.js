@@ -185,7 +185,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const contentHeight = availableHeight - (cardPadding * 2);
     
     // توزيع المساحة الأفقية
-    const categoryInfoSpace = Math.min(contentWidth * 0.16, 75); // مساحة الصورة والاسم معاً
+    const categoryInfoSpace = Math.min(contentWidth * 0.22, 95); // تكبير من 0.16 إلى 0.22 ومن 75 إلى 95
     const buttonsSpace = contentWidth - categoryInfoSpace - 10;
     
     // حساب حجم الزر بناءً على المساحة المتاحة
@@ -199,10 +199,10 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const maxButtonHeight = (contentHeight - totalVerticalGaps) / numRows;
     
     const buttonSize = Math.min(maxButtonWidth, maxButtonHeight, 45);
-    const imageSize = Math.min(buttonSize * 0.7, 35);
+    const imageSize = Math.min(buttonSize * 0.9, 50); // تكبير من 0.7 إلى 0.9 ومن 35 إلى 50
     
     const buttonFontSize = Math.min(buttonSize * 0.38, 15);
-    const fontSize = Math.min(categoryInfoSpace * 0.12, 9);
+    const fontSize = Math.min(categoryInfoSpace * 0.18, 12); // تكبير من 0.12 إلى 0.18 ومن 9 إلى 12
     
     const cardHeight = Math.min(buttonSize * numRows + (verticalGaps * (numRows - 1)) + (cardPadding * 2), availableHeight - 4);
     
