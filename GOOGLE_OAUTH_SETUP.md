@@ -34,7 +34,7 @@
 ## الخطوة 6: إضافة Authorized Redirect URIs
 هذا هو الجزء المهم!
 
-### للـ Expo Go (التطوير):
+### ✅ الروابط الصحيحة:
 1. ابحث عن قسم **Authorized redirect URIs**
 2. انقر على **+ ADD URI**
 3. أضف المحاور التالية واحداً تلو الآخر:
@@ -42,17 +42,14 @@
 ```
 https://auth.expo.io/@YOUR_USERNAME/frn
 https://auth.expo.io/
+https://yourapp.fakker.net/auth/callback
+https://fakker-auth.firebaseapp.com/__/auth/handler
 ```
 
-**ملاحظة**: استبدل `YOUR_USERNAME` باسم مستخدمك على Expo
-
-### للـ Android Native (الإنتاج):
-أضف أيضاً:
-
-```
-fakker://
-https://yourapp.com/auth/callback
-```
+**ملاحظة**: 
+- استبدل `YOUR_USERNAME` باسم مستخدمك على Expo (في حالتك: `bonoo7`)
+- لا تستطيع إضافة `fakker://` مباشرة (Google يطلب domain)
+- إذا أردت استخدام `fakker://` يجب تعديل الإعدادات في Firebase وGoogle Console
 
 ## الخطوة 7: حفظ التغييرات
 1. انقر **SAVE** (حفظ)
@@ -84,16 +81,18 @@ https://yourapp.com/auth/callback
 ```
 
 ### في `contexts/AuthContext.js`:
-تأكد من أن Client IDs صحيحة:
+تأكد من أن معرفات العملاء صحيحة:
 
 ```javascript
 const [request, response, promptAsync] = Google.useAuthRequest({
-  clientId: 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
-  iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
-  androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
+  clientId: '372931862438-8vht7vrqf8f89k4sfi4j8bkumnatdr3q.apps.googleusercontent.com',  // Web
+  iosClientId: '372931862438-8vht7vrqf8f89k4sfi4j8bkumnatdr3q.apps.googleusercontent.com',  // يمكن نفس Web أو مختلف
+  androidClientId: '372931862438-1u1jgmlv0vel8dfl5ivqg6585vjhi8ul.apps.googleusercontent.com',  // استخدم آخر Android
   scopes: ['profile', 'email'],
 });
 ```
+
+**تأكد أن `androidClientId` يطابق أحد معرفات Android من Google Console!**
 
 ## خطوات إضافية
 

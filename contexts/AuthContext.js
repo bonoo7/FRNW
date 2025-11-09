@@ -6,13 +6,13 @@ import {
   onAuthStateChanged,
   updateProfile,
   GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult
+  signInWithCredential
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
 import { Platform, Alert } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
 
 const AuthContext = createContext();
 
@@ -24,10 +24,42 @@ export const useAuth = () => {
   return context;
 };
 
+WebBrowser.maybeCompleteAuthSession();
+
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId: '372931862438-8vht7vrqf8f89k4sfi4j8bkumnatdr3q.apps.googleusercontent.com',
+    iosClientId: '372931862438-8vht7vrqf8f89k4sfi4j8bkumnatdr3q.apps.googleusercontent.com',
+    androidClientId: '372931862438-1u1jgmlv0vel8dfl5ivqg6585vjhi8ul.apps.googleusercontent.com',
+    scopes: ['profile', 'email']
+  });
+
+  // Handle Expo Auth response
+  const handleExpoAuthResponse = async (authentication) => {
+    try {
+      const credential = GoogleAuthProvider.credential(
+        authentication.idToken,
+        authentication.accessToken
+      );
+      
+      const result = await signInWithCredential(auth, credential);
+      await createUserProfile(result.user);
+    } catch (error) {
+      console.error('Error handling Expo auth response:', error);
+      throw error;
+    }
+  };
+
+  // Handle Google Auth response
+  useEffect(() => {
+    if (response?.type === 'success') {
+      handleExpoAuthResponse(response.authentication)
+        .catch(error => console.error('Error handling auth response:', error));
+    }
+  }, [response]);
 
   // Sign up with email and password
   const signup = async (email, password, displayName) => {
@@ -67,32 +99,43 @@ export const AuthProvider = ({ children }) => {
   // Sign in with Google
   const signInWithGoogle = async () => {
     try {
-      const provider = new GoogleAuthProvider();
-      provider.addScope('profile');
-      provider.addScope('email');
-      
-      let result;
-      if (Platform.OS === 'web') {
-        // For web, use popup
-        result = await signInWithPopup(auth, provider);
-      } else {
-        // For mobile, this would need Google Sign-In SDK
-        // For now, show message that it's web-only
-        Alert.alert(
-          'تسجيل الدخول بجوجل',
-          'تسجيل الدخول بجوجل متاح حالياً على الويب فقط'
+      // For all platforms (web, Android, iOS) use Expo Auth Session
+      // This ensures consistent behavior
+      try {
+        const result = await promptAsync();
+        
+        if (result?.type !== 'success') {
+          Alert.alert('تم الإلغاء', 'تم إلغاء تسجيل الدخول');
+          return;
+        }
+
+        if (!result.params?.id_token) {
+          Alert.alert('خطأ', 'لم يتم استقبال بيانات المصادقة');
+          return;
+        }
+
+        // Create Firebase credential
+        const credential = GoogleAuthProvider.credential(
+          result.params.id_token,
+          result.params.access_token
         );
-        return;
+        
+        // Sign in with Firebase
+        const firebaseResult = await signInWithCredential(auth, credential);
+        const user = firebaseResult.user;
+        
+        // Create or update user profile
+        await createUserProfile(user);
+        
+        return firebaseResult;
+      } catch (error) {
+        console.error('Expo auth error:', error);
+        Alert.alert('خطأ', 'فشل تسجيل الدخول: ' + error.message);
+        throw error;
       }
-      
-      const user = result.user;
-      
-      // Create or update user profile
-      await createUserProfile(user);
-      
-      return result;
     } catch (error) {
       console.error('Google signin error:', error);
+      Alert.alert('خطأ', 'حدث خطأ في تسجيل الدخول بـ Google');
       throw error;
     }
   };
@@ -295,24 +338,24 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  // Handle redirect result for Google Sign-In
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-          const user = result.user;
-          await createUserProfile(user);
-        }
-      } catch (error) {
-        console.error('Redirect result error:', error);
-      }
-    };
-
-    if (Platform.OS === 'web') {
-      handleRedirectResult();
-    }
-  }, []);
+  // Handle redirect result for Google Sign-In - REMOVED FOR EXPO GO
+  // useEffect(() => {
+  //   const handleRedirectResult = async () => {
+  //     try {
+  //       const result = await getRedirectResult(auth);
+  //       if (result) {
+  //         const user = result.user;
+  //         await createUserProfile(user);
+  //       }
+  //     } catch (error) {
+  //       console.error('Redirect result error:', error);
+  //     }
+  //   };
+  //
+  //   if (Platform.OS === 'web') {
+  //     handleRedirectResult();
+  //   }
+  // }, []);
 
   const value = {
     currentUser,

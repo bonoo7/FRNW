@@ -20,12 +20,17 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "net.fakker.app",
+      "bundleIdentifier": "com.diwandevlab.fakker",
       "orientation": "all",
       "infoPlist": {
         "UIViewControllerBasedStatusBarAppearance": false,
         "UIStatusBarHidden": true,
-        "UIStatusBarStyle": "UIStatusBarStyleLightContent"
+        "UIStatusBarStyle": "UIStatusBarStyleLightContent",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["fakker"]
+          }
+        ]
       }
     },
     "android": {
@@ -33,14 +38,23 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "net.fakker.app",
+      "package": "com.diwandevlab.fakker",
       "versionCode": 1,
       "permissions": [
         "INTERNET"
       ],
       "screenOrientation": "sensor",
       "fullScreen": true,
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "category": ["BROWSABLE", "DEFAULT"],
+          "data": {
+            "scheme": "fakker"
+          }
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

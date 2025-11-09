@@ -1,4 +1,5 @@
 const { getDefaultConfig } = require('expo/metro-config');
+const path = require('path');
 
 const config = getDefaultConfig(__dirname);
 
@@ -6,9 +7,11 @@ const config = getDefaultConfig(__dirname);
 config.resolver = {
   ...config.resolver,
   extraNodeModules: {
-    buffer: require.resolve('buffer/'),
-    fs: require.resolve('expo-file-system'),
+    buffer: path.resolve(__dirname, 'node_modules/buffer/'),
   },
+  blockList: [
+    /react-native-svg\/src\/utils\/fetchData\.ts/,
+  ],
 };
 
 config.transformer = {

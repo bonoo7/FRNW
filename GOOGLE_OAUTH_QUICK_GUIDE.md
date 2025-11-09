@@ -37,8 +37,11 @@ https://auth.expo.io/
 
 #### للـ Android:
 ```
-fakker://
+https://yourapp.fakker.net/auth/callback
+https://fakker-auth.firebaseapp.com/__/auth/handler
 ```
+
+⚠️ **ملاحظة**: لا تستطيع إضافة `fakker://` مباشرة (Google يطلب domain)
 
 ### 6️⃣ اضغط Save
 - اضغط **SAVE** في الأسفل
@@ -59,9 +62,10 @@ fakker://
 
 ستضيف:
 ```
-https://auth.expo.io/@myusername/frn
+https://auth.expo.io/@bonoo7/frn
 https://auth.expo.io/
-fakker://
+https://yourapp.fakker.net/auth/callback
+https://fakker-auth.firebaseapp.com/__/auth/handler
 ```
 
 ### بعد الإضافة:
