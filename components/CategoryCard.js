@@ -137,18 +137,18 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: '100%',
-    paddingHorizontal: 4,
-    paddingVertical: 2,
+    paddingHorizontal: 6,
+    paddingVertical: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 0,
+    flex: 0.5,
   },
   title: {
-    fontSize: FONTS.sizes.caption,
+    fontSize: FONTS.sizes.body,
     fontWeight: FONTS.weights.bold,
     fontFamily: 'ReadexPro_700Bold',
     textAlign: 'center',
-    numberOfLines: 1,
+    numberOfLines: 2,
   },
   orderBadge: {
     position: 'absolute',
