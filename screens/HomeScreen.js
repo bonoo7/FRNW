@@ -985,8 +985,8 @@ const HomeScreen = () => {
           <Image 
             source={require('../assets/logo.png')}
             style={{
-              width: 50,
-              height: 50,
+              width: 65,
+              height: 65,
               resizeMode: 'contain'
             }}
           />
