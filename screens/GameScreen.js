@@ -131,7 +131,6 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
   return (
     <TouchableOpacity
       onPress={onPress}
-      disabled={isUsed}
       style={{
         width: buttonSize,
         height: buttonSize,
@@ -146,6 +145,7 @@ const QuestionButton = ({ difficulty, isUsed, points, onPress, theme, categories
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: isUsed ? 0 : 0.35,
         shadowRadius: 4,
+        opacity: isUsed ? 0.6 : 1,
       }}
     >
       <Text
