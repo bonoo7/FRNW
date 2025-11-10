@@ -980,13 +980,21 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         scrollIndicatorInsets={{ right: 1 }}
       >
-        {/* رأس الصفحة مع أيقونة الملف الشخصي */}
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8 }}>
+        {/* رأس الصفحة مع أيقونة الملف الشخصي واللوقو */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8 }}>
+          <Image 
+            source={require('../assets/logo.png')}
+            style={{
+              width: 50,
+              height: 50,
+              resizeMode: 'contain'
+            }}
+          />
           <UserMenu style={{ position: 'relative', zIndex: 10 }} />
         </View>
 
         <Animated.View style={{ opacity: fadeAnim }}>
-          {/* رأس البرنامج مع اللوقو */}
+          {/* محتوى الصفحة الرئيسية */}
           <View style={{ 
             marginBottom: 20, 
             marginTop: 0,
@@ -995,15 +1003,6 @@ const HomeScreen = () => {
             padding: 10,
             alignItems: 'center'
           }}>
-            <Image 
-              source={require('../assets/logo.png')}
-              style={{
-                width: 60,
-                height: 60,
-                resizeMode: 'contain',
-                marginBottom: 5
-              }}
-            />
             <Text style={{
               fontSize: 14,
               color: '#B3E5FC',
