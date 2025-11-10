@@ -986,26 +986,26 @@ const HomeScreen = () => {
         </View>
 
         <Animated.View style={{ opacity: fadeAnim }}>
-          {/* رأس البرنامج */}
+          {/* رأس البرنامج مع اللوقو */}
           <View style={{ 
-            marginBottom: 30, 
-            marginTop: 10,
+            marginBottom: 20, 
+            marginTop: 0,
             backgroundColor: 'transparent',
             borderRadius: 15,
-            padding: 20,
+            padding: 10,
             alignItems: 'center'
           }}>
             <Image 
               source={require('../assets/logo.png')}
               style={{
-                width: 80,
-                height: 80,
+                width: 60,
+                height: 60,
                 resizeMode: 'contain',
-                marginBottom: 10
+                marginBottom: 5
               }}
             />
             <Text style={{
-              fontSize: 16,
+              fontSize: 14,
               color: '#B3E5FC',
               textAlign: 'center',
               fontFamily: FONTS.families.secondary
