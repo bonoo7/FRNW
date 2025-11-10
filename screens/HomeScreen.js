@@ -992,18 +992,18 @@ const HomeScreen = () => {
             marginTop: 10,
             backgroundColor: 'transparent',
             borderRadius: 15,
-            padding: 20
+            padding: 20,
+            alignItems: 'center'
           }}>
-            <Text style={{
-              fontSize: 32,
-              fontWeight: 'bold',
-              color: '#64B5F6',
-              textAlign: 'center',
-              fontFamily: FONTS.families.secondary,
-              marginBottom: 10
-            }}>
-              🎮 فكّر
-            </Text>
+            <Image 
+              source={require('../assets/logo.png')}
+              style={{
+                width: 80,
+                height: 80,
+                resizeMode: 'contain',
+                marginBottom: 10
+              }}
+            />
             <Text style={{
               fontSize: 16,
               color: '#B3E5FC',
