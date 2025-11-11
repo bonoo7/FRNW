@@ -22,7 +22,7 @@ import { getResponsiveStyles, wp } from '../styles/responsive';
 import { useRouter } from 'expo-router';
 import { Stack } from 'expo-router';
 import BackgroundPattern from '../components/BackgroundPattern';
-import AnimatedGridPattern from '../components/AnimatedGridPattern';
+import BackgroundSelector from '../components/BackgroundSelector';
 // React Reanimated removed - not actively used
 // import Animated from 'react-native-reanimated';
 import { CategoryCard } from '../components/CategoryCard';
@@ -555,7 +555,7 @@ const GameSetup = () => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#0a1929' }}>
+    <View style={{ flex: 1, backgroundColor: '#000000' }}>
       {/* الخلفية الزرقاء الغامقة مع نمط شبكة متحرك جديد - تغطي كل الشاشة */}
       <View style={{ 
         position: 'absolute',
@@ -567,7 +567,7 @@ const GameSetup = () => {
         pointerEvents: 'none'
       }}>
         <LinearGradient
-          colors={['#1a3a52', '#0f2438', '#0a1929']}
+          colors={['#000000', '#000000', '#000000']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{ 
@@ -580,17 +580,22 @@ const GameSetup = () => {
           }}
         />
         
-        {/* نمط شبكة متحرك مختلف للخلفية الخارجية - دوائر فقط - يغطي كل الشاشة */}
-        <AnimatedGridPattern
-          width={100}
-          height={100}
-          dotSize={14}
-          dotColor="#64B5F6"
-          dotOpacity={0.25}
-          animationDuration={4000}
-          animationDelay={0}
-          variant="background"
-          isAnimated={true}
+        {/* نمط الخلفية - FlickeringGrid للثيم الفاتح، HexagonBackground للثيم الداكن */}
+        <BackgroundSelector
+          lightConfig={{
+            squareSize: 4,
+            gridGap: 6,
+            flickerChance: 0.3,
+            color: 'rgb(100, 181, 246)',
+            maxOpacity: 0.25,
+            animationSpeed: 'medium',
+          }}
+          darkConfig={{
+            hexagonSize: 75,
+            hexagonMargin: 3,
+            hexColor: 'rgba(64, 64, 64, 0.6)',
+            isAnimated: true,
+          }}
         />
       </View>
       
@@ -606,11 +611,11 @@ const GameSetup = () => {
               staticStyles.categoriesContainer,
               dynamicStyles.categoriesContainer,
               { 
-                backgroundColor: '#D6E9FF',
-                borderColor: '#4A90E2',
+                backgroundColor: theme.colors.background.card,
+                borderColor: theme.colors.border.primary,
                 borderWidth: 2,
                 elevation: 20,
-                shadowColor: '#4A90E2',
+                shadowColor: theme.colors.border.primary,
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.8,
                 shadowRadius: 15,

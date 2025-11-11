@@ -6,7 +6,7 @@ import { Stack } from 'expo-router';
 import { GameService } from '../services/gameService';
 import { TeamsHeader } from '../components/TeamsHeader';
 import BackgroundPattern from '../components/BackgroundPattern';
-import AnimatedGridPattern from '../components/AnimatedGridPattern';
+import BackgroundSelector from '../components/BackgroundSelector';
 import StorageService from '../services/storageService';
 import PentaPointsService from '../services/pentaPointsService';
 import { useTheme } from '../contexts/ThemeContext';
@@ -252,7 +252,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
 
         {/* اسم الفئة في حاوية فاتحة - عريضة وطويلة - نسبة 60% من ارتفاع البطاقة */}
         <View style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme.colors.background.card,
           paddingHorizontal: 8,
           paddingVertical: 8,
           borderRadius: 10,
@@ -263,7 +263,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
           width: cardWidth * 0.22,
           height: cardHeight * 0.60,
           borderWidth: 2,
-          borderColor: 'rgba(46, 93, 184, 0.3)',
+          borderColor: theme.colors.border.primary,
           zIndex: 2,
         }}>
           <Text 
@@ -272,7 +272,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
               fontWeight: '700',
               textAlign: 'center',
               width: '100%',
-              color: '#1a1a1a',
+              color: theme.colors.text.primary,
               fontFamily: 'ReadexPro_700Bold',
               lineHeight: Math.max(Math.min((cardHeight * 0.60) * 0.2, 9), 5) * 1.2,
             }}
@@ -466,7 +466,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
       
       {/* اسم الفئة - في حاوية فاتحة - نسبة 15% من ارتفاع البطاقة */}
       <View style={{
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.background.card,
         paddingHorizontal: 8,
         paddingVertical: 6,
         borderRadius: 10,
@@ -477,7 +477,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         width: '95%',
         height: cardHeight * 0.15,
         borderWidth: 2,
-        borderColor: 'rgba(46, 93, 184, 0.3)',
+        borderColor: theme.colors.border.primary,
         zIndex: 2,
         position: 'relative',
       }}>
@@ -487,7 +487,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
             fontWeight: '700',
             textAlign: 'center',
             width: '100%',
-            color: '#1a1a1a',
+            color: theme.colors.text.primary,
             fontFamily: 'ReadexPro_700Bold',
             lineHeight: Math.max(Math.min((cardHeight * 0.15) * 0.4, 9), 5) * 1.2,
           }}
@@ -1103,7 +1103,7 @@ const GameScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#0F1C3F' }}>
+    <View style={{ flex: 1, backgroundColor: '#000000' }}>
       {/* خلفية احترافية متعددة الطبقات */}
       <View style={{ 
         position: 'absolute',
@@ -1116,7 +1116,7 @@ const GameScreen = () => {
       }}>
         {/* تدرج رئيسي */}
         <LinearGradient
-          colors={['#1a3a5e', '#0F1C3F', '#0a1220']}
+          colors={['#000000', '#000000', '#000000']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{ 
@@ -1131,7 +1131,7 @@ const GameScreen = () => {
         
         {/* تدرج ثانوي للحواف */}
         <LinearGradient
-          colors={['#4A90E2', 'transparent']}
+          colors={['#1a1a1a', 'transparent']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 0.3 }}
           style={{ 
@@ -1145,30 +1145,40 @@ const GameScreen = () => {
           }}
         />
         
-        {/* نمط شبكة متحرك مع حجم أصغر للتفاصيل */}
-        <AnimatedGridPattern
-          width={120}
-          height={120}
-          dotSize={12}
-          dotColor="#64B5F6"
-          dotOpacity={0.20}
-          animationDuration={5000}
-          animationDelay={0}
-          variant="background"
-          isAnimated={true}
+        {/* نمط الخلفية - FlickeringGrid للثيم الفاتح، HexagonBackground للثيم الداكن */}
+        <BackgroundSelector
+          lightConfig={{
+            squareSize: 5,
+            gridGap: 8,
+            flickerChance: 0.25,
+            color: 'rgb(100, 181, 246)',
+            maxOpacity: 0.2,
+            animationSpeed: 'medium',
+          }}
+          darkConfig={{
+            hexagonSize: 75,
+            hexagonMargin: 3,
+            hexColor: 'rgba(64, 64, 64, 0.6)',
+            isAnimated: true,
+          }}
         />
         
         {/* نمط إضافي للعمق */}
-        <AnimatedGridPattern
-          width={200}
-          height={200}
-          dotSize={20}
-          dotColor="#2196F3"
-          dotOpacity={0.08}
-          animationDuration={8000}
-          animationDelay={1000}
-          variant="background"
-          isAnimated={true}
+        <BackgroundSelector
+          lightConfig={{
+            squareSize: 8,
+            gridGap: 12,
+            flickerChance: 0.15,
+            color: 'rgb(66, 165, 245)',
+            maxOpacity: 0.1,
+            animationSpeed: 'slow',
+          }}
+          darkConfig={{
+            hexagonSize: 85,
+            hexagonMargin: 3,
+            hexColor: 'rgba(64, 64, 64, 0.5)',
+            isAnimated: true,
+          }}
         />
       </View>
       
@@ -1184,10 +1194,10 @@ const GameScreen = () => {
         margin: 20,
         borderRadius: 28,
         borderWidth: 3,
-        borderColor: '#2E5DB8',
-        backgroundColor: 'rgba(227, 240, 255, 0.6)',
+        borderColor: theme.colors.border.primary,
+        backgroundColor: theme.colors.background.card,
         overflow: 'hidden',
-        shadowColor: '#2E5DB8',
+        shadowColor: theme.colors.border.primary,
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.3,
         shadowRadius: 24,
@@ -1198,7 +1208,10 @@ const GameScreen = () => {
       }}>
         {/* تدرج داخلي للحاوية */}
         <LinearGradient
-          colors={['#E3F0FF', '#D6E9FF', '#CDDBF0']}
+          colors={[
+            theme.colors.background.card,
+            theme.colors.background.surface || theme.colors.background.card
+          ]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
@@ -1216,8 +1229,8 @@ const GameScreen = () => {
             width: 120,
             height: '100%',
             borderLeftWidth: 2,
-            borderLeftColor: '#4A90E2',
-            backgroundColor: '#D6E9FF',
+            borderLeftColor: theme.colors.border.primary,
+            backgroundColor: theme.colors.background.card,
             overflow: 'hidden',
             position: 'relative',
             borderTopRightRadius: 22,
@@ -1235,7 +1248,10 @@ const GameScreen = () => {
             }}>
               {/* تدرج رئيسي */}
               <LinearGradient
-                colors={['#E8F4FF', '#D6E9FF', '#C8E0F7']}
+                colors={[
+                  theme.colors.background.card,
+                  theme.colors.background.surface || theme.colors.background.card
+                ]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
@@ -1248,34 +1264,6 @@ const GameScreen = () => {
                 }}
               />
               
-              {/* تدرج إضافي من الأعلى */}
-              <LinearGradient
-                colors={['#4A90E2', 'transparent']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '40%',
-                  opacity: 0.08,
-                  zIndex: 0,
-                }}
-              />
-              
-              {/* نمط شبكة متحرك للتيم هيدر */}
-              <AnimatedGridPattern
-                width={120}
-                height={120}
-                dotSize={5}
-                dotColor="#4A90E2"
-                dotOpacity={0.08}
-                animationDuration={5000}
-                animationDelay={0}
-                variant="background"
-                isAnimated={true}
-              />
             </View>
 
             {/* محتوى التيم هيدر */}
