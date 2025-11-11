@@ -947,7 +947,7 @@ const HomeScreen = () => {
         pointerEvents: 'none'
       }}>
         <LinearGradient
-          colors={['#000000', '#000000', '#000000']}
+          colors={['#1E40AF', '#3B82F6', '#1E40AF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{ 
@@ -960,21 +960,22 @@ const HomeScreen = () => {
           }}
         />
         
-        {/* نمط الخلفية - FlickeringGrid للثيم الفاتح، HexagonBackground للثيم الداكن */}
+        {/* نمط الخلفية - FlickeringGrid للثيم الفاتح، SquaresBackground للثيم الداكن */}
         <BackgroundSelector
           lightConfig={{
             squareSize: 4,
             gridGap: 6,
             flickerChance: 0.3,
-            color: 'rgb(100, 181, 246)',
-            maxOpacity: 0.25,
+            color: 'rgb(59, 130, 246)',
+            maxOpacity: 0.35,
             animationSpeed: 'medium',
           }}
           darkConfig={{
-            hexagonSize: 75,
-            hexagonMargin: 3,
-            hexColor: 'rgba(64, 64, 64, 0.6)',
-            isAnimated: true,
+            direction: 'right',
+            speed: 1,
+            borderColor: '#404040',
+            squareSize: 40,
+            hoverFillColor: '#222',
           }}
         />
       </View>
