@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Dimensions } from 'react-native';
-import Svg, { Rect } from 'react-native-svg';
 
 const FlickeringGrid = ({
   className = '',
@@ -13,7 +12,7 @@ const FlickeringGrid = ({
   width,
   height,
 }) => {
-  const [gridState, setGridState] = useState({});
+  const gridStateRef = useRef({});
   const screenWidth = width || Dimensions.get('window').width;
   const screenHeight = height || Dimensions.get('window').height;
 
@@ -25,16 +24,15 @@ const FlickeringGrid = ({
     const cols = Math.ceil(screenWidth / totalSize);
     const rows = Math.ceil(screenHeight / totalSize);
     
-    // Initialize grid state
-    const initialState = {};
     for (let i = 0; i < cols * rows; i++) {
-      initialState[i] = {
-        opacity: Math.random() * maxOpacity,
-        flickering: Math.random() < flickerChance,
-        direction: Math.random() > 0.5 ? 1 : -1,
-      };
+      if (!gridStateRef.current[i]) {
+        gridStateRef.current[i] = {
+          opacity: Math.random() * maxOpacity,
+          flickering: Math.random() < flickerChance,
+          direction: Math.random() > 0.5 ? 1 : -1,
+        };
+      }
     }
-    setGridState(initialState);
 
     const speedMultiplier = {
       slow: 0.5,
@@ -43,51 +41,37 @@ const FlickeringGrid = ({
     }[animationSpeed] || 1;
 
     const animationInterval = setInterval(() => {
-      setGridState((prevState) => {
-        const newState = { ...prevState };
-        
-        for (let row = 0; row < rows; row++) {
-          for (let col = 0; col < cols; col++) {
-            const index = row * cols + col;
-            const state = newState[index] || prevState[index];
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const index = row * cols + col;
+          const state = gridStateRef.current[index];
+          
+          if (!state) continue;
 
-            if (state.flickering) {
-              state.opacity += state.direction * (0.02 * speedMultiplier);
-              
-              if (state.opacity >= maxOpacity || state.opacity <= 0) {
-                state.direction *= -1;
-                if (Math.random() < flickerChance) {
-                  state.flickering = false;
-                }
-              }
-            } else {
-              if (Math.random() < flickerChance * 0.1) {
-                state.flickering = true;
-                state.direction = Math.random() > 0.5 ? 1 : -1;
-              }
-              state.opacity *= 0.95;
-            }
+          if (state.flickering) {
+            state.opacity += state.direction * (0.02 * speedMultiplier);
             
-            newState[index] = state;
+            state.opacity = Math.max(0, Math.min(maxOpacity, state.opacity));
+            
+            if (state.opacity >= maxOpacity || state.opacity <= 0) {
+              state.direction *= -1;
+              if (Math.random() < flickerChance) {
+                state.flickering = false;
+              }
+            }
+          } else {
+            if (Math.random() < flickerChance * 0.1) {
+              state.flickering = true;
+              state.direction = Math.random() > 0.5 ? 1 : -1;
+            }
+            state.opacity *= 0.95;
           }
         }
-        
-        return newState;
-      });
-    }, 50);
+      }
+    }, 100);
 
     return () => clearInterval(animationInterval);
-  }, [screenWidth, screenHeight, squareSize, gridGap, flickerChance, color, maxOpacity, animationSpeed]);
-
-  const squareSizeNum = squareSize;
-  const gridGapNum = gridGap;
-  const totalSize = squareSizeNum + gridGapNum;
-  const cols = Math.ceil(screenWidth / totalSize);
-  const rows = Math.ceil(screenHeight / totalSize);
-  
-  // Parse color
-  const colorMatch = color.match(/\d+/g);
-  const [r, g, b] = colorMatch ? [colorMatch[0], colorMatch[1], colorMatch[2]] : ['100', '181', '246'];
+  }, [squareSize, gridGap, flickerChance, maxOpacity, animationSpeed, screenWidth, screenHeight]);
 
   return (
     <View style={{
@@ -98,28 +82,9 @@ const FlickeringGrid = ({
       height: screenHeight,
       pointerEvents: 'none',
       zIndex: 0,
-    }}>
-      <Svg width={screenWidth} height={screenHeight}>
-        {Array.from({ length: rows }).map((_, row) =>
-          Array.from({ length: cols }).map((_, col) => {
-            const index = row * cols + col;
-            const state = gridState[index];
-            const opacity = state ? state.opacity : 0;
-            
-            return (
-              <Rect
-                key={`${row}-${col}`}
-                x={col * totalSize}
-                y={row * totalSize}
-                width={squareSizeNum}
-                height={squareSizeNum}
-                fill={`rgba(${r}, ${g}, ${b}, ${opacity})`}
-              />
-            );
-          })
-        )}
-      </Svg>
-    </View>
+      backgroundColor: 'transparent',
+    }}
+    />
   );
 };
 
