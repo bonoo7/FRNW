@@ -44,8 +44,8 @@ const BackgroundSelector = ({
     );
   }
 
-  // في الثيمات الأخرى استخدم FlickeringGrid
-  return <FlickeringGrid {...lightConfig} />;
+  // في الثيمات الأخرى عدم عرض خلفية معقدة - استخدام لون بسيط فقط
+  return children;
 };
 
 export default BackgroundSelector;
