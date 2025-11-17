@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as NavigationBar from 'expo-navigation-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import SplashScreen from '../components/SplashScreen';
 import { 
   useFonts as useReadexPro,
   ReadexPro_400Regular,
@@ -17,12 +18,6 @@ import {
   ReadexPro_600SemiBold,
   ReadexPro_700Bold
 } from '@expo-google-fonts/readex-pro';
-
-const LoadingScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <ActivityIndicator size="large" color="#4A6FFF" />
-  </View>
-);
 
 const RootLayoutContent = () => {
   let backgroundColor = '#FFFFFF';
@@ -90,8 +85,9 @@ export default function RootLayout() {
   // تفعيل جميع الاتجاهات
   ScreenOrientation.unlockAsync();
 
+  // إظهار splash screen أثناء تحميل الخطوط
   if (!fontsLoaded || !readexProLoaded) {
-    return <LoadingScreen />;
+    return <SplashScreen />;
   }
 
   return (
