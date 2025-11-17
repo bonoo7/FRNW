@@ -1,51 +1,42 @@
 import React from 'react';
+import { View } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
-import FlickeringGrid from './FlickeringGrid';
-import SquaresBackground from './SquaresBackground';
-import AnimatedCirclesBackground from './AnimatedCirclesBackground';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const BackgroundSelector = ({
-  lightConfig = {
-    squareSize: 4,
-    gridGap: 6,
-    flickerChance: 0.3,
-    color: 'rgb(59, 130, 246)',
-    maxOpacity: 0.35,
-    animationSpeed: 'medium',
-  },
-  darkConfig = {
-    direction: 'right',
-    speed: 1,
-    borderColor: '#404040',
-    squareSize: 40,
-    hoverFillColor: '#222',
-  },
   children,
 }) => {
-  const { currentTheme } = useTheme();
+  const { currentTheme, theme } = useTheme();
 
-  // في الثيم الداكن استخدم SquaresBackground
+  // Dark theme - simple dark background
   if (currentTheme === 'dark') {
     return (
-      <SquaresBackground 
-        squaresProps={darkConfig}
-      >
+      <View style={{ flex: 1, backgroundColor: '#000000' }}>
         {children}
-      </SquaresBackground>
+      </View>
     );
   }
 
-  // في الثيم الفريش استخدم AnimatedCirclesBackground
+  // Fresh theme - simple gradient background
   if (currentTheme === 'fresh') {
     return (
-      <AnimatedCirclesBackground>
+      <LinearGradient
+        colors={['#F0F9FF', '#E0F2FE']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{ flex: 1 }}
+      >
         {children}
-      </AnimatedCirclesBackground>
+      </LinearGradient>
     );
   }
 
-  // في الثيمات الأخرى عدم عرض خلفية معقدة - استخدام لون بسيط فقط
-  return children;
+  // Default/Light theme - simple light background
+  return (
+    <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+      {children}
+    </View>
+  );
 };
 
 export default BackgroundSelector;
