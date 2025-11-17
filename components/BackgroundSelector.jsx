@@ -11,20 +11,21 @@ const BackgroundSelector = ({
   const { currentTheme, theme } = useTheme();
 
   // Dark theme - dark gradient with crosses pattern + film grain texture
+  // يستخدم: صلبان واضحة + حبيبات فيلم سينمائي قوية
   if (currentTheme === 'dark') {
     return (
       <View style={{ flex: 1 }}>
         <LinearGradient
-          colors={['#0F0F0F', '#1A1A1A']}
+          colors={['#0A0E27', '#1A1F3A']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{ flex: 1 }}
         >
-          {/* الطبقة الأولى: النمط الأساسي */}
-          <PatternCrosses color="#FFFFFF" opacity={0.03} />
+          {/* الطبقة الأولى: النمط الأساسي (صلبان واضحة) */}
+          <PatternCrosses color="#4F46E5" opacity={0.12} />
           
-          {/* الطبقة الثانية: التكسجتشر (Film Grain يعطي مظهر سينمائي) */}
-          <TextureFilmGrain color="#FFFFFF" opacity={0.03} />
+          {/* الطبقة الثانية: التكسجتشر (حبيبات فيلم قوية للمظهر السينمائي) */}
+          <TextureFilmGrain color="#FFFFFF" opacity={0.15} />
           
           {children}
         </LinearGradient>
@@ -33,20 +34,21 @@ const BackgroundSelector = ({
   }
 
   // Fresh theme - light gradient with hexagon pattern + paper texture
+  // يستخدم: سادسات زاهية + ورقي طبيعي واضح
   if (currentTheme === 'fresh') {
     return (
       <View style={{ flex: 1 }}>
         <LinearGradient
-          colors={['#F0F9FF', '#E0F2FE', '#D0E8FF']}
+          colors={['#E0F2FE', '#BAE6FD', '#7DD3FC']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{ flex: 1 }}
         >
-          {/* الطبقة الأولى: النمط الأساسي */}
-          <PatternHexagons color="#3B82F6" opacity={0.06} />
+          {/* الطبقة الأولى: النمط الأساسي (سادسات زاهية) */}
+          <PatternHexagons color="#0284C7" opacity={0.15} />
           
-          {/* الطبقة الثانية: التكسجتشر (Paper يعطي مظهر ورقي طبيعي) */}
-          <TexturePaper color="#60A5FA" opacity={0.03} />
+          {/* الطبقة الثانية: التكسجتشر (ورقي طبيعي واضح) */}
+          <TexturePaper color="#0369A1" opacity={0.12} />
           
           {children}
         </LinearGradient>
@@ -54,20 +56,21 @@ const BackgroundSelector = ({
     );
   }
 
-  // Default/Blue theme - blue gradient with diagonal lines + metallic texture
+  // Default/Blue theme - vibrant blue gradient with diagonal + metallic
+  // يستخدم: خطوط قطرية واضحة + معادن لامعة احترافية
   return (
     <View style={{ flex: 1 }}>
       <LinearGradient
-        colors={['#1E40AF', '#3B82F6', '#60A5FA']}
+        colors={['#1E3A8A', '#3B82F6', '#0EA5E9']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{ flex: 1 }}
       >
-        {/* الطبقة الأولى: النمط الأساسي */}
-        <PatternDiagonal color="#FFFFFF" opacity={0.08} />
+        {/* الطبقة الأولى: النمط الأساسي (خطوط قطرية واضحة) */}
+        <PatternDiagonal color="#FFFFFF" opacity={0.15} />
         
-        {/* الطبقة الثانية: التكسجتشر (Metallic يعطي لمعة احترافية) */}
-        <TextureMetallic color="#FFFFFF" opacity={0.04} />
+        {/* الطبقة الثانية: التكسجتشر (معادن لامعة احترافية) */}
+        <TextureMetallic color="#FFFFFF" opacity={0.12} />
         
         {children}
       </LinearGradient>

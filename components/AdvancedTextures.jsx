@@ -2,16 +2,19 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Svg, { Defs, Pattern, Rect, Circle, Line, Path, Polygon, G } from 'react-native-svg';
 
-// تكسجتشر نقاط ممل Grain - يعطي مظهر فيلم قديم
+// تكسجتشر نقاط ممل Grain - يعطي مظهر فيلم قديم (محسّن - أوضح وأقوى)
 const TextureFilmGrain = ({ opacity = 0.08, color = '#000000' }) => (
   <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
     <Defs>
-      <Pattern id="film-grain" patternUnits="userSpaceOnUse" width="4" height="4">
-        <Rect width="4" height="4" fill="none" />
-        <Circle cx="1" cy="1" r="0.4" fill={color} opacity={opacity * 0.8} />
-        <Circle cx="3" cy="2" r="0.3" fill={color} opacity={opacity * 0.6} />
-        <Circle cx="2" cy="3" r="0.35" fill={color} opacity={opacity * 0.7} />
-        <Circle cx="0.5" cy="3.5" r="0.25" fill={color} opacity={opacity * 0.5} />
+      <Pattern id="film-grain" patternUnits="userSpaceOnUse" width="6" height="6">
+        <Rect width="6" height="6" fill="none" />
+        {/* نقاط بأحجام مختلفة لتأثير حبيبات قوي */}
+        <Circle cx="1.5" cy="1.5" r="0.6" fill={color} opacity={opacity * 0.9} />
+        <Circle cx="4.5" cy="2" r="0.5" fill={color} opacity={opacity * 0.7} />
+        <Circle cx="2" cy="4.5" r="0.55" fill={color} opacity={opacity * 0.8} />
+        <Circle cx="5" cy="5" r="0.65" fill={color} opacity={opacity} />
+        <Circle cx="0.5" cy="5.5" r="0.45" fill={color} opacity={opacity * 0.75} />
+        <Circle cx="3.5" cy="0.5" r="0.5" fill={color} opacity={opacity * 0.85} />
       </Pattern>
     </Defs>
     <Rect width="100%" height="100%" fill="url(#film-grain)" />
@@ -63,17 +66,22 @@ const TextureSand = ({ opacity = 0.07, color = '#000000' }) => (
   </Svg>
 );
 
-// تكسجتشر معادن - تأثير معدني لامع
+// تكسجتشر معادن - تأثير معدني لامع واضح وقوي
 const TextureMetallic = ({ opacity = 0.08, color = '#FFFFFF' }) => (
   <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
     <Defs>
-      <Pattern id="metallic" patternUnits="userSpaceOnUse" width="40" height="40">
-        <Line x1="0" y1="0" x2="40" y2="0" stroke={color} strokeWidth="0.2" opacity={opacity * 0.8} />
-        <Line x1="0" y1="5" x2="40" y2="5" stroke={color} strokeWidth="0.15" opacity={opacity * 0.5} />
-        <Line x1="0" y1="10" x2="40" y2="10" stroke={color} strokeWidth="0.2" opacity={opacity * 0.6} />
-        <Line x1="0" y1="20" x2="40" y2="20" stroke={color} strokeWidth="0.15" opacity={opacity * 0.7} />
-        <Line x1="0" y1="30" x2="40" y2="30" stroke={color} strokeWidth="0.2" opacity={opacity * 0.5} />
-        <Line x1="0" y1="35" x2="40" y2="35" stroke={color} strokeWidth="0.15" opacity={opacity * 0.8} />
+      <Pattern id="metallic" patternUnits="userSpaceOnUse" width="30" height="30">
+        {/* خطوط معدنية أفقية وعمودية قوية */}
+        <Line x1="0" y1="2" x2="30" y2="2" stroke={color} strokeWidth="0.35" opacity={opacity * 0.9} />
+        <Line x1="0" y1="8" x2="30" y2="8" stroke={color} strokeWidth="0.3" opacity={opacity * 0.6} />
+        <Line x1="0" y1="14" x2="30" y2="14" stroke={color} strokeWidth="0.35" opacity={opacity * 0.8} />
+        <Line x1="0" y1="20" x2="30" y2="20" stroke={color} strokeWidth="0.3" opacity={opacity * 0.7} />
+        <Line x1="0" y1="26" x2="30" y2="26" stroke={color} strokeWidth="0.35" opacity={opacity * 0.85} />
+        
+        {/* خطوط عمودية دقيقة */}
+        <Line x1="5" y1="0" x2="5" y2="30" stroke={color} strokeWidth="0.2" opacity={opacity * 0.5} />
+        <Line x1="15" y1="0" x2="15" y2="30" stroke={color} strokeWidth="0.25" opacity={opacity * 0.6} />
+        <Line x1="25" y1="0" x2="25" y2="30" stroke={color} strokeWidth="0.2" opacity={opacity * 0.5} />
       </Pattern>
     </Defs>
     <Rect width="100%" height="100%" fill="url(#metallic)" />
@@ -106,46 +114,53 @@ const TextureEmboss = ({ opacity = 0.08, color = '#000000' }) => (
   </Svg>
 );
 
-// تكسجتشر الورق - تأثير ورقي
+// تكسجتشر الورق - تأثير ورقي واضح وقوي
 const TexturePaper = ({ opacity = 0.07, color = '#000000' }) => (
   <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
     <Defs>
-      <Pattern id="paper" patternUnits="userSpaceOnUse" width="35" height="35">
-        {/* خطوط عشوائية تعطي مظهر ورق */}
+      <Pattern id="paper" patternUnits="userSpaceOnUse" width="25" height="25">
+        {/* خطوط عشوائية قوية وواضحة تعطي مظهر ورق */}
         <Path
-          d="M0,5 L35,8"
+          d="M0,3 L25,5"
           fill="none"
           stroke={color}
-          strokeWidth="0.2"
-          opacity={opacity * 0.6}
+          strokeWidth="0.35"
+          opacity={opacity}
         />
         <Path
-          d="M0,15 L35,18"
+          d="M0,10 L25,12"
           fill="none"
           stroke={color}
-          strokeWidth="0.25"
-          opacity={opacity * 0.5}
+          strokeWidth="0.4"
+          opacity={opacity * 0.85}
         />
         <Path
-          d="M0,25 L35,28"
+          d="M0,18 L25,20"
           fill="none"
           stroke={color}
-          strokeWidth="0.2"
+          strokeWidth="0.35"
+          opacity={opacity * 0.9}
+        />
+        <Path
+          d="M3,0 L5,25"
+          fill="none"
+          stroke={color}
+          strokeWidth="0.3"
           opacity={opacity * 0.7}
         />
         <Path
-          d="M5,0 L8,35"
+          d="M12,0 L10,25"
           fill="none"
           stroke={color}
-          strokeWidth="0.15"
-          opacity={opacity * 0.4}
+          strokeWidth="0.35"
+          opacity={opacity * 0.8}
         />
         <Path
-          d="M20,0 L18,35"
+          d="M22,0 L20,25"
           fill="none"
           stroke={color}
-          strokeWidth="0.2"
-          opacity={opacity * 0.5}
+          strokeWidth="0.3"
+          opacity={opacity * 0.6}
         />
       </Pattern>
     </Defs>
