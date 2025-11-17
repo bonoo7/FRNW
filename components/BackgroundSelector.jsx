@@ -35,20 +35,21 @@ const BackgroundSelector = ({
 
   // Fresh theme - light gradient with hexagon pattern + paper texture
   // يستخدم: سادسات زاهية + ورقي طبيعي واضح
+  // الألوان الأصلية: من AnimatedCirclesBackground (أحمر-برتقالي إلى أخضر فاتح)
   if (currentTheme === 'fresh') {
     return (
       <View style={{ flex: 1 }}>
         <LinearGradient
-          colors={['#E0F2FE', '#BAE6FD', '#7DD3FC']}
+          colors={['#ee6055', '#f57a5b', '#60d394']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{ flex: 1 }}
         >
-          {/* الطبقة الأولى: النمط الأساسي (سادسات زاهية) */}
-          <PatternHexagons color="#0284C7" opacity={0.15} />
+          {/* الطبقة الأولى: النمط الأساسي (سادسات) */}
+          <PatternHexagons color="#E85D42" opacity={0.15} />
           
           {/* الطبقة الثانية: التكسجتشر (ورقي طبيعي واضح) */}
-          <TexturePaper color="#0369A1" opacity={0.12} />
+          <TexturePaper color="#C23B1B" opacity={0.12} />
           
           {children}
         </LinearGradient>
