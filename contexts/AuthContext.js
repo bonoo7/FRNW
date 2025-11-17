@@ -37,9 +37,26 @@ export const AuthProvider = ({ children }) => {
     scopes: ['profile', 'email']
   });
 
+  // Handle Google Auth response
+  useEffect(() => {
+    if (response?.type === 'success' && response?.authentication) {
+      handleGoogleAuthResponse(response.authentication)
+        .catch(error => {
+          console.error('Error handling auth response:', error);
+          Alert.alert('خطأ', 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مجدداً');
+        });
+    } else if (response?.type === 'dismiss') {
+      console.log('Google login dismissed by user');
+    }
+  }, [response]);
+
   // Handle Expo Auth response
-  const handleExpoAuthResponse = async (authentication) => {
+  const handleGoogleAuthResponse = async (authentication) => {
     try {
+      if (!authentication?.idToken) {
+        throw new Error('لم يتم استقبال بيانات المصادقة من Google');
+      }
+
       const credential = GoogleAuthProvider.credential(
         authentication.idToken,
         authentication.accessToken
@@ -47,19 +64,12 @@ export const AuthProvider = ({ children }) => {
       
       const result = await signInWithCredential(auth, credential);
       await createUserProfile(result.user);
+      console.log('Google signin successful');
     } catch (error) {
       console.error('Error handling Expo auth response:', error);
       throw error;
     }
   };
-
-  // Handle Google Auth response
-  useEffect(() => {
-    if (response?.type === 'success') {
-      handleExpoAuthResponse(response.authentication)
-        .catch(error => console.error('Error handling auth response:', error));
-    }
-  }, [response]);
 
   // Sign up with email and password
   const signup = async (email, password, displayName) => {
@@ -99,43 +109,19 @@ export const AuthProvider = ({ children }) => {
   // Sign in with Google
   const signInWithGoogle = async () => {
     try {
-      // For all platforms (web, Android, iOS) use Expo Auth Session
-      // This ensures consistent behavior
-      try {
-        const result = await promptAsync();
-        
-        if (result?.type !== 'success') {
-          Alert.alert('تم الإلغاء', 'تم إلغاء تسجيل الدخول');
-          return;
-        }
-
-        if (!result.params?.id_token) {
-          Alert.alert('خطأ', 'لم يتم استقبال بيانات المصادقة');
-          return;
-        }
-
-        // Create Firebase credential
-        const credential = GoogleAuthProvider.credential(
-          result.params.id_token,
-          result.params.access_token
-        );
-        
-        // Sign in with Firebase
-        const firebaseResult = await signInWithCredential(auth, credential);
-        const user = firebaseResult.user;
-        
-        // Create or update user profile
-        await createUserProfile(user);
-        
-        return firebaseResult;
-      } catch (error) {
-        console.error('Expo auth error:', error);
-        Alert.alert('خطأ', 'فشل تسجيل الدخول: ' + error.message);
-        throw error;
+      const result = await promptAsync();
+      
+      // Check if user cancelled
+      if (result?.type !== 'success') {
+        console.log('Google login cancelled');
+        return;
       }
+
+      // The response will be handled by useEffect
+      // No need to show error here as useEffect will handle it
+      return result;
     } catch (error) {
       console.error('Google signin error:', error);
-      Alert.alert('خطأ', 'حدث خطأ في تسجيل الدخول بـ Google');
       throw error;
     }
   };

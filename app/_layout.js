@@ -59,6 +59,14 @@ const RootLayoutContent = () => {
             flex: 1
           }
         }}
+        screenListeners={{
+          beforeRemove: (e) => {
+            // Prevent showing unmatched deep link error
+            if (e.data.action?.type === 'GO_BACK') {
+              return;
+            }
+          }
+        }}
       />
     </View>
   );

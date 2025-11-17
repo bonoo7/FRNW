@@ -66,8 +66,14 @@ export const LoginScreen = ({ onSwitchToRegister }) => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      await signInWithGoogle();
+      const result = await signInWithGoogle();
+      if (result?.type === 'success') {
+        // Success will be handled by AuthContext useEffect
+        // No need to show anything here
+        console.log('Google login successful, waiting for auth state change');
+      }
     } catch (error) {
+      console.error('Google login error:', error);
       Alert.alert('خطأ', 'حدث خطأ أثناء تسجيل الدخول بجوجل');
     } finally {
       setLoading(false);
