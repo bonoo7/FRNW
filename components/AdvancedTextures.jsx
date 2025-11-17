@@ -114,53 +114,53 @@ const TextureEmboss = ({ opacity = 0.08, color = '#000000' }) => (
   </Svg>
 );
 
-// تكسجتشر الورق - تأثير ورقي واضح وقوي
+// تكسجتشر الورق - تأثير ورقي واضح جداً وقوي (محسّن للFresh theme)
 const TexturePaper = ({ opacity = 0.07, color = '#000000' }) => (
   <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
     <Defs>
-      <Pattern id="paper" patternUnits="userSpaceOnUse" width="25" height="25">
-        {/* خطوط عشوائية قوية وواضحة تعطي مظهر ورق */}
+      <Pattern id="paper" patternUnits="userSpaceOnUse" width="20" height="20">
+        {/* خطوط عشوائية قوية جداً وواضحة تعطي مظهر ورق واضح */}
         <Path
-          d="M0,3 L25,5"
+          d="M0,2 L20,4"
           fill="none"
           stroke={color}
-          strokeWidth="0.35"
+          strokeWidth="0.5"
+          opacity={opacity * 1.2}
+        />
+        <Path
+          d="M0,8 L20,10"
+          fill="none"
+          stroke={color}
+          strokeWidth="0.55"
+          opacity={opacity * 1.1}
+        />
+        <Path
+          d="M0,14 L20,16"
+          fill="none"
+          stroke={color}
+          strokeWidth="0.5"
+          opacity={opacity * 1.15}
+        />
+        <Path
+          d="M2,0 L4,20"
+          fill="none"
+          stroke={color}
+          strokeWidth="0.45"
           opacity={opacity}
         />
         <Path
-          d="M0,10 L25,12"
+          d="M10,0 L8,20"
           fill="none"
           stroke={color}
-          strokeWidth="0.4"
-          opacity={opacity * 0.85}
+          strokeWidth="0.5"
+          opacity={opacity * 1.05}
         />
         <Path
-          d="M0,18 L25,20"
+          d="M18,0 L16,20"
           fill="none"
           stroke={color}
-          strokeWidth="0.35"
-          opacity={opacity * 0.9}
-        />
-        <Path
-          d="M3,0 L5,25"
-          fill="none"
-          stroke={color}
-          strokeWidth="0.3"
-          opacity={opacity * 0.7}
-        />
-        <Path
-          d="M12,0 L10,25"
-          fill="none"
-          stroke={color}
-          strokeWidth="0.35"
-          opacity={opacity * 0.8}
-        />
-        <Path
-          d="M22,0 L20,25"
-          fill="none"
-          stroke={color}
-          strokeWidth="0.3"
-          opacity={opacity * 0.6}
+          strokeWidth="0.45"
+          opacity={opacity * 0.95}
         />
       </Pattern>
     </Defs>
