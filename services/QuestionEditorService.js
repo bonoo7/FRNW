@@ -51,14 +51,14 @@ class QuestionEditorService {
   }
 
   /**
-   * الحصول على جميع الأسئلة من ملف الأسئلة
+   * الحصول على جميع الأسئلة من ملفات الفئات
    * @returns {Promise<Array>} مصفوفة تحتوي على جميع الأسئلة
    */
   static async getAllQuestions() {
     try {
-      // استيراد الأسئلة من الملف
-      const { questions } = await import('../data/questions.js');
-      return questions;
+      // استيراد الأسئلة من ملفات الفئات المقسمة
+      const allQuestions = await import('../data/categories/index.js');
+      return allQuestions.default || allQuestions.allQuestions;
     } catch (error) {
       console.error('خطأ في الحصول على الأسئلة:', error);
       throw new Error('فشل في الحصول على الأسئلة');

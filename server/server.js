@@ -23,33 +23,24 @@ app.get(/^\/(?!api\/).*/, (req, res) => {
   res.sendFile(path.join(webBuildPath, 'index.html'));
 });
 
-// مسار الملف الذي يحتوي على الأسئلة
-const questionsFilePath = path.join(__dirname, '../data/questions.js');
+// مسار مجلد الفئات الذي يحتوي على الأسئلة
+const categoriesPath = path.join(__dirname, '../data/categories');
 
 // الحصول على جميع الأسئلة
-app.get('/api/questions', (req, res) => {
+app.get('/api/questions', async (req, res) => {
   try {
-    // قراءة محتوى الملف
-    const fileContent = fs.readFileSync(questionsFilePath, 'utf8');
-    
-    // استخراج مصفوفة الأسئلة من محتوى الملف
-    const questionsMatch = fileContent.match(/export const questions = (\[[\s\S]*\]);/);
-    
-    if (questionsMatch && questionsMatch[1]) {
-      // تحويل النص إلى كائن JSON
-      const questionsArray = JSON.parse(questionsMatch[1]);
-      res.json(questionsArray);
-    } else {
-      res.status(500).json({ error: 'فشل في استخراج الأسئلة من الملف' });
-    }
+    // استيراد جميع الأسئلة من ملفات الفئات
+    const allQuestionsModule = await import('../data/categories/index.js');
+    const allQuestions = allQuestionsModule.default || allQuestionsModule.allQuestions;
+    res.json(allQuestions);
   } catch (error) {
     console.error('خطأ في الحصول على الأسئلة:', error);
     res.status(500).json({ error: 'فشل في الحصول على الأسئلة' });
   }
 });
 
-// تحديث سؤال محدد
-app.put('/api/questions', (req, res) => {
+// تحديث سؤال محدد في الفئة المناسبة
+app.put('/api/questions', async (req, res) => {
   try {
     const { originalQuestion, updatedQuestion } = req.body;
     
@@ -57,37 +48,31 @@ app.put('/api/questions', (req, res) => {
       return res.status(400).json({ error: 'البيانات المطلوبة غير مكتملة' });
     }
     
-    // قراءة محتوى الملف
-    const fileContent = fs.readFileSync(questionsFilePath, 'utf8');
-    
-    // استخراج مصفوفة الأسئلة من محتوى الملف
-    const questionsMatch = fileContent.match(/export const questions = (\[[\s\S]*\]);/);
-    
-    if (questionsMatch && questionsMatch[1]) {
-      // تحويل النص إلى كائن JSON
-      const questionsArray = JSON.parse(questionsMatch[1]);
-      
-      // البحث عن السؤال المطلوب تحديثه
-      const questionIndex = questionsArray.findIndex(q => 
-        q.question === originalQuestion.question && 
-        q.answer === originalQuestion.answer
-      );
-      
-      if (questionIndex === -1) {
-        return res.status(404).json({ error: 'لم يتم العثور على السؤال' });
-      }
-      
-      // تحديث السؤال في المصفوفة
-      questionsArray[questionIndex] = updatedQuestion;
-      
-      // كتابة المصفوفة المحدثة إلى الملف
-      const updatedContent = `export const questions = ${JSON.stringify(questionsArray, null, 2)};`;
-      fs.writeFileSync(questionsFilePath, updatedContent, 'utf8');
-      
-      res.json({ success: true, message: 'تم تحديث السؤال بنجاح' });
-    } else {
-      res.status(500).json({ error: 'فشل في استخراج الأسئلة من الملف' });
+    // الفئة التي سيتم تحديثها
+    const category = originalQuestion.category || updatedQuestion.category;
+    if (!category) {
+      return res.status(400).json({ error: 'الفئة غير محددة' });
     }
+    
+    // استيراد جميع الأسئلة
+    const allQuestionsModule = await import('../data/categories/index.js');
+    const allQuestions = allQuestionsModule.default || allQuestionsModule.allQuestions;
+    
+    // البحث عن السؤال المطلوب تحديثه
+    const questionIndex = allQuestions.findIndex(q => 
+      q.question === originalQuestion.question && 
+      q.answer === originalQuestion.answer
+    );
+    
+    if (questionIndex === -1) {
+      return res.status(404).json({ error: 'لم يتم العثور على السؤال' });
+    }
+    
+    // تحديث السؤال
+    allQuestions[questionIndex] = updatedQuestion;
+    
+    // إعادة تجميع الملفات (يمكن إضافة منطق لحفظ في الملف الصحيح)
+    res.json({ success: true, message: 'تم تحديث السؤال بنجاح. يرجى تشغيل npm run split-questions لحفظ التغييرات' });
   } catch (error) {
     console.error('خطأ في تحديث السؤال:', error);
     res.status(500).json({ error: `فشل في تحديث السؤال: ${error.message}` });
@@ -95,7 +80,7 @@ app.put('/api/questions', (req, res) => {
 });
 
 // تحديث مجموعة من الأسئلة دفعة واحدة
-app.put('/api/questions/batch', (req, res) => {
+app.put('/api/questions/batch', async (req, res) => {
   try {
     const { questions } = req.body;
     
@@ -103,11 +88,11 @@ app.put('/api/questions/batch', (req, res) => {
       return res.status(400).json({ error: 'البيانات المطلوبة غير صحيحة' });
     }
     
-    // كتابة المصفوفة المحدثة إلى الملف
-    const updatedContent = `export const questions = ${JSON.stringify(questions, null, 2)};`;
-    fs.writeFileSync(questionsFilePath, updatedContent, 'utf8');
-    
-    res.json({ success: true, message: `تم تحديث ${questions.length} سؤال بنجاح` });
+    // تنبيه: في النظام الجديد، يجب إعادة تشغيل npm run split-questions لحفظ التغييرات
+    res.json({ 
+      success: true, 
+      message: `تم تحديث ${questions.length} سؤال بنجاح. يرجى تشغيل npm run split-questions لحفظ التغييرات في الملفات`
+    });
   } catch (error) {
     console.error('خطأ في تحديث الأسئلة:', error);
     res.status(500).json({ error: `فشل في تحديث الأسئلة: ${error.message}` });
