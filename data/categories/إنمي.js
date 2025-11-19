@@ -1134,7 +1134,7 @@ export const إنميQuestions = [
     "question": "من هو مؤلف مانغا بليتش؟",
     "answer": "تايت كوبو",
     "category": "إنمي",
-    "difficulty": "صعب ",
+    "difficulty": "صعب",
     "roundId": "",
     "isDisabled": "",
     "imgQ": "https://m.media-amazon.com/images/M/MV5BOWQwOWY5NTUtMjAyZi00YjQzLTkwODgtNmQwZjU1MGIzZDhjXkEyXkFqcGc@.jpg",
@@ -2393,3 +2393,4 @@ export const إنميQuestions = [
 ];
 
 export default إنميQuestions;
+

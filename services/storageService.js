@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-import { questions as allQuestions } from '../data/questions';
+import allQuestions from '../data/categories/index.js';
 import { validateGameData as validateGame } from './gameService';
 
 const STORAGE_KEYS = {

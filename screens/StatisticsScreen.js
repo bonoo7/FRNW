@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { SPACING, FONTS } from '../styles/theme';
 import BackgroundPattern from '../components/BackgroundPattern';
 import StorageService from '../services/storageService';
-import { questions } from '../data/questions';
+import allQuestions from '../data/categories/index.js';
 import { getResponsiveStyles } from '../styles/responsive';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -260,7 +260,7 @@ const StatisticsScreen = ({ navigation }) => {
     try {
       // تحميل إحصائيات الأسئلة
       const questionStats = {};
-      questions.forEach(q => {
+      allQuestions.forEach(q => {
         const category = q.category;
         if (!questionStats[category]) {
           questionStats[category] = {

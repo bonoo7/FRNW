@@ -45,6 +45,7 @@ import ون_بيسQuestions from './ون_بيس';
 import بوسترات_ألعابQuestions from './بوسترات_ألعاب';
 import ألعاب_السولزQuestions from './ألعاب_السولز';
 import فيديوQuestions from './فيديو';
+import testQuestions from './test';
 
 // دمج جميع الأسئلة
 export const allQuestions = [
@@ -92,6 +93,7 @@ export const allQuestions = [
   ...بوسترات_ألعابQuestions,
   ...ألعاب_السولزQuestions,
   ...فيديوQuestions,
+  ...testQuestions,
 ];
 
 // تصدير كل فئة على حدة
@@ -140,6 +142,7 @@ export {
   بوسترات_ألعابQuestions,
   ألعاب_السولزQuestions,
   فيديوQuestions,
+  testQuestions,
 };
 
 export default allQuestions;

@@ -407,7 +407,8 @@ const GameSetup = () => {
     'فنون وأدب': ['فنون', 'شعر وأدب', 'من القائل', 'لغات ولهجات'],
     'رياضة': ['رياضة', 'كرة قدم'],
     'متنوعات': ['عملات', 'معاني', 'ألقاب', 'شخصيات', 'فلسفة'],
-    'ترفيه': ['ون بيس', 'إنمي', 'ألعاب السولز', 'ميتل غير', 'ألعاب الفيديو', 'بوسترات ألعاب']
+    'ترفيه': ['ون بيس', 'إنمي', 'ألعاب السولز', 'ميتل غير', 'ألعاب الفيديو', 'بوسترات ألعاب', 'فيديو'],
+    'اختبار': ['test']
   };
 
   // تجميع كل الفئات في مصفوفة واحدة
@@ -786,31 +787,33 @@ const GameSetup = () => {
 
 const styles = StyleSheet.create({
   categoryGroupContainer: {
-    marginBottom: 0,
-    width: '100%',
+    marginBottom: SPACING.lg,
+    marginTop: SPACING.lg,
+    width: '98%',
+    alignSelf: 'center',
   },
   groupHeaderContainer: {
-    marginBottom: 0,
+    marginBottom: SPACING.md,
     width: '100%',
     overflow: 'hidden',
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 0,
+    paddingHorizontal: SPACING.sm,
   },
   groupHeaderGradient: {
-    paddingVertical: SPACING.xxs,
-    paddingHorizontal: SPACING.sm,
-    borderRadius: 6,
+    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.md,
+    borderRadius: 8,
     width: 'auto',
     minWidth: '50%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: SPACING.xxs,
+    marginHorizontal: SPACING.sm,
   },
   groupHeaderText: {
-    fontSize: FONTS.sizes.xxs,
+    fontSize: FONTS.sizes.small,
     fontWeight: FONTS.weights.bold,
     fontFamily: 'ReadexPro_700Bold',
     color: '#FFFFFF',
@@ -821,20 +824,20 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 0,
-    marginBottom: 0,
+    marginBottom: SPACING.md,
   },
   headerLine: {
     height: 1,
     flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    marginHorizontal: SPACING.xxs,
+    marginHorizontal: SPACING.sm,
   },
   headerLineContainer: {
     flex: 1,
     flexDirection: 'column',
-    height: 10,
+    height: 12,
     justifyContent: 'space-between',
-    paddingVertical: 2,
+    paddingVertical: 3,
     borderRadius: 4,
   },
 });

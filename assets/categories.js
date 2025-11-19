@@ -39,7 +39,9 @@ const categoryImages = {
   'ألعاب السولز': require('./categories/souls.webp'),
   'ميتل غير': require('./categories/metalgear.webp'),
   'ألعاب الفيديو': require('./categories/videogames.webp'),
-  'بوسترات ألعاب': require('./categories/gamescover.webp')
+  'بوسترات ألعاب': require('./categories/gamescover.webp'),
+  'فيديو': require('./categories/video.webp'),
+  'test': require('./categories/test.webp')
 };
 
 export default categoryImages;

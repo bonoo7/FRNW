@@ -1,6 +1,6 @@
 import StorageService from './storageService';
 import categoryImages from '../assets/categories';
-import { questions } from '../data/questions';
+import allQuestions from '../data/categories/index.js';
 
 export const validateGameData = (data) => {
   if (!data) {
@@ -38,7 +38,7 @@ export const GameService = {
         const usedQuestions = await StorageService.getUsedQuestions();
 
         // التأكد من وجود الأسئلة للفئة
-        const categoryQuestions = questions.filter(q => q.category === category);
+        const categoryQuestions = allQuestions.filter(q => q.category === category);
         if (!categoryQuestions || categoryQuestions.length === 0) {
           console.error(`لا توجد أسئلة للفئة: ${category}`);
           throw new Error(`لا توجد أسئلة متوفرة للفئة: ${category}`);
@@ -157,7 +157,7 @@ export const GameService = {
         const usedQuestions = await StorageService.getUsedQuestions() || [];
         
         // فلترة الأسئلة المتاحة في الفئة
-        const categoryQuestions = questions.filter(q => q.category === category);
+        const categoryQuestions = allQuestions.filter(q => q.category === category);
         
         // حساب الأسئلة المستخدمة في الدورة الحالية
         const usedInCurrentCycle = usedQuestions.filter(q => 

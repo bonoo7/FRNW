@@ -1,11 +1,11 @@
-import { questions } from '../data/questions';
+import allQuestions from '../data/categories/index.js';
 
 export const QuestionService = {
   // الحصول على أسئلة عشوائية حسب الفئة والمستوى
   getRandomQuestions: (category, difficulty, count = 1) => {
     try {
       // التأكد من وجود الأسئلة
-      if (!questions || !Array.isArray(questions)) {
+      if (!allQuestions || !Array.isArray(allQuestions)) {
         console.error('خطأ: ملف الأسئلة غير موجود أو غير صالح');
         throw new Error('بيانات الأسئلة غير متوفرة');
       }
@@ -13,7 +13,7 @@ export const QuestionService = {
       // طباعة الأسئلة المتوفرة للفئة
       console.log(`البحث عن أسئلة في الفئة: ${category}`);
       
-      const filteredQuestions = questions.filter(q => 
+      const filteredQuestions = allQuestions.filter(q => 
         (!category || q.category === category) &&
         (!difficulty || q.difficulty === difficulty) &&
         !q.isDisabled // استبعاد الأسئلة المعطلة
@@ -43,7 +43,7 @@ export const QuestionService = {
 
   // الحصول على جميع الفئات المتاحة من الأسئلة
   getCategories: () => {
-    const uniqueCategories = [...new Set(questions
+    const uniqueCategories = [...new Set(allQuestions
       .filter(q => !q.isDisabled) // استبعاد الأسئلة المعطلة
       .map(q => q.category)
       .filter(category => category) // استبعاد القيم الفارغة
@@ -53,7 +53,7 @@ export const QuestionService = {
 
   // الحصول على عدد الأسئلة في كل فئة
   getCategoryCount: (category) => {
-    return questions.filter(q => 
+    return allQuestions.filter(q => 
       q.category === category && 
       !q.isDisabled
     ).length;
@@ -61,7 +61,7 @@ export const QuestionService = {
 
   // الحصول على جميع مستويات الصعوبة المتوفرة
   getDifficultyLevels: () => {
-    return [...new Set(questions
+    return [...new Set(allQuestions
       .filter(q => !q.isDisabled)
       .map(q => q.difficulty)
       .filter(difficulty => difficulty)
@@ -69,14 +69,14 @@ export const QuestionService = {
   },
 
   getAllCategories: () => {
-    const categories = new Set(questions.map(q => q.category));
+    const categories = new Set(allQuestions.map(q => q.category));
     return Array.from(categories);
   },
 
   // دالة للحصول على صورة الفئة
   getCategoryImage: (category) => {
     // البحث عن أول سؤال في الفئة له صورة
-    const question = questions.find(q => 
+    const question = allQuestions.find(q => 
       q.category === category && 
       q.imgQ && 
       !q.isDisabled
@@ -86,10 +86,10 @@ export const QuestionService = {
 
   // إضافة دالة للتحقق من توفر الأسئلة في الفئة
   hasQuestionsInCategory: (category) => {
-    const categoryQuestions = questions.filter(q => 
+    const categoryQuestions = allQuestions.filter(q => 
       q.category === category && 
       !q.isDisabled
     );
     return categoryQuestions.length > 0;
   }
-}; 
+};

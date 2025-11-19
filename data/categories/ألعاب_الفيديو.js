@@ -331,7 +331,7 @@ export const ألعاب_الفيديوQuestions = [
     "question": "ما هي النهاية السرية في \"\"سايبربانك 2077\"\" التي تتطلب اختيارات محددة؟",
     "answer": "\"Don't Fear the Reaper\"  لا تخشَ الحاصد",
     "category": "ألعاب الفيديو",
-    "difficulty": "مستحيل",
+    "difficulty": "صعب",
     "roundId": "",
     "isDisabled": "",
     "imgQ": "",
@@ -2910,3 +2910,4 @@ export const ألعاب_الفيديوQuestions = [
 ];
 
 export default ألعاب_الفيديوQuestions;
+

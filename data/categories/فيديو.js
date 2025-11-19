@@ -1,5 +1,5 @@
 // 📚 أسئلة فئة: فيديو
-// عدد الأسئلة: 5
+// عدد الأسئلة: 9
 
 export const فيديوQuestions = [
   {
@@ -60,6 +60,54 @@ export const فيديوQuestions = [
     "imgQ": "",
     "imgA": "",
     "vidQ": "https://www.example.com/sample-video5.mp4",
+    "vidA": ""
+  },
+  {
+    "question": "مثال سؤال فيديو 6 - من هو بطل هذا الفيلم؟",
+    "answer": "مثال جواب 6",
+    "category": "فيديو",
+    "difficulty": "سهل",
+    "roundId": "",
+    "isDisabled": "",
+    "imgQ": "",
+    "imgA": "",
+    "vidQ": "https://www.example.com/sample-video6.mp4",
+    "vidA": ""
+  },
+  {
+    "question": "مثال سؤال فيديو 7 - ما هو موضوع هذا المقطع؟",
+    "answer": "مثال جواب 7",
+    "category": "فيديو",
+    "difficulty": "متوسط",
+    "roundId": "",
+    "isDisabled": "",
+    "imgQ": "",
+    "imgA": "",
+    "vidQ": "https://www.example.com/sample-video7.mp4",
+    "vidA": ""
+  },
+  {
+    "question": "مثال سؤال فيديو 8 - كم عام مضى على إنتاج هذا الفيلم؟",
+    "answer": "مثال جواب 8",
+    "category": "فيديو",
+    "difficulty": "صعب",
+    "roundId": "",
+    "isDisabled": "",
+    "imgQ": "",
+    "imgA": "",
+    "vidQ": "https://www.example.com/sample-video8.mp4",
+    "vidA": ""
+  },
+  {
+    "question": "مثال سؤال فيديو 9 - ما هي الجائزة التي فاز بها هذا العمل؟",
+    "answer": "مثال جواب 9",
+    "category": "فيديو",
+    "difficulty": "صعب",
+    "roundId": "",
+    "isDisabled": "",
+    "imgQ": "",
+    "imgA": "",
+    "vidQ": "https://www.example.com/sample-video9.mp4",
     "vidA": ""
   }
 ];
