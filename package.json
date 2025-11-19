@@ -47,7 +47,8 @@
     "doctor": "expo doctor",
     "compress:images": "node scripts/compress-final.js",
     "analyze:images": "node scripts/analyze-images.js",
-    "analyze:bundle": "node scripts/analyze-bundle.js"
+    "analyze:bundle": "node scripts/analyze-bundle.js",
+    "split-questions": "node scripts/split-questions.js"
   },
   "dependencies": {
     "@expo-google-fonts/mada": "^0.2.3",
