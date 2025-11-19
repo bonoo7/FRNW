@@ -92,17 +92,18 @@ export const TeamsHeader = ({
       backgroundColor: 'transparent',
       flexDirection: vertical ? 'column' : 'row',
       alignItems: vertical ? 'stretch' : 'center',
-      justifyContent: vertical ? 'center' : 'space-between',
+      justifyContent: vertical ? 'flex-start' : 'space-between',
       paddingHorizontal: vertical ? 1 : SPACING.md,
       paddingVertical: vertical ? 1 : SPACING.xs,
       width: vertical ? '100%' : '100%',
-      height: vertical ? '100%' : 'auto',
-      gap: vertical ? 1 : SPACING.xs,
+      height: vertical ? 'auto' : 'auto',
+      gap: vertical ? 16 : SPACING.xs,
     },
     teamsScrollContainer: {
-      flex: vertical ? 1 : 0,
+      flex: vertical ? 0 : 0,
       maxHeight: vertical ? undefined : 62,
       width: vertical ? '100%' : 'auto',
+      height: vertical ? 'auto' : undefined,
     },
     teamsScroll: {
       flexDirection: vertical ? 'column' : 'row',
@@ -294,61 +295,69 @@ export const TeamsHeader = ({
         })}
       </ScrollView>
 
-      {/* الأزرار - على اليمين */}
-      <View style={[styles.controlsContainer, { flexDirection: vertical ? 'row' : 'column', marginBottom: vertical ? 2 : 0 }]}>
-        {/* زر مضاعفة النقاط ×2 */}
-        <TouchableOpacity
-          style={[
-            styles.actionButton,
-            {
-              backgroundColor: isDoublePoints ? '#FFB300' : '#FFC107',
-              opacity: validDoublePoints[currentTeam] ? 0.4 : 1,
-              flex: vertical ? 1 : undefined,
-              marginRight: vertical ? 2 : 0,
-            }
-          ]}
-          onPress={() => handleDoublePointsChange(!isDoublePoints)}
-          disabled={validDoublePoints[currentTeam]}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.actionButtonText}>×2</Text>
-        </TouchableOpacity>
-
-        {/* زر مضاعفة النقاط ×5 */}
-        {pentaPointsEnabled && (
+      {/* حاوية الأزرار */}
+      <View style={{
+        flexDirection: 'column',
+        gap: vertical ? 4 : 6,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        {/* حاوية أزرار المضاعفة */}
+        <View style={{
+          flexDirection: 'row',
+          gap: 3,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          {/* زر مضاعفة النقاط ×2 */}
           <TouchableOpacity
             style={[
               styles.actionButton,
               {
-                backgroundColor: isPentaPoints ? '#43A047' : '#66BB6A',
-                opacity: validPentaPoints[currentTeam] || !isLowestScoringTeam(currentTeam) ? 0.4 : 1,
-                flex: vertical ? 1 : undefined,
+                backgroundColor: isDoublePoints ? '#FFB300' : '#FFC107',
+                opacity: validDoublePoints[currentTeam] ? 0.4 : 1,
               }
             ]}
-            onPress={() => handlePentaPointsChange(!isPentaPoints)}
-            disabled={validPentaPoints[currentTeam] || !isLowestScoringTeam(currentTeam)}
+            onPress={() => handleDoublePointsChange(!isDoublePoints)}
+            disabled={validDoublePoints[currentTeam]}
             activeOpacity={0.8}
           >
-            <Text style={styles.actionButtonText}>×5</Text>
+            <Text style={styles.actionButtonText}>×2</Text>
           </TouchableOpacity>
-        )}
-      </View>
 
-      {/* زر إنهاء الجولة - منفصل */}
-      <TouchableOpacity
-        style={[
-          styles.actionButton,
-          {
-            backgroundColor: '#EF5350',
-            width: vertical ? '100%' : 34,
-            marginTop: vertical ? 2 : 0,
-          }
-        ]}
-        onPress={handleEndRound}
-        activeOpacity={0.8}
-      >
-        <MaterialCommunityIcons name="flag-checkered" size={14} color="#FFFFFF" style={styles.actionButtonIcon} />
-      </TouchableOpacity>
+          {/* زر مضاعفة النقاط ×5 */}
+          {pentaPointsEnabled && (
+            <TouchableOpacity
+              style={[
+                styles.actionButton,
+                {
+                  backgroundColor: isPentaPoints ? '#43A047' : '#66BB6A',
+                  opacity: validPentaPoints[currentTeam] || !isLowestScoringTeam(currentTeam) ? 0.4 : 1,
+                }
+              ]}
+              onPress={() => handlePentaPointsChange(!isPentaPoints)}
+              disabled={validPentaPoints[currentTeam] || !isLowestScoringTeam(currentTeam)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actionButtonText}>×5</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* زر إنهاء الجولة */}
+        <TouchableOpacity
+          style={[
+            styles.actionButton,
+            {
+              backgroundColor: '#EF5350',
+            }
+          ]}
+          onPress={handleEndRound}
+          activeOpacity={0.8}
+        >
+          <MaterialCommunityIcons name="flag-checkered" size={14} color="#FFFFFF" style={styles.actionButtonIcon} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

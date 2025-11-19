@@ -207,15 +207,15 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         borderRadius: 12,
         padding: 0,
         shadowColor: theme.colors.primary || '#2E5DB8',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.2,
-        shadowRadius: 6,
-        elevation: 5,
-        borderWidth: 2,
-        borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
+        elevation: 6,
+        borderWidth: 3,
+        borderColor: theme.colors.primary || '#2E5DB8',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         height: cardHeight,
         width: cardWidth,
         marginVertical: outerPadding,
@@ -249,40 +249,6 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
           backgroundColor: 'rgba(255, 255, 255, 0.15)',
           zIndex: 1,
         }} />
-
-        {/* اسم الفئة في حاوية فاتحة - عريضة وطويلة - نسبة 60% من ارتفاع البطاقة */}
-        <View style={{
-          backgroundColor: theme.colors.background.card,
-          paddingHorizontal: 8,
-          paddingVertical: 8,
-          borderRadius: 10,
-          marginTop: 4,
-          marginLeft: 2,
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: cardWidth * 0.22,
-          height: cardHeight * 0.60,
-          borderWidth: 2,
-          borderColor: theme.colors.border.primary,
-          zIndex: 2,
-        }}>
-          <Text 
-            style={{
-              fontSize: Math.max(Math.min((cardHeight * 0.60) * 0.2, 9), 5),
-              fontWeight: '700',
-              textAlign: 'center',
-              width: '100%',
-              color: theme.colors.text.primary,
-              fontFamily: 'ReadexPro_700Bold',
-              lineHeight: Math.max(Math.min((cardHeight * 0.60) * 0.2, 9), 5) * 1.2,
-            }}
-            numberOfLines={3}
-            adjustsFontSizeToFit
-            minimumFontScale={0.5}
-          >
-            {category}
-          </Text>
-        </View>
 
         {/* أزرار الأسئلة - ثلاث أعمدة، كل عمود مستوى صعوبة واحد */}
         <View style={{
@@ -422,14 +388,14 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
       borderRadius: 12,
       padding: 0,
       shadowColor: theme.colors.primary || '#2E5DB8',
-      shadowOffset: { width: 0, height: 3 },
-      shadowOpacity: 0.2,
-      shadowRadius: 6,
-      elevation: 5,
-      borderWidth: 2,
-      borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 8,
+      elevation: 6,
+      borderWidth: 3,
+      borderColor: theme.colors.primary || '#2E5DB8',
       alignItems: 'center',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       width: cardWidth,
       height: cardHeight,
       marginVertical: outerPadding,
@@ -464,41 +430,6 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         zIndex: 1,
       }} />
       
-      {/* اسم الفئة - في حاوية فاتحة - نسبة 15% من ارتفاع البطاقة */}
-      <View style={{
-        backgroundColor: theme.colors.background.card,
-        paddingHorizontal: 8,
-        paddingVertical: 6,
-        borderRadius: 10,
-        marginTop: 4,
-        marginBottom: 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '95%',
-        height: cardHeight * 0.15,
-        borderWidth: 2,
-        borderColor: theme.colors.border.primary,
-        zIndex: 2,
-        position: 'relative',
-      }}>
-        <Text 
-          style={{
-            fontSize: Math.max(Math.min((cardHeight * 0.15) * 0.4, 9), 5),
-            fontWeight: '700',
-            textAlign: 'center',
-            width: '100%',
-            color: theme.colors.text.primary,
-            fontFamily: 'ReadexPro_700Bold',
-            lineHeight: Math.max(Math.min((cardHeight * 0.15) * 0.4, 9), 5) * 1.2,
-          }}
-          numberOfLines={2}
-          adjustsFontSizeToFit
-          minimumFontScale={0.6}
-        >
-          {category}
-        </Text>
-      </View>
-
       {/* أزرار الأسئلة - في عمود واحد */}
       <View style={{
         flexDirection: 'column',
@@ -1164,23 +1095,6 @@ const GameScreen = () => {
           }}
         />
         
-        {/* نمط إضافي للعمق */}
-        <BackgroundSelector
-          lightConfig={{
-            squareSize: 8,
-            gridGap: 12,
-            flickerChance: 0.15,
-            color: 'rgb(66, 165, 245)',
-            maxOpacity: 0.1,
-            animationSpeed: 'slow',
-          }}
-          darkConfig={{
-            hexagonSize: 85,
-            hexagonMargin: 3,
-            hexColor: 'rgba(64, 64, 64, 0.5)',
-            isAnimated: true,
-          }}
-        />
       </View>
       
       <Stack.Screen 
@@ -1189,145 +1103,98 @@ const GameScreen = () => {
           animation: 'none'
         }} 
       />
-      {/* حاوية رئيسية احترافية مع تأثيرات عميقة */}
-      <View style={{
-        flex: 1,
-        margin: 20,
-        borderRadius: 28,
-        borderWidth: 3,
-        borderColor: theme.colors.border.primary,
-        backgroundColor: theme.colors.background.card,
-        overflow: 'hidden',
-        shadowColor: theme.colors.border.primary,
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.3,
-        shadowRadius: 24,
-        elevation: 28,
-        position: 'relative',
-        zIndex: 2,
-        justifyContent: 'center',
-      }}>
-        {/* تدرج داخلي للحاوية */}
-        <LinearGradient
-          colors={[
-            theme.colors.background.card,
-            theme.colors.background.surface || theme.colors.background.card
-          ]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 0,
-          }}
-        />
-        <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 1, flexDirection: 'row-reverse' }]}>
-          {/* التيم هيدر على الجانب الأيمن - رأسي مع خلفية متحركة احترافية */}
-          <View style={{
-            width: 120,
-            height: '100%',
-            borderLeftWidth: 2,
-            borderLeftColor: theme.colors.border.primary,
-            backgroundColor: theme.colors.background.card,
-            overflow: 'hidden',
-            position: 'relative',
-            borderTopRightRadius: 22,
-            borderBottomRightRadius: 22,
-            zIndex: 2,
-          }}>
-            {/* خلفية متحركة احترافية */}
-            <View style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 0,
-            }}>
-              {/* تدرج رئيسي */}
-              <LinearGradient
-                colors={[
-                  theme.colors.background.card,
-                  theme.colors.background.surface || theme.colors.background.card
-                ]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                  zIndex: 0,
-                }}
-              />
-              
-            </View>
-
-            {/* محتوى التيم هيدر */}
-            <View style={{
-              flex: 1,
-              position: 'relative',
-              zIndex: 3,
+      <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 1, flexDirection: 'row-reverse' }]}>
+        {/* التيم هيدر */}
+        <View style={{
+          width: 120,
+          height: '100%',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          justifyContent: 'center',
+          gap: 1,
+        }}>
+          <TeamsHeader
+            teams={gameData.teams}
+            currentTeamIndex={gameData.currentTeamIndex}
+            scores={gameData.scores}
+            onTeamChange={updateCurrentTeam}
+            onScoreChange={handleScoreChange}
+            onEndRound={handleEndRound}
+            isDoublePoints={isDoublePoints}
+            onDoublePointsChange={handleDoublePointsChange}
+            isPentaPoints={isPentaPoints}
+            onPentaPointsChange={handlePentaPointsChange}
+            usedDoublePoints={usedDoublePoints}
+            usedPentaPoints={usedPentaPoints}
+            style={{
+              backgroundColor: 'transparent',
               paddingHorizontal: 4,
               paddingVertical: 4,
-            }}>
-              <TeamsHeader
-                teams={gameData.teams}
-                currentTeamIndex={gameData.currentTeamIndex}
-                scores={gameData.scores}
-                onTeamChange={updateCurrentTeam}
-                onScoreChange={handleScoreChange}
-                onEndRound={handleEndRound}
-                isDoublePoints={isDoublePoints}
-                onDoublePointsChange={handleDoublePointsChange}
-                isPentaPoints={isPentaPoints}
-                onPentaPointsChange={handlePentaPointsChange}
-                usedDoublePoints={usedDoublePoints}
-                usedPentaPoints={usedPentaPoints}
-                style={{
-                  backgroundColor: 'transparent',
-                  borderWidth: 0,
-                  height: '100%',
-                }}
-                vertical={true}
-              />
-            </View>
-          </View>
+              width: '100%',
+              height: 'auto',
+            }}
+            vertical={true}
+          />
+        </View>
 
-          {/* تخطيط: الفئات والأسئلة */}
-          <View style={{ 
-            flex: 1,
-            height: '100%',
-            width: '100%',
-            paddingHorizontal: 4,
-            paddingVertical: 4,
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1,
-          }}>
-            {/* عرض الفئات والأسئلة في صف واحد أفقي مع مسافات قليلة */}
-            <View
-              style={{
-                width: '100%',
-                height: '100%',
-                flexDirection: isLandscapeMode ? 'row' : 'column',
-                flexWrap: 'nowrap', // منع الالتفاف - جميع البطاقات في صف واحد
-                justifyContent: 'center',
-                alignItems: 'center',
-                alignContent: 'center',
-                overflow: isLandscapeMode ? 'scroll' : 'visible', // السماح بالتمرير الأفقي في الوضع الأفقي
-                paddingHorizontal: 2, // تقليل من 12 إلى 2
-                paddingVertical: 2,   // تقليل من 12 إلى 2
-              }}
-            >
-                {(() => {
-                  const categories = gameData.categories || [];
-                  
-                  return categories.map(category => (
+        {/* تخطيط: الفئات والأسئلة */}
+        <View style={{ 
+          flex: 1,
+          height: '100%',
+          width: '100%',
+          paddingHorizontal: 4,
+          paddingVertical: 4,
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1,
+        }}>
+          {/* عرض الفئات والأسئلة في صف واحد أفقي مع مسافات قليلة */}
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              flexDirection: isLandscapeMode ? 'row' : 'column',
+              flexWrap: 'nowrap', // منع الالتفاف - جميع البطاقات في صف واحد
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignContent: 'center',
+              overflow: isLandscapeMode ? 'scroll' : 'visible', // السماح بالتمرير الأفقي في الوضع الأفقي
+              paddingHorizontal: 2, // تقليل من 12 إلى 2
+              paddingVertical: 2,   // تقليل من 12 إلى 2
+            }}
+          >
+              {(() => {
+                const categories = gameData.categories || [];
+                
+                return categories.map(category => (
+                  <View key={category} style={{ alignItems: 'center', position: 'relative' }}>
+                    {/* اسم الفئة فوق البطاقة مع خلفية معتمة */}
+                    <View style={{
+                      position: 'absolute',
+                      top: -12,
+                      zIndex: 10,
+                      backgroundColor: theme.colors.background.card,
+                      borderRadius: 8,
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
+                      borderWidth: 2,
+                      borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
+                      shadowColor: theme.colors.primary || '#2E5DB8',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.15,
+                      shadowRadius: 4,
+                      elevation: 3,
+                    }}>
+                      <Text style={{
+                        fontSize: 11,
+                        fontWeight: '700',
+                        fontFamily: 'ReadexPro_700Bold',
+                        color: theme.colors.text.primary,
+                        textAlign: 'center',
+                      }}>
+                        {category}
+                      </Text>
+                    </View>
                     <CategoryCard
                       key={category}
                       category={category}
@@ -1337,19 +1204,19 @@ const GameScreen = () => {
                       categories={categories}
                       isLandscape={isLandscapeMode}
                     />
-                  ));
-                })()}
-            </View>
+                  </View>
+                ));
+              })()}
           </View>
         </View>
-
-        <QuestionDetailsModal
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          details={selectedQuestionDetails}
-          theme={theme}
-        />
       </View>
+
+      <QuestionDetailsModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        details={selectedQuestionDetails}
+        theme={theme}
+      />
     </View>
   );
 };

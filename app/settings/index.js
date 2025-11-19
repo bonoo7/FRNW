@@ -6,9 +6,10 @@ import {
   ScrollView,
   Switch,
   TouchableOpacity,
-  Alert
+  Alert,
+  BackHandler
 } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, useFocusEffect } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -33,6 +34,21 @@ export default function SettingsPage() {
   useEffect(() => {
     loadSettings();
   }, []);
+
+  // معالج الزر الفيزيائي للعودة
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        router.back();
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [router])
+  );
 
   const loadSettings = async () => {
     try {
@@ -185,7 +201,13 @@ export default function SettingsPage() {
           },
           headerLeft: () => (
             <TouchableOpacity
-              onPress={() => router.back()}
+              onPress={() => {
+                if (router.canGoBack()) {
+                  router.back();
+                } else {
+                  router.replace('/');
+                }
+              }}
               style={{ paddingLeft: 16 }}
             >
               <MaterialIcons name="arrow-back" size={24} color={theme.colors.text.primary} />
