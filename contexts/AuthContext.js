@@ -6,7 +6,8 @@ import {
   onAuthStateChanged,
   updateProfile,
   GoogleAuthProvider,
-  signInWithCredential
+  signInWithCredential,
+  signInWithPopup
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
@@ -53,14 +54,33 @@ export const AuthProvider = ({ children }) => {
   // Handle Expo Auth response
   const handleGoogleAuthResponse = async (authentication) => {
     try {
-      if (!authentication?.idToken) {
+      if (!authentication) {
         throw new Error('لم يتم استقبال بيانات المصادقة من Google');
       }
 
-      const credential = GoogleAuthProvider.credential(
-        authentication.idToken,
-        authentication.accessToken
-      );
+      console.log('Authentication object:', {
+        hasIdToken: !!authentication.idToken,
+        hasAccessToken: !!authentication.accessToken,
+        keys: Object.keys(authentication)
+      });
+
+      // محاولة استخدام idToken + accessToken
+      let credential;
+      
+      if (authentication.idToken && authentication.accessToken) {
+        credential = GoogleAuthProvider.credential(
+          authentication.idToken,
+          authentication.accessToken
+        );
+      } else if (authentication.accessToken) {
+        // إذا لم يكن هناك idToken، استخدم accessToken فقط
+        credential = GoogleAuthProvider.credential(
+          null,
+          authentication.accessToken
+        );
+      } else {
+        throw new Error('لا توجد بيانات مصادقة صحيحة: لا idToken ولا accessToken');
+      }
       
       const result = await signInWithCredential(auth, credential);
       await createUserProfile(result.user);
@@ -109,16 +129,33 @@ export const AuthProvider = ({ children }) => {
   // Sign in with Google
   const signInWithGoogle = async () => {
     try {
+      // للويب استخدم signInWithPopup بدلاً من Expo
+      if (Platform.OS === 'web') {
+        try {
+          const provider = new GoogleAuthProvider();
+          const result = await signInWithPopup(auth, provider);
+          await createUserProfile(result.user);
+          console.log('Web Google signin successful');
+          return { type: 'success' };
+        } catch (error) {
+          console.error('Web popup signin error:', error);
+          if (error.code === 'auth/popup-closed-by-user') {
+            return { type: 'dismiss' };
+          }
+          throw error;
+        }
+      }
+      
+      // للموبايل استخدم Expo
       const result = await promptAsync();
       
       // Check if user cancelled
       if (result?.type !== 'success') {
         console.log('Google login cancelled');
-        return;
+        return result;
       }
 
       // The response will be handled by useEffect
-      // No need to show error here as useEffect will handle it
       return result;
     } catch (error) {
       console.error('Google signin error:', error);
