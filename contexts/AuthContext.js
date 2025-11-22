@@ -163,6 +163,16 @@ export const AuthProvider = ({ children }) => {
           photoURL: photoURL || '',
           createdAt,
           lastLoginAt: createdAt,
+          // Credits System (Freemium)
+          credits: {
+            remaining: 2,              // رصيد البداية: لعبتان مجانيتان
+            initialFree: 2,            // عدد الألعاب المجانية الممنوحة عند التسجيل
+            totalPurchased: 0,         // إجمالي الألعاب المشتراة
+            totalUsed: 0,              // إجمالي الألعاب المستخدمة
+            totalGranted: 0,           // إجمالي الألعاب المجانية الممنوحة (مكافآت)
+            lastUsedAt: null,          // آخر استخدام للرصيد
+            lastPurchaseAt: null       // آخر عملية شراء
+          },
           // Game statistics
           statistics: {
             totalGames: 0,

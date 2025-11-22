@@ -1,0 +1,177 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ====== دوال مساعدة ======
+    
+    // التحقق من تسجيل دخول المستخدم
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // التحقق من أن المستخدم هو صاحب المستند
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // التحقق من أن البيانات الواردة صحيحة
+    function isValidUserData() {
+      return request.resource.data.keys().hasAll(['uid', 'email', 'createdAt', 'credits']);
+    }
+    
+    // ====== قواعد مجموعة المستخدمين ======
+    match /users/{userId} {
+      // السماح بالقراءة للمستخدم صاحب الحساب فقط
+      allow read: if isSignedIn() && isOwner(userId);
+      
+      // السماح بالإنشاء للمستخدم الجديد فقط
+      allow create: if isSignedIn() 
+                    && isOwner(userId)
+                    && isValidUserData()
+                    // التأكد من أن الرصيد الابتدائي = 2
+                    && request.resource.data.credits.remaining == 2
+                    && request.resource.data.credits.initialFree == 2
+                    && request.resource.data.credits.totalPurchased == 0
+                    && request.resource.data.credits.totalUsed == 0;
+      
+      // السماح بالتحديث للمستخدم صاحب الحساب فقط مع قيود
+      allow update: if isSignedIn() 
+                    && isOwner(userId)
+                    && validateCreditsUpdate();
+      
+      // منع الحذف تماماً
+      allow delete: if false;
+      
+      // ====== دالة التحقق من صحة تحديث الرصيد ======
+      function validateCreditsUpdate() {
+        let oldCredits = resource.data.credits;
+        let newCredits = request.resource.data.credits;
+        
+        // إذا كان التحديث لا يمس حقل الرصيد، اسمح به
+        if (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['credits'])) {
+          return true;
+        }
+        
+        // التحقق من أن الحقول الثابتة لم تتغير
+        let initialFreeUnchanged = newCredits.initialFree == oldCredits.initialFree;
+        
+        // حساب التغييرات المتوقعة
+        let remainingChanged = newCredits.remaining != oldCredits.remaining;
+        let usedChanged = newCredits.totalUsed != oldCredits.totalUsed;
+        let purchasedChanged = newCredits.totalPurchased != oldCredits.totalPurchased;
+        
+        // السيناريو 1: استهلاك رصيد (بدء لعبة)
+        // - يجب أن ينقص remaining بمقدار 1
+        // - يجب أن يزيد totalUsed بمقدار 1
+        // - يجب أن يكون remaining القديم > 0
+        let isValidConsumption = 
+          remainingChanged && usedChanged &&
+          (newCredits.remaining == oldCredits.remaining - 1) &&
+          (newCredits.totalUsed == oldCredits.totalUsed + 1) &&
+          oldCredits.remaining > 0 &&
+          newCredits.remaining >= 0;
+        
+        // السيناريو 2: شراء رصيد
+        // - يجب أن يزيد remaining بمقدار محدد (1-100)
+        // - يجب أن يزيد totalPurchased بنفس المقدار
+        let purchaseAmount = newCredits.remaining - oldCredits.remaining;
+        let isValidPurchase = 
+          remainingChanged && purchasedChanged &&
+          purchaseAmount > 0 && purchaseAmount <= 100 &&
+          (newCredits.totalPurchased == oldCredits.totalPurchased + purchaseAmount);
+        
+        // السيناريو 3: منح رصيد مجاني (مكافأة)
+        // - يجب أن يزيد remaining
+        // - يجب أن يزيد totalGranted بنفس المقدار
+        let grantAmount = newCredits.remaining - oldCredits.remaining;
+        let grantedChanged = newCredits.get('totalGranted', 0) != oldCredits.get('totalGranted', 0);
+        let isValidGrant = 
+          remainingChanged && grantedChanged &&
+          grantAmount > 0 && grantAmount <= 20 &&
+          (newCredits.get('totalGranted', 0) == oldCredits.get('totalGranted', 0) + grantAmount);
+        
+        // السماح بالتحديث فقط إذا كان أحد السيناريوهات صحيحاً
+        return initialFreeUnchanged && (isValidConsumption || isValidPurchase || isValidGrant);
+      }
+    }
+    
+    // ====== قواعد مجموعة الألعاب ======
+    match /games/{gameId} {
+      // السماح بالقراءة للمستخدم صاحب اللعبة فقط
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      // السماح بالإنشاء للمستخدم المسجل فقط
+      allow create: if isSignedIn() 
+                    && request.resource.data.userId == request.auth.uid;
+      
+      // السماح بالتحديث للمستخدم صاحب اللعبة فقط
+      allow update: if isSignedIn() 
+                    && resource.data.userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid;
+      
+      // منع الحذف (يمكن تعديلها لاحقاً حسب الحاجة)
+      allow delete: if false;
+    }
+    
+    // ====== قواعد سجل الرصيد ======
+    match /creditLogs/{logId} {
+      // السماح بالقراءة للمستخدم صاحب السجل فقط
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      // السماح بالإنشاء فقط (لا يمكن التعديل أو الحذف)
+      allow create: if isSignedIn() 
+                    && request.resource.data.userId == request.auth.uid;
+      
+      // منع التعديل والحذف
+      allow update, delete: if false;
+    }
+    
+    // ====== قواعد معاملات الشراء ======
+    match /purchaseTransactions/{transactionId} {
+      // السماح بالقراءة للمستخدم صاحب المعاملة فقط
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      // السماح بالإنشاء فقط (لا يمكن التعديل أو الحذف)
+      allow create: if isSignedIn() 
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.status == 'completed'
+                    && request.resource.data.creditsAmount > 0
+                    && request.resource.data.creditsAmount <= 100;
+      
+      // منع التعديل والحذف تماماً
+      allow update, delete: if false;
+    }
+    
+    // ====== قواعد الأسئلة المجابة ======
+    match /questionAnswers/{answerId} {
+      // السماح بالقراءة للمستخدم صاحب الإجابة فقط
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      // السماح بالإنشاء للمستخدم المسجل فقط
+      allow create: if isSignedIn() 
+                    && request.resource.data.userId == request.auth.uid;
+      
+      // منع التعديل والحذف
+      allow update, delete: if false;
+    }
+    
+    // ====== قواعد تقارير الأسئلة ======
+    match /questionReports/{reportId} {
+      // السماح بالقراءة للمستخدم صاحب التقرير فقط
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      // السماح بالإنشاء للمستخدم المسجل فقط
+      allow create: if isSignedIn() 
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.status == 'pending';
+      
+      // منع التعديل والحذف للمستخدمين (الإداريون فقط يمكنهم التعديل)
+      allow update, delete: if false;
+    }
+    
+    // ====== منع الوصول لأي مجموعات أخرى ======
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
