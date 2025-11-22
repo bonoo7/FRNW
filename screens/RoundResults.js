@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Dimensions, Animated } from 'react-native';
+import { doc, updateDoc, getDoc, increment } from 'firebase/firestore';
+import { db } from '../firebase/config';
+import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { SPACING, FONTS } from '../styles/theme';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -129,6 +132,7 @@ const RoundResults = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { theme } = useTheme();
+  const { currentUser } = useAuth();
   const window = Dimensions.get('window');
   const isLandscape = window.width > window.height;
   const [showCelebration, setShowCelebration] = useState(false);
@@ -216,8 +220,45 @@ const RoundResults = () => {
     );
   }
 
+  const saveGameStatistics = async () => {
+    if (!currentUser || !gameData) return;
+    
+    try {
+      const userRef = doc(db, 'users', currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (!userSnap.exists()) return;
+      
+      const userData = userSnap.data();
+      const stats = gameData.statistics || {};
+      
+      // Calculate score from team scores
+      const totalScore = Object.values(gameData.scores || {}).reduce((a, b) => a + b, 0);
+      
+      const updateData = {
+        'statistics.totalGames': (userData.statistics?.totalGames || 0) + 1,
+        'statistics.totalQuestionsAnswered': (userData.statistics?.totalQuestionsAnswered || 0) + (stats.answeredQuestions || 0),
+        'statistics.totalCorrectAnswers': (userData.statistics?.totalCorrectAnswers || 0) + (stats.correctAnswers || stats.answeredQuestions || 0),
+        'statistics.totalScore': (userData.statistics?.totalScore || 0) + totalScore,
+        'statistics.averageScore': Math.round(
+          ((userData.statistics?.totalScore || 0) + totalScore) / 
+          ((userData.statistics?.totalGames || 0) + 1)
+        ),
+        updatedAt: new Date().toISOString()
+      };
+      
+      await updateDoc(userRef, updateData);
+      console.log('تم حفظ الإحصائيات بنجاح');
+    } catch (error) {
+      console.error('خطأ في حفظ الإحصائيات:', error);
+    }
+  };
+
   const handleNewRound = async () => {
     try {
+      // حفظ الإحصائيات قبل العودة للصفحة الرئيسية
+      await saveGameStatistics();
+      
       // إيقاف الحركات
       glowAnimation.setValue(0);
       glowAnimation.stopAnimation();

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, Platform, SafeAreaView, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/config';
+import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { SPACING, FONTS } from '../styles/theme';
 import BackgroundPattern from '../components/BackgroundPattern';
@@ -8,6 +11,7 @@ import StorageService from '../services/storageService';
 import allQuestions from '../data/categories/index.js';
 import { getResponsiveStyles } from '../styles/responsive';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const DIFFICULTY_COLORS = {
   'سهل': ['#00C853', '#69F0AE'],    // أخضر
@@ -44,8 +48,10 @@ const GradientContainer = ({ children, colors, style }) => {
   );
 };
 
-const StatisticsScreen = ({ navigation }) => {
+const StatisticsScreen = () => {
+  const router = useRouter();
   const { theme } = useTheme();
+  const { currentUser } = useAuth();
   const [stats, setStats] = useState(null);
   const [questionsStats, setQuestionsStats] = useState(null);
   const [gameHistory, setGameHistory] = useState([]);
@@ -258,6 +264,31 @@ const StatisticsScreen = ({ navigation }) => {
 
   const loadStatistics = async () => {
     try {
+      // Load statistics from Firestore for current user
+      if (currentUser) {
+        const userRef = doc(db, 'users', currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          setStats({
+            gamesPlayed: userData.statistics?.totalGames || 0,
+            questionsAnswered: userData.statistics?.totalQuestionsAnswered || 0,
+            correctAnswers: userData.statistics?.totalCorrectAnswers || 0,
+            totalPoints: userData.statistics?.totalScore || 0
+          });
+        }
+      } else {
+        // Fallback to local storage if no user
+        const generalStats = await StorageService.getStatistics();
+        setStats(generalStats || {
+          gamesPlayed: 0,
+          questionsAnswered: 0,
+          correctAnswers: 0,
+          totalPoints: 0
+        });
+      }
+
       // تحميل إحصائيات الأسئلة
       const questionStats = {};
       allQuestions.forEach(q => {
@@ -280,15 +311,6 @@ const StatisticsScreen = ({ navigation }) => {
       // تحميل سجل الألعاب
       const history = await StorageService.getGameHistory();
       setGameHistory(history || []);
-
-      // تحميل الإحصائيات العامة
-      const generalStats = await StorageService.getStatistics();
-      setStats(generalStats || {
-        gamesPlayed: 0,
-        questionsAnswered: 0,
-        correctAnswers: 0,
-        totalPoints: 0
-      });
     } catch (error) {
       console.error('Error loading statistics:', error);
       Alert.alert('خطأ', 'حدث خطأ أثناء تحميل الإحصائيات');
@@ -412,7 +434,7 @@ const StatisticsScreen = ({ navigation }) => {
           <View style={styles.navigationBar}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={() => navigation.goBack()}
+              onPress={() => router.back()}
             >
               <MaterialIcons 
                 name="arrow-back" 
@@ -433,7 +455,7 @@ const StatisticsScreen = ({ navigation }) => {
         <View style={styles.navigationBar}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()}
           >
             <MaterialIcons 
               name="arrow-back" 

@@ -8,16 +8,19 @@ import {
   ScrollView,
   Platform,
   Alert,
-  ImageBackground
+  ImageBackground,
+  ActivityIndicator
 } from 'react-native';
 import {
   LinearGradient
 } from 'expo-linear-gradient';
 import { SPACING, FONTS, SHADOWS } from '../styles/theme';
 import { useTheme, getTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import categoryImages from '../assets/categories.js';
 import { globalStyles, withThemeStyles } from '../styles/styles';
 import StorageService from '../services/storageService';
+import CreditsService from '../services/creditsService';
 import { getResponsiveStyles, wp } from '../styles/responsive';
 import { useRouter } from 'expo-router';
 import { Stack } from 'expo-router';
@@ -323,10 +326,12 @@ const ContainerBackground = ({ style, children }) => {
 const GameSetup = () => {
   const router = useRouter();
   const { theme } = useTheme();
+  const { currentUser } = useAuth();
   const [gameData, setGameData] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState({});
   const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const responsiveStyles = getResponsiveStyles();
   
@@ -505,17 +510,47 @@ const GameSetup = () => {
   const handleStart = async () => {
     if (selectedCategories.length === getMaxCategories(gameData.teams.length)) {
       try {
+        setLoading(true);
+        
+        if (!currentUser) {
+          Alert.alert('خطأ', 'يجب تسجيل الدخول أولاً');
+          return;
+        }
+        
+        // التحقق من توفر الرصيد وخصمه
+        const creditResult = await CreditsService.consumeCreditForGame(currentUser.uid);
+        
+        if (!creditResult.success) {
+          Alert.alert('رصيد غير كافي', creditResult.message, [
+            { text: 'شراء ألعاب', onPress: () => router.push('/purchase') },
+            { text: 'إلغاء', style: 'cancel' }
+          ]);
+          return;
+        }
+        
+        console.log('✅ Credit deducted successfully');
+        
         // استخدام GameService لتهيئة اللعبة
         const updatedGameData = await GameService.gameState.initialize({
           ...gameData,
           categories: selectedCategories
         });
 
+        console.log('✅ Game data initialized');
+        
         await StorageService.saveCurrentGame(updatedGameData);
-        router.push('/game');
+        
+        console.log('✅ Game data saved, navigating to game...');
+        
+        // الانتقال مباشرة للعبة
+        setLoading(false);
+        setTimeout(() => {
+          router.push('/game');
+        }, 100);
       } catch (error) {
-        console.error('خطأ في تهيئة الجولة:', error);
-        Alert.alert('خطأ', 'حدث خطأ في تهيئة الجولة');
+        console.error('❌ خطأ في تهيئة الجولة:', error);
+        setLoading(false);
+        Alert.alert('خطأ', error.message || 'حدث خطأ في تهيئة الجولة');
       }
     } else {
       Alert.alert('تنبيه', `الرجاء اختيار ${getMaxCategories(gameData.teams.length)} فئات`);
@@ -749,10 +784,10 @@ const GameSetup = () => {
             <TouchableOpacity
               style={[
                 staticStyles.startButton,
-                { opacity: selectedCategories.length < getMaxCategories(gameData.teams.length) ? 0.5 : 1 }
+                { opacity: selectedCategories.length < getMaxCategories(gameData.teams.length) || loading ? 0.7 : 1 }
               ]}
               onPress={handleStart}
-              disabled={selectedCategories.length < getMaxCategories(gameData.teams.length)}
+              disabled={selectedCategories.length < getMaxCategories(gameData.teams.length) || loading}
             >
               <LinearGradient
                 colors={theme.colors.gradient.primary}
@@ -760,9 +795,13 @@ const GameSetup = () => {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
               >
-                <Text style={staticStyles.startButtonText}>
-                  بدء اللعب
-                </Text>
+                {loading ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={staticStyles.startButtonText}>
+                    بدء اللعب
+                  </Text>
+                )}
               </LinearGradient>
             </TouchableOpacity>
           </View>

@@ -13,7 +13,7 @@ service cloud.firestore {
     }
     
     function isValidUserData() {
-      return request.resource.data.keys().hasAll(['uid', 'email', 'createdAt', 'credits']);
+      return request.resource.data.keys().hasAll(['uid', 'email', 'credits']);
     }
     
     function validateCreditsUpdate() {

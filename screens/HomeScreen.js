@@ -25,12 +25,13 @@ import { useTheme, getTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import StorageService from '../services/storageService';
 import EnhancedStorageService from '../services/enhancedStorageService';
+import CreditsService from '../services/creditsService';
 import RewardsGuide from '../components/RewardsGuide';
+import IntegratedUserProfile from '../components/IntegratedUserProfile';
 import PentaPointsGuide from '../components/PentaPointsGuide';
 import PentaPointsService from '../services/pentaPointsService';
 import ResponsiveView from '../components/ResponsiveView';
 import { ThemeSelector } from '../components/ThemeSelector';
-import UserMenu from '../components/UserMenu';
 import { 
   wp, 
   hp, 
@@ -39,7 +40,6 @@ import {
 } from '../styles/responsive';
 import BackgroundPattern from '../components/BackgroundPattern';
 import BackgroundSelector from '../components/BackgroundSelector';
-import UserCreditsHeader from '../components/UserCreditsHeader';
 import { useRouter, Link, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -529,6 +529,27 @@ const HomeScreen = () => {
       setIsLoading(true);
       validateGameSettings(gameSettings);
       
+      // التحقق من توفر رصيد كافي
+      if (!currentUser) {
+        Alert.alert('خطأ', 'يجب تسجيل الدخول أولاً');
+        return;
+      }
+
+      const userCredits = await CreditsService.getUserCredits(currentUser.uid);
+      
+      if (!userCredits || userCredits < 1) {
+        Alert.alert(
+          'ألعاب غير كافية',
+          'أنت لا تملك ألعاب كافية. يرجى شراء المزيد من الألعاب للمتابعة.',
+          [
+            { text: 'شراء ألعاب', onPress: () => router.push('/purchase') },
+            { text: 'إلغاء', style: 'cancel' }
+          ]
+        );
+        setIsLoading(false);
+        return;
+      }
+      
       const finalRoundName = gameSettings.roundName.trim() || getDefaultRoundName();
       const finalTeams = gameSettings.teams
         .map((team, index) => team.trim() || getDefaultTeamName(index))
@@ -564,11 +585,13 @@ const HomeScreen = () => {
         await EnhancedStorageService.syncWithFirebase(currentUser.uid);
       }
       
-      router.push('/game/setup');
+      setIsLoading(false);
+      setTimeout(() => {
+        router.push('/game/setup');
+      }, 100);
     } catch (error) {
       console.error('خطأ في حفظ بيانات اللعبة:', error);
       Alert.alert('خطأ', error.message || 'حدث خطأ في حفظ بيانات اللعبة');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -987,7 +1010,7 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         scrollIndicatorInsets={{ right: 1 }}
       >
-        {/* رأس الصفحة مع أيقونة الملف الشخصي واللوقو */}
+       {/* رأس الصفحة مع أيقونة الملف الشخصي واللوقو والرصيد مدمج */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8 }}>
           <Image 
             source={require('../assets/logo.png')}
@@ -997,14 +1020,11 @@ const HomeScreen = () => {
               resizeMode: 'contain'
             }}
           />
-          <UserMenu style={{ position: 'relative', zIndex: 10 }} />
+          <IntegratedUserProfile 
+            style={{ position: 'relative', zIndex: 10 }}
+            onPressCredits={() => router.push('/purchase')}
+          />
         </View>
-
-        {/* عرض الرصيد بجانب اسم المستخدم */}
-        <UserCreditsHeader 
-          compact={false} 
-          onPressCredits={() => router.push('/purchase')}
-        />
 
         <Animated.View style={{ opacity: fadeAnim }}>
           {/* محتوى الصفحة الرئيسية */}
