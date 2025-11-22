@@ -39,6 +39,7 @@ import {
 } from '../styles/responsive';
 import BackgroundPattern from '../components/BackgroundPattern';
 import BackgroundSelector from '../components/BackgroundSelector';
+import UserCreditsHeader from '../components/UserCreditsHeader';
 import { useRouter, Link, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -998,6 +999,12 @@ const HomeScreen = () => {
           />
           <UserMenu style={{ position: 'relative', zIndex: 10 }} />
         </View>
+
+        {/* عرض الرصيد بجانب اسم المستخدم */}
+        <UserCreditsHeader 
+          compact={false} 
+          onPressCredits={() => router.push('/purchase')}
+        />
 
         <Animated.View style={{ opacity: fadeAnim }}>
           {/* محتوى الصفحة الرئيسية */}

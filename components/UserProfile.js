@@ -16,6 +16,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import EnhancedStorageService from '../services/enhancedStorageService';
 import BackgroundPattern from './BackgroundPattern';
+import UserCreditsHeader from './UserCreditsHeader';
 import { SPACING, FONTS } from '../styles/theme';
 
 const UserProfile = ({ visible, onClose }) => {
@@ -174,6 +175,12 @@ const UserProfile = ({ visible, onClose }) => {
           </View>
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            {/* عرض الرصيد */}
+            <UserCreditsHeader 
+              compact={false}
+              onPressCredits={() => {}}
+            />
+
             {/* Profile Info */}
             <View style={[styles.profileSection, { backgroundColor: theme.colors.background.surface }]}>
               <Image 
