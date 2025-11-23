@@ -26,12 +26,14 @@ import { useAuth } from '../contexts/AuthContext';
 import StorageService from '../services/storageService';
 import EnhancedStorageService from '../services/enhancedStorageService';
 import CreditsService from '../services/creditsService';
+import SavedGamesService from '../services/savedGamesService';
 import RewardsGuide from '../components/RewardsGuide';
 import IntegratedUserProfile from '../components/IntegratedUserProfile';
 import PentaPointsGuide from '../components/PentaPointsGuide';
 import PentaPointsService from '../services/pentaPointsService';
 import ResponsiveView from '../components/ResponsiveView';
 import { ThemeSelector } from '../components/ThemeSelector';
+import SavedGamesModal from '../components/SavedGamesModal';
 import { 
   wp, 
   hp, 
@@ -350,6 +352,8 @@ const HomeScreen = () => {
   const [patternKey, setPatternKey] = useState(Date.now());
   const [settingsMenuVisible, setSettingsMenuVisible] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
+  const [showSavedGames, setShowSavedGames] = useState(false);
+  const [savedGamesCount, setSavedGamesCount] = useState(0);
 
   // التحقق من تسجيل الدخول
   useEffect(() => {
@@ -407,6 +411,30 @@ const HomeScreen = () => {
     };
     loadRoundCount();
   }, []);
+
+  // تحميل عدد الألعاب المحفوظة
+  const loadSavedGamesCount = async () => {
+    try {
+      if (currentUser?.uid) {
+        const games = await SavedGamesService.getUserSavedGames(currentUser.uid);
+        setSavedGamesCount(games.length);
+      }
+    } catch (error) {
+      console.error('Error loading saved games count:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadSavedGamesCount();
+  }, [currentUser?.uid]);
+
+  // تحديث العدد عند فتح الشاشة
+  useFocusEffect(
+    React.useCallback(() => {
+      loadSavedGamesCount();
+      return () => {};
+    }, [currentUser?.uid])
+  );
 
   const getDefaultRoundName = () => {
     const numbers = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة'];
@@ -596,11 +624,6 @@ const HomeScreen = () => {
     }
   };
 
-  const handleStatistics = () => {
-    router.push('/statistics');
-  };
-
-  const responsiveStyles = getResponsiveStyles();
 
   const getTeamInputWidth = () => {
     if (screenWidth >= breakpoints.tablet) {
@@ -1011,7 +1034,7 @@ const HomeScreen = () => {
         scrollIndicatorInsets={{ right: 1 }}
       >
        {/* رأس الصفحة مع أيقونة الملف الشخصي واللوقو والرصيد مدمج */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8, gap: 10 }}>
           <Image 
             source={require('../assets/logo.png')}
             style={{
@@ -1020,37 +1043,79 @@ const HomeScreen = () => {
               resizeMode: 'contain'
             }}
           />
-          <IntegratedUserProfile 
-            style={{ position: 'relative', zIndex: 10 }}
-            onPressCredits={() => router.push('/purchase')}
-          />
+          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
+            {/* زر ألعابي */}
+            <TouchableOpacity 
+              style={{
+                backgroundColor: theme.colors.primary,
+                borderRadius: 12,
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 8,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+              }}
+              onPress={() => setShowSavedGames(true)}
+            >
+              <MaterialIcons name="videogame-asset" size={20} color="#FFF" />
+              <Text style={{
+                fontSize: 13,
+                color: '#FFF',
+                fontFamily: FONTS.families.secondary,
+                fontWeight: FONTS.weights.bold
+              }}>
+                ألعابي
+              </Text>
+              {savedGamesCount > 0 && (
+                <View style={{
+                  backgroundColor: '#FF6B6B',
+                  borderRadius: 10,
+                  paddingHorizontal: 6,
+                  paddingVertical: 2,
+                  marginLeft: 4
+                }}>
+                  <Text style={{
+                    fontSize: 10,
+                    color: '#FFF',
+                    fontWeight: 'bold',
+                    textAlign: 'center'
+                  }}>
+                    {savedGamesCount}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
+            {/* الملف الشخصي */}
+            <IntegratedUserProfile 
+              style={{ position: 'relative', zIndex: 10 }}
+              onPressCredits={() => router.push('/purchase')}
+            />
+          </View>
         </View>
 
         <Animated.View style={{ opacity: fadeAnim }}>
-          {/* محتوى الصفحة الرئيسية */}
-          <View style={{ 
-            marginBottom: 20, 
-            marginTop: 0,
-            backgroundColor: 'transparent',
-            borderRadius: 15,
-            padding: 10,
-            alignItems: 'center'
+          {/* نص الترحيب */}
+          <Text style={{
+            fontSize: 14,
+            color: '#B3E5FC',
+            fontFamily: FONTS.families.secondary,
+            textAlign: 'center',
+            marginBottom: 20
           }}>
-            <Text style={{
-              fontSize: 14,
-              color: '#B3E5FC',
-              textAlign: 'center',
-              fontFamily: FONTS.families.secondary
-            }}>
-              إعداد لعبة جديدة
-            </Text>
-          </View>
+            إعداد لعبة جديدة
+          </Text>
 
           {/* قالب واحد يحتوي على جميع الأقسام */}
           <View style={{ 
             marginBottom: 30, 
             backgroundColor: theme.colors.background.card, 
-            borderRadius: 15, 
+            borderRadius: 15,
             padding: 20, 
             borderWidth: 2, 
             borderColor: theme.colors.border.primary, 
@@ -1224,6 +1289,12 @@ const HomeScreen = () => {
           </View>
         </Animated.View>
       </ScrollView>
+
+      {/* SavedGamesModal */}
+      <SavedGamesModal 
+        visible={showSavedGames}
+        onClose={() => setShowSavedGames(false)}
+      />
     </SafeAreaView>
   );
 };

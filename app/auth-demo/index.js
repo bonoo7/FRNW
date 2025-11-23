@@ -239,22 +239,6 @@ export default function AuthDemoPage() {
         </Text>
 
         <DemoCard
-          title="الملف الشخصي"
-          description="يستخدم RequiredAuthWrapper"
-          icon="person"
-          onPress={() => router.push('/profile')}
-          color={theme.colors.primary}
-        />
-
-        <DemoCard
-          title="الإحصائيات"
-          description="يستخدم RequiredAuthWrapper"
-          icon="bar-chart"
-          onPress={() => router.push('/statistics')}
-          color={theme.colors.success}
-        />
-
-        <DemoCard
           title="اللعبة (محمية)"
           description="يستخدم RequiredAuthWrapper"
           icon="gamepad"

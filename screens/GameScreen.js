@@ -569,6 +569,26 @@ const GameScreen = () => {
     const loadGameData = async () => {
       try {
         setIsLoading(true);
+        
+        // التحقق من وجود بيانات لعبة ممررة (من استكمال أو إعادة تشغيل)
+        if (params.gameData) {
+          console.log('Loading game data from params...');
+          const parsedGameData = JSON.parse(params.gameData);
+          
+          // حفظ البيانات في التخزين المحلي
+          await StorageService.saveCurrentGame(parsedGameData);
+          
+          setGameData(parsedGameData);
+          setCurrentTeamIndex(parsedGameData.currentTeamIndex || 0);
+          setScores(parsedGameData.scores);
+          setUsedDoublePoints(parsedGameData.usedDoublePoints || {});
+          setUsedPentaPoints(parsedGameData.usedPentaPoints || {});
+          
+          checkAllQuestionsUsed(parsedGameData);
+          setIsLoading(false);
+          return;
+        }
+
         const data = await StorageService.getCurrentGame();
         if (data) {
           setGameData(data);
@@ -592,7 +612,7 @@ const GameScreen = () => {
     };
 
     loadGameData();
-  }, []);
+  }, [params.gameData]);
 
   useEffect(() => {
     if (params.shouldRefresh) {
@@ -913,16 +933,32 @@ const GameScreen = () => {
       const winner = sortedTeams.length > 0 ? sortedTeams[0][0] : '';
 
       const gameResults = {
+        // بيانات اللعبة الأساسية
         roundName: latestGameData.roundName || 'جولة بدون اسم',
         teams: latestGameData.teams,
         scores: latestGameData.scores,
         categories: latestGameData.categories,
+        selectedQuestions: latestGameData.selectedQuestions || [],
         statistics: statistics,
         winner: winner,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        
+        // ✓ البيانات المهمة لتحديد نوع اللعبة
+        questions: latestGameData.questions,
+        isNewGame: latestGameData.isNewGame || false, // ✓ علم: لعبة جديدة من الشاشة الرئيسية
+        isContinuing: latestGameData.isContinuing || false,
+        isReplaying: latestGameData.isReplaying || false,
+        savedGameId: latestGameData.savedGameId || null,
+        currentTeamIndex: latestGameData.currentTeamIndex || 0,
+        currentCategoryIndex: latestGameData.currentCategoryIndex || 0
       };
 
-      console.log('تم إعداد نتائج اللعبة بنجاح، جاري حفظ النتائج في السجل...');
+      console.log('تم إعداد نتائج اللعبة بنجاح', {
+        isNewGame: gameResults.isNewGame,
+        isContinuing: gameResults.isContinuing,
+        isReplaying: gameResults.isReplaying,
+        savedGameId: gameResults.savedGameId
+      });
       
       await StorageService.saveGameToHistory(gameResults);
       setUsedDoublePoints({});

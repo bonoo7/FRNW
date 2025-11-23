@@ -1,3 +1,27 @@
+# خطوات تفعيل ميزة الألعاب المحفوظة
+
+## المشكلة الحالية:
+```
+FirebaseError: Missing or insufficient permissions.
+```
+
+## السبب:
+قواعد Firebase Firestore لم تُحدّث لتسمح بالقراءة والكتابة من مجموعة `savedGames`.
+
+## الحل:
+
+### 1. انتقل إلى Firebase Console
+- اذهب إلى https://console.firebase.google.com
+- اختر مشروعك
+
+### 2. اضغط على Firestore Database
+في الجانب الأيسر: Firestore Database
+
+### 3. انسخ إلى قسم Rules
+- اضغط على تبويب "Rules"
+- استبدل محتوى القواعد بالمحتوى التالي:
+
+```firestore rules
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -125,7 +149,7 @@ service cloud.firestore {
       allow update, delete: if false;
     }
     
-    // ====== Saved Games Collection Rules ======
+    // ====== Saved Games Collection Rules (جديد) ======
     match /savedGames/{gameId} {
       allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
       
@@ -148,3 +172,35 @@ service cloud.firestore {
     }
   }
 }
+```
+
+### 4. انشر القواعس الجديدة
+- اضغط على "Publish"
+- تأكد من ظهور رسالة النجاح
+
+### 5. جرّب التطبيق
+بعد تحديث القواعس بـ 30 ثانية:
+- افتح التطبيق
+- العب جولة
+- عند النهاية ستُحفظ اللعبة في Firebase
+- انقر على "ألعابي" سترى الألعاب المحفوظة
+
+## التحقق من الحفظ:
+
+### في Firebase Console:
+1. اذهب إلى Firestore Database
+2. ابحث عن مجموعة `savedGames`
+3. يجب أن ترى المستندات الجديدة
+
+### في Console Browser:
+عند لعب جولة والنهاية، يجب أن تشاهد الرسالة:
+```
+تم حفظ اللعبة للإعادة
+```
+
+## ملاحظات مهمة:
+
+✅ القواعس تسمح فقط لكل مستخدم بقراءة وكتابة ألعابه الخاصة
+✅ لا يمكن لمستخدم آخر الوصول إلى ألعابك
+✅ يمكن حذف الألعاب في أي وقت
+✅ البيانات آمنة وموثوقة

@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import ResponsiveView from '../components/ResponsiveView';
 import { wp, hp } from '../styles/responsive';
 import StorageService from '../services/storageService';
+import SavedGamesService from '../services/savedGamesService';
 import { Alert } from 'react-native';
 import WinnerCelebration from '../components/WinnerCelebration';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -204,6 +205,14 @@ const RoundResults = () => {
   const teams = gameData?.teams || [];
   const roundName = gameData?.roundName || 'نتائج الجولة';
 
+  // تحديد ما إذا كانت اللعبة مكتملة (جميع الأسئلة تم استخدامها)
+  const isGameCompleted = () => {
+    if (!gameData?.statistics) return false;
+    
+    const { totalQuestions, answeredQuestions } = gameData.statistics;
+    return totalQuestions > 0 && answeredQuestions >= totalQuestions;
+  };
+
   useEffect(() => {
     if (gameData) {
       setTimeout(() => setShowCelebration(true), 500);
@@ -258,6 +267,66 @@ const RoundResults = () => {
     try {
       // حفظ الإحصائيات قبل العودة للصفحة الرئيسية
       await saveGameStatistics();
+      
+      // تحديد ما إذا كانت اللعبة مكتملة
+      const completed = isGameCompleted();
+      
+      console.log('Game Data flags:', {
+        isNewGame: gameData?.isNewGame,
+        isContinuing: gameData?.isContinuing,
+        isReplaying: gameData?.isReplaying,
+        savedGameId: gameData?.savedGameId
+      });
+
+      // ✓ حفظ فقط الألعاب الجديدة (من الشاشة الرئيسية)
+      if (gameData?.isNewGame && currentUser?.uid && gameData) {
+        try {
+          console.log('حفظ لعبة جديدة من الشاشة الرئيسية...');
+          await SavedGamesService.saveGame(currentUser.uid, {
+            ...gameData,
+            isCompleted: completed,
+            scores: scores
+          });
+          console.log(`تم حفظ اللعبة الجديدة - مكتملة: ${completed}`);
+        } catch (error) {
+          console.error('خطأ في حفظ اللعبة:', error);
+        }
+      } 
+      // تحديث الألعاب المستكملة (لا حفظ جديد)
+      else if (gameData?.isContinuing && gameData?.savedGameId) {
+        try {
+          console.log('تحديث اللعبة المستكملة...');
+          await SavedGamesService.updateSavedGame(gameData.savedGameId, {
+            scores: scores,
+            questions: gameData.questions,
+            statistics: gameData.statistics,
+            isCompleted: completed,
+            updatedAt: new Date().toISOString()
+          });
+          console.log(`تم تحديث اللعبة المستكملة - مكتملة: ${completed}`);
+        } catch (error) {
+          console.error('خطأ في تحديث اللعبة:', error);
+        }
+      }
+      // عدم حفظ الألعاب المعاد تشغيلها
+      else if (gameData?.isReplaying) {
+        console.log('هذه لعبة معاد تشغيلها - لن يتم حفظ النتائج');
+      }
+      else {
+        console.log('لا توجد أعلام معروفة - الحفظ مثل لعبة جديدة');
+        if (currentUser?.uid && gameData) {
+          try {
+            await SavedGamesService.saveGame(currentUser.uid, {
+              ...gameData,
+              isCompleted: completed,
+              scores: scores
+            });
+            console.log(`تم حفظ اللعبة - مكتملة: ${completed}`);
+          } catch (error) {
+            console.error('خطأ في حفظ اللعبة:', error);
+          }
+        }
+      }
       
       // إيقاف الحركات
       glowAnimation.setValue(0);

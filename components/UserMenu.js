@@ -22,13 +22,6 @@ const UserMenu = ({ style }) => {
   const router = useRouter();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
-  const handleProfilePress = () => {
-    console.log('Profile pressed');
-    setIsMenuVisible(false);
-    // استخدام router للانتقال لصفحة الملف الشخصي بدلاً من Modal
-    router.push('/profile');
-  };
-
   const handleSettingsPress = () => {
     console.log('Settings pressed');
     setIsMenuVisible(false);
@@ -160,19 +153,6 @@ const UserMenu = ({ style }) => {
                 </View>
 
                 {/* خيارات القائمة للمستخدم المسجل */}
-                <MenuItem
-                  icon="person"
-                  title="الملف الشخصي"
-                  onPress={handleProfilePress}
-                />
-                <MenuItem
-                  icon="bar-chart"
-                  title="الإحصائيات"
-                  onPress={() => {
-                    setIsMenuVisible(false);
-                    router.push('/statistics');
-                  }}
-                />
                 <MenuItem
                   icon="settings"
                   title="الإعدادات"

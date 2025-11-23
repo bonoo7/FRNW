@@ -79,58 +79,20 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
     );
   }
 
-  // إذا كان النمط هو صورة، نستخدم لون خلفية ثابت مع SVG مبسط
+  // إذا كان النمط هو صورة أو svg، نستخدم خلفية ثابت مع تدرج
   if (currentPattern.type === 'image' || currentPattern.type === 'svg') {
     // تحديد لون الخلفية المناسب للثيم الحالي
     const backgroundColor = currentTheme === 'dark' ? '#010101' : 'rgba(255, 255, 255, 0.98)';
     
-    // في الأندرويد، استخدم خلفية بسيطة فقط
-    if (Platform.OS === 'android') {
-      return (
-        <View style={containerStyle}>
-          <LinearGradient
-            colors={[
-              backgroundColor,
-              backgroundColor
-            ]}
-            style={StyleSheet.absoluteFill}
-          />
-          {children}
-        </View>
-      );
-    }
-
-    // للويب و iOS، استخدم SVG
-    if (currentTheme === 'dark') {
-      return (
-        <View style={[containerStyle, { flex: 1, width: '100%', height: '100%' }]}>
-          <View style={[StyleSheet.absoluteFill, {
-            backgroundColor: backgroundColor,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: '100%',
-            height: '100%'
-          }]} />
-          {children}
-        </View>
-      );
-    }
-
     return (
-      <View style={[containerStyle, { flex: 1, width: '100%', height: '100%' }]}>
-        <View style={[StyleSheet.absoluteFill, {
-          backgroundColor: backgroundColor,
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          width: '100%',
-          height: '100%'
-        }]} />
+      <View style={containerStyle}>
+        <LinearGradient
+          colors={[
+            backgroundColor,
+            backgroundColor
+          ]}
+          style={StyleSheet.absoluteFill}
+        />
         {children}
       </View>
     );
@@ -195,7 +157,7 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
     }
   };
 
-  // في الأندرويد، استخدم خلفية بسيطة بدلاً من SVG المعقد
+  // في الأندرويد، استخدم نمط بسيط لتجنب المشاكل
   if (Platform && Platform.OS === 'android') {
     return (
       <View style={containerStyle}>
@@ -208,6 +170,27 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
+        <View style={[StyleSheet.absoluteFill, styles.patternOverlay]}>
+          <Svg height="100%" width="100%" style={styles.svgContainer}>
+            <Defs>
+              <Pattern
+                id={uniquePatternId}
+                patternUnits="userSpaceOnUse"
+                width={currentPattern.size || defaultPattern.size}
+                height={currentPattern.size || defaultPattern.size}
+              >
+                {renderPattern()}
+              </Pattern>
+            </Defs>
+            <Rect
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              fill={`url(#${uniquePatternId})`}
+            />
+          </Svg>
+        </View>
         {children}
       </View>
     );

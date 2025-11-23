@@ -51,10 +51,6 @@ const IntegratedUserProfile = ({ style, onPressCredits }) => {
     }
   };
 
-  const handleProfilePress = () => {
-    setIsMenuVisible(false);
-    router.push('/profile');
-  };
 
   const handleSettingsPress = () => {
     setIsMenuVisible(false);
@@ -151,49 +147,84 @@ const IntegratedUserProfile = ({ style, onPressCredits }) => {
     <View style={[styles.container, style]}>
       <TouchableOpacity
         onPress={() => setIsMenuVisible(true)}
-        style={[styles.userButtonLoggedIn, { backgroundColor: `${theme.colors.background.surface}E6` }]}
+        style={{
+          backgroundColor: theme.colors.primary,
+          borderRadius: 12,
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 8,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+        }}
         activeOpacity={0.8}
       >
-        <View style={styles.profileSection}>
-          <Image
-            source={{
-              uri: currentUser.photoURL || 
-                   `https://via.placeholder.com/40/${theme.colors.primary.replace('#', '')}/FFFFFF?text=${(userProfile?.displayName?.charAt(0) || 'U')}`
-            }}
-            style={styles.avatar}
-          />
-          <View style={styles.userInfo}>
-            <Text style={[styles.userName, { color: theme.colors.text.primary }]} numberOfLines={1}>
-              {userProfile?.displayName || 'مستخدم'}
-            </Text>
-          </View>
-        </View>
+        <Image
+          source={{
+            uri: currentUser.photoURL || 
+                 `https://via.placeholder.com/40/${theme.colors.primary.replace('#', '')}/FFFFFF?text=${(userProfile?.displayName?.charAt(0) || 'U')}`
+          }}
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: 12,
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.5)'
+          }}
+        />
+        
+        <Text style={{
+          fontSize: 13,
+          color: '#FFF',
+          fontFamily: FONTS.families.secondary,
+          fontWeight: 'bold',
+          maxWidth: 100
+        }} numberOfLines={1}>
+          {userProfile?.displayName || 'مستخدم'}
+        </Text>
 
-        {/* قسم الألعاب المتبقية */}
+        {/* قسم الألعاب المتبقية كشارة */}
         <TouchableOpacity
-          style={[
-            styles.creditsSection,
-            {
-              backgroundColor: theme.colors.primary + '20',
-              borderColor: theme.colors.primary,
-            }
-          ]}
-          onPress={onPressCredits}
+          style={{
+            backgroundColor: '#FF6B6B',
+            borderRadius: 10,
+            paddingHorizontal: 8,
+            paddingVertical: 2,
+            marginLeft: 4,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 4
+          }}
+          onPress={(e) => {
+            e.stopPropagation();
+            onPressCredits();
+          }}
           activeOpacity={0.7}
         >
           {creditsLoading ? (
-            <ActivityIndicator size="small" color={theme.colors.primary} />
+            <ActivityIndicator size="small" color="#FFF" />
           ) : (
             <>
-              <MaterialIcons name="sports-esports" size={18} color={theme.colors.primary} />
-              <Text style={[styles.creditsText, { color: theme.colors.primary }]}>
+              <MaterialIcons name="sports-esports" size={12} color="#FFF" />
+              <Text style={{
+                fontSize: 12,
+                color: '#FFF',
+                fontWeight: 'bold',
+                textAlign: 'center'
+              }}>
                 {credits}
               </Text>
             </>
           )}
         </TouchableOpacity>
-
-        <MaterialIcons name="keyboard-arrow-down" size={20} color={theme.colors.text.secondary} />
       </TouchableOpacity>
 
       <Modal
@@ -258,19 +289,6 @@ const IntegratedUserProfile = ({ style, onPressCredits }) => {
             </View>
 
             {/* خيارات القائمة */}
-            <MenuItem
-              icon="person"
-              title="الملف الشخصي"
-              onPress={handleProfilePress}
-            />
-            <MenuItem
-              icon="bar-chart"
-              title="الإحصائيات"
-              onPress={() => {
-                setIsMenuVisible(false);
-                router.push('/statistics');
-              }}
-            />
             <MenuItem
               icon="settings"
               title="الإعدادات"

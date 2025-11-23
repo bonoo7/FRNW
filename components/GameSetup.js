@@ -533,10 +533,11 @@ const GameSetup = () => {
         // استخدام GameService لتهيئة اللعبة
         const updatedGameData = await GameService.gameState.initialize({
           ...gameData,
-          categories: selectedCategories
+          categories: selectedCategories,
+          isNewGame: true // ✓ علم: هذه لعبة جديدة من الشاشة الرئيسية
         });
 
-        console.log('✅ Game data initialized');
+        console.log('✅ Game data initialized', { isNewGame: true });
         
         await StorageService.saveCurrentGame(updatedGameData);
         
