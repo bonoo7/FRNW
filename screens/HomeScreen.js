@@ -1034,7 +1034,7 @@ const HomeScreen = () => {
         scrollIndicatorInsets={{ right: 1 }}
       >
        {/* رأس الصفحة مع أيقونة الملف الشخصي واللوقو والرصيد مدمج */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8, gap: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8, gap: 10 }}>
           <Image 
             source={require('../assets/logo.png')}
             style={{
@@ -1043,7 +1043,7 @@ const HomeScreen = () => {
               resizeMode: 'contain'
             }}
           />
-          <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
+          <View style={{ flexDirection: 'column', gap: 10, alignItems: 'flex-end', flex: 1, justifyContent: 'flex-start' }}>
             {/* زر ألعابي */}
             <TouchableOpacity 
               style={{

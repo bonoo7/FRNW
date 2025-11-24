@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, ImageBackground, Image, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Pattern, Path, Rect, Defs, G, Polygon } from 'react-native-svg';
+import Svg, { Pattern, Path, Rect, Defs, G, Polygon, Circle } from 'react-native-svg';
 import { useTheme } from '../contexts/ThemeContext';
 
 const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) => {
@@ -157,52 +157,67 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
     }
   };
 
-  // في الأندرويد، استخدم نمط بسيط لتجنب المشاكل
-  if (Platform && Platform.OS === 'android') {
-    return (
-      <View style={containerStyle}>
-        <LinearGradient
-          colors={[
-            theme.colors.background.primary || '#FFFFFF',
-            theme.colors.background.secondary || theme.colors.background.primary || '#FFFFFF'
-          ]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-        <View style={[StyleSheet.absoluteFill, styles.patternOverlay]}>
-          <Svg height="100%" width="100%" style={styles.svgContainer}>
-            <Defs>
-              <Pattern
-                id={uniquePatternId}
-                patternUnits="userSpaceOnUse"
-                width={currentPattern.size || defaultPattern.size}
-                height={currentPattern.size || defaultPattern.size}
-              >
-                {renderPattern()}
-              </Pattern>
-            </Defs>
-            <Rect
-              x="0"
-              y="0"
-              width="100%"
-              height="100%"
-              fill={`url(#${uniquePatternId})`}
-            />
-          </Svg>
-        </View>
-        {children}
-      </View>
-    );
-  }
+  // الخلفيات الحديثة حسب الثيم
+  const getModernBackground = () => {
+    switch (currentTheme) {
+      case 'dark':
+        return {
+          colors: ['#000000', '#1a1a2e'],
+          svgPattern: (
+            <>
+              <Circle cx="25" cy="25" r="15" fill="#4A4A6A" opacity="0.2" />
+              <Circle cx="75" cy="75" r="20" fill="#2D1B4E" opacity="0.15" />
+              <Circle cx="50" cy="50" r="18" fill="#1a1a2e" opacity="0.1" />
+            </>
+          )
+        };
+      case 'fresh':
+        return {
+          colors: ['#FFCC00', '#FFB366'],
+          svgPattern: (
+            <>
+              <Circle cx="20" cy="20" r="12" fill="#90EE90" opacity="0.25" />
+              <Circle cx="60" cy="20" r="10" fill="#FFFF99" opacity="0.2" />
+              <Circle cx="20" cy="60" r="10" fill="#FFFF99" opacity="0.2" />
+              <Circle cx="60" cy="60" r="12" fill="#FF8FD1" opacity="0.25" />
+            </>
+          )
+        };
+      case 'pink':
+      case 'rose':
+        return {
+          colors: ['#FFB6D9', '#FFEBF0'],
+          svgPattern: (
+            <>
+              <Circle cx="15" cy="15" r="10" fill="#FF69B4" opacity="0.15" />
+              <Circle cx="45" cy="15" r="8" fill="#FFB6D9" opacity="0.1" />
+              <Circle cx="15" cy="45" r="8" fill="#FFB6D9" opacity="0.1" />
+              <Circle cx="45" cy="45" r="10" fill="#FFC0CB" opacity="0.15" />
+            </>
+          )
+        };
+      default: // blue
+        return {
+          colors: ['#1E3A8A', '#0EA5E9'],
+          svgPattern: (
+            <>
+              <Polygon points="25,5 35,20 25,35 15,20" fill="#1E40AF" opacity="0.4" />
+              <Polygon points="25,25 40,35 25,45 10,35" fill="#3B82F6" opacity="0.3" />
+              <Circle cx="25" cy="25" r="3" fill="#0EA5E9" opacity="0.5" />
+            </>
+          )
+        };
+    }
+  };
+
+  const modernBg = getModernBackground();
 
   return (
     <View style={containerStyle}>
       <LinearGradient
-        colors={[
-          theme.colors.background.primary || '#FFFFFF',
-          theme.colors.background.secondary || theme.colors.background.primary || '#FFFFFF'
-        ]}
+        colors={modernBg.colors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
       <View style={[StyleSheet.absoluteFill, styles.patternOverlay]}>
@@ -211,14 +226,13 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
             <Pattern
               id={uniquePatternId}
               patternUnits="userSpaceOnUse"
-              width={currentPattern.size || defaultPattern.size}
-              height={currentPattern.size || defaultPattern.size}
+              width="80"
+              height="80"
             >
-              {renderPattern()}
+              {modernBg.svgPattern}
             </Pattern>
           </Defs>
           <Rect
-            ref={patternRef}
             x="0"
             y="0"
             width="100%"
