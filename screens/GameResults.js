@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, Dimensions } from 'react-native';
 import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BackgroundPattern } from '../components/BackgroundPattern';
+import BackgroundSelector from '../components/BackgroundSelector';
 import { useTheme, getTheme } from '../contexts/ThemeContext';
 import { SPACING, FONTS } from '../styles/theme';
 
@@ -246,11 +246,30 @@ const GameResults = ({ route }) => {
   // شاشة التحميل
   if (!gameData) {
     return (
-      <BackgroundPattern>
+      <View style={{ flex: 1 }}>
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+          <BackgroundSelector
+            lightConfig={{
+              squareSize: 4,
+              gridGap: 6,
+              flickerChance: 0.3,
+              color: 'rgb(59, 130, 246)',
+              maxOpacity: 0.35,
+              animationSpeed: 'medium',
+            }}
+            darkConfig={{
+              direction: 'right',
+              speed: 1,
+              borderColor: '#404040',
+              squareSize: 40,
+              hoverFillColor: '#222',
+            }}
+          />
+        </View>
         <View style={staticStyles.container}>
           <Text style={staticStyles.loadingText}>جاري تحميل النتائج...</Text>
         </View>
-      </BackgroundPattern>
+      </View>
     );
   }
 
@@ -258,12 +277,31 @@ const GameResults = ({ route }) => {
     ...staticStyles,
     container: {
       ...staticStyles.container,
-      backgroundColor: theme.colors.background.primary,
+      backgroundColor: 'transparent',
     },
   });
 
   return (
-    <BackgroundPattern>
+    <View style={{ flex: 1 }}>
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+        <BackgroundSelector
+          lightConfig={{
+            squareSize: 4,
+            gridGap: 6,
+            flickerChance: 0.3,
+            color: 'rgb(59, 130, 246)',
+            maxOpacity: 0.35,
+            animationSpeed: 'medium',
+          }}
+          darkConfig={{
+            direction: 'right',
+            speed: 1,
+            borderColor: '#404040',
+            squareSize: 40,
+            hoverFillColor: '#222',
+          }}
+        />
+      </View>
       <Stack.Screen options={{ headerShown: false }} />
 
       <ScrollView style={styles.container}>
@@ -285,7 +323,7 @@ const GameResults = ({ route }) => {
           </View>
         ))}
       </ScrollView>
-    </BackgroundPattern>
+    </View>
   );
 };
 

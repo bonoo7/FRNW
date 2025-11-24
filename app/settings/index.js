@@ -14,7 +14,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { ThemeSelector } from '../../components/ThemeSelector';
-import BackgroundPattern from '../../components/BackgroundPattern';
+import BackgroundSelector from '../../components/BackgroundSelector';
 import StorageService from '../../services/storageService';
 import EnhancedStorageService from '../../services/enhancedStorageService';
 import { SPACING, FONTS } from '../../styles/theme';
@@ -39,7 +39,11 @@ export default function SettingsPage() {
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        router.back();
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.replace('/');
+        }
         return true;
       };
 
@@ -189,7 +193,23 @@ export default function SettingsPage() {
   );
 
   return (
-    <BackgroundPattern>
+    <BackgroundSelector
+      lightConfig={{
+        squareSize: 4,
+        gridGap: 6,
+        flickerChance: 0.3,
+        color: 'rgb(59, 130, 246)',
+        maxOpacity: 0.35,
+        animationSpeed: 'medium',
+      }}
+      darkConfig={{
+        direction: 'right',
+        speed: 1,
+        borderColor: '#404040',
+        squareSize: 40,
+        hoverFillColor: '#222',
+      }}
+    >
       <Stack.Screen 
         options={{
           headerShown: true,
@@ -316,7 +336,7 @@ export default function SettingsPage() {
           </View>
         </View>
       </ScrollView>
-    </BackgroundPattern>
+    </BackgroundSelector>
   );
 }
 

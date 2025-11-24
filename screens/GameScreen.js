@@ -1041,7 +1041,7 @@ const GameScreen = () => {
 
   if (isLoading) {
     return (
-      <BackgroundPattern>
+      <BackgroundSelector>
         <View style={[staticStyles.container, staticStyles.loadingContainer]}>
           <Text style={[
             staticStyles.loadingText,
@@ -1050,13 +1050,13 @@ const GameScreen = () => {
             
           </Text>
         </View>
-      </BackgroundPattern>
+      </BackgroundSelector>
     );
   }
 
   if (!teams.length) {
     return (
-      <BackgroundPattern>
+      <BackgroundSelector>
         <View style={[staticStyles.container, staticStyles.loadingContainer]}>
           <Text style={[
             staticStyles.errorText,
@@ -1065,73 +1065,12 @@ const GameScreen = () => {
             
           </Text>
         </View>
-      </BackgroundPattern>
+      </BackgroundSelector>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000000' }}>
-      {/* خلفية احترافية متعددة الطبقات */}
-      <View style={{ 
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0,
-        pointerEvents: 'none'
-      }}>
-        {/* تدرج رئيسي */}
-        <LinearGradient
-          colors={['#1E40AF', '#3B82F6', '#1E40AF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{ 
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            zIndex: 0
-          }}
-        />
-        
-        {/* تدرج ثانوي للحواف */}
-        <LinearGradient
-          colors={['#3B82F6', 'transparent']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 0.3 }}
-          style={{ 
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            height: '30%',
-            zIndex: 0,
-            opacity: 0.15,
-          }}
-        />
-        
-        {/* نمط الخلفية - FlickeringGrid للثيم الفاتح، SquaresBackground للثيم الداكن */}
-        <BackgroundSelector
-          lightConfig={{
-            squareSize: 5,
-            gridGap: 8,
-            flickerChance: 0.25,
-            color: 'rgb(59, 130, 246)',
-            maxOpacity: 0.3,
-            animationSpeed: 'medium',
-          }}
-          darkConfig={{
-            direction: 'right',
-            speed: 1,
-            borderColor: '#404040',
-            squareSize: 40,
-            hoverFillColor: '#222',
-          }}
-        />
-        
-      </View>
+    <BackgroundSelector>
       
       <Stack.Screen 
         options={{ 
@@ -1253,7 +1192,7 @@ const GameScreen = () => {
         details={selectedQuestionDetails}
         theme={theme}
       />
-    </View>
+    </BackgroundSelector>
   );
 };
 

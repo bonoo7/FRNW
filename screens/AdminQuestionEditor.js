@@ -14,6 +14,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import BackgroundSelector from '../components/BackgroundSelector';
 import QuestionEditorService from '../services/QuestionEditorService';
 import StorageService from '../services/storageService';
 
@@ -547,11 +548,12 @@ const AdminQuestionEditor = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-    >
+    <BackgroundSelector>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={100}
+      >
       <ScrollView style={styles.scrollView}>
         
         {/* قسم البحث */}
@@ -919,13 +921,14 @@ const AdminQuestionEditor = () => {
         ) : null}
       </ScrollView>
     </KeyboardAvoidingView>
+    </BackgroundSelector>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'transparent',
   },
   scrollView: {
     flex: 1,

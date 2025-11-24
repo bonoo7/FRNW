@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, Animated, Dimensions } from 'react-native';
+import BackgroundSelector from '../components/BackgroundSelector';
 import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
 
@@ -46,39 +47,24 @@ const SplashScreen = ({ navigation }) => {
   });
 
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={['#1E40AF', '#3B82F6', '#2563EB']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradient}
-      >
-        {/* خلفية متحركة */}
-        <View style={styles.background}>
-          {[...Array(5)].map((_, i) => (
-            <Animated.View
-              key={i}
-              style={[
-                styles.floatingElement,
-                {
-                  opacity: Animated.timing(
-                    new Animated.Value(0),
-                    {
-                      toValue: 0.5,
-                      duration: 2000 + i * 400,
-                      useNativeDriver: true,
-                    }
-                  ),
-                  transform: [
-                    {
-                      translateY: new Animated.Value(-50 - i * 20),
-                    },
-                  ],
-                },
-              ]}
-            />
-          ))}
-        </View>
+    <BackgroundSelector
+      lightConfig={{
+        squareSize: 4,
+        gridGap: 6,
+        flickerChance: 0.3,
+        color: 'rgb(59, 130, 246)',
+        maxOpacity: 0.35,
+        animationSpeed: 'medium',
+      }}
+      darkConfig={{
+        direction: 'right',
+        speed: 1,
+        borderColor: '#404040',
+        squareSize: 40,
+        hoverFillColor: '#222',
+      }}
+    >
+      <View style={styles.container}>
 
         {/* اللوجو الرئيسي */}
         <Animated.View
@@ -176,8 +162,8 @@ const SplashScreen = ({ navigation }) => {
             ]}
           />
         </View>
-      </LinearGradient>
-    </View>
+      </View>
+    </BackgroundSelector>
   );
 };
 

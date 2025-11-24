@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Platform, Alert, Modal, ScrollView, TextInput, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../contexts/ThemeContext';
-import BackgroundPattern from '../components/BackgroundPattern';
+import BackgroundSelector from '../components/BackgroundSelector';
 import { SPACING, FONTS } from '../styles/theme';
 import StorageService from '../services/storageService';
 import RewardsService from '../services/rewardsService';
@@ -394,13 +394,13 @@ const QuestionScreen = ({ questionData }) => {
 
   if (!questionData) {
     return (
-      <BackgroundPattern>
+      <BackgroundSelector>
         <View style={[styles.container, styles.loadingContainer]}>
           <Text style={[styles.loadingText, { color: theme.colors.text.primary }]}>
             جاري تحميل السؤال...
           </Text>
         </View>
-      </BackgroundPattern>
+      </BackgroundSelector>
     );
   }
 
@@ -422,17 +422,7 @@ const QuestionScreen = ({ questionData }) => {
   const actualPoints = isDoublePoints ? points * 2 : points;
 
   return (
-    <BackgroundPattern
-      style={{ 
-        flex: 1, 
-        borderWidth: 0, 
-        overflow: 'hidden', 
-        borderColor: 'transparent',
-        margin: 0,
-        padding: 0
-      }}
-      patternId="questionScreenPattern"
-    >
+    <BackgroundSelector>
       <View style={[
         styles.container, 
         { 
@@ -482,7 +472,7 @@ const QuestionScreen = ({ questionData }) => {
             overflow: 'hidden'
           }
         ]}>
-          <BackgroundPattern patternId="questionCard" style={{ borderWidth: 0, borderColor: 'transparent' }}>
+          <BackgroundSelector>
             <View style={[
               styles.questionHeader,
               { 
@@ -786,7 +776,7 @@ const QuestionScreen = ({ questionData }) => {
                 </View>
               )}
             </View>
-          </BackgroundPattern>
+          </BackgroundSelector>
         </View>
       </View>
 
@@ -1094,7 +1084,7 @@ const QuestionScreen = ({ questionData }) => {
           </View>
         </View>
       </Modal>
-    </BackgroundPattern>
+    </BackgroundSelector>
   );
 };
 

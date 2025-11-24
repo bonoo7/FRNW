@@ -586,7 +586,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#1E3A8A', '#3B82F6', '#0EA5E9']}
+        colors={['#1E3A8A', '#2563EB', '#3B82F6', '#60A5FA']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -594,14 +594,13 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
       <View style={styles.overlay}>
         <Svg height="100%" width="100%" style={styles.svgContainer}>
           <Defs>
-            <Pattern id="blueGlassPattern" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
-              <Rect x="0" y="0" width="50" height="50" fill="transparent" />
-              <Polygon points="25,5 35,20 25,35 15,20" fill="#1E40AF" opacity="0.4" />
-              <Polygon points="25,25 40,35 25,45 10,35" fill="#3B82F6" opacity="0.3" />
-              <Circle cx="25" cy="25" r="3" fill="#0EA5E9" opacity="0.5" />
+            <Pattern id="blueAuroraPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+              <Circle cx="25" cy="25" r="15" fill="#60A5FA" opacity="0.2" />
+              <Circle cx="75" cy="75" r="20" fill="#3B82F6" opacity="0.15" />
+              <Circle cx="50" cy="50" r="18" fill="#2563EB" opacity="0.1" />
             </Pattern>
           </Defs>
-          <Rect width="100%" height="100%" fill="url(#blueGlassPattern)" />
+          <Rect width="100%" height="100%" fill="url(#blueAuroraPattern)" />
         </Svg>
       </View>
       <View style={styles.content}>

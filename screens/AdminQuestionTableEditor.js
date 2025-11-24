@@ -18,7 +18,7 @@ import QuestionEditorService from '../services/QuestionEditorService';
 import StorageService from '../services/storageService';
 import { useTheme } from '../contexts/ThemeContext';
 import { SPACING, FONTS } from '../styles/theme';
-import BackgroundPattern from '../components/BackgroundPattern';
+import BackgroundSelector from '../components/BackgroundSelector';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const difficultyLevels = ['سهل', 'متوسط', 'صعب'];
