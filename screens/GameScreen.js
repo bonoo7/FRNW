@@ -904,11 +904,25 @@ const GameScreen = () => {
         categoryStats: {}
       };
 
+      // بناء categoryStats بالمعلومات الكاملة لكل فريق
+      const categoryStats = {};
+
       Object.entries(latestGameData.questions).forEach(([category, difficulties]) => {
         statistics.categoryStats[category] = {
           total: 0,
           answered: 0
         };
+        
+        // تهيئة إحصائيات الفئة لكل فريق
+        latestGameData.teams.forEach(team => {
+          if (!categoryStats[team]) {
+            categoryStats[team] = {};
+          }
+          categoryStats[team][category] = {
+            points: 0,
+            correct: 0
+          };
+        });
         
         Object.values(difficulties).forEach(questions => {
           questions.forEach(question => {
@@ -918,6 +932,13 @@ const GameScreen = () => {
             if (question.isUsed) {
               statistics.answeredQuestions++;
               statistics.categoryStats[category].answered++;
+              
+              // إضافة النقاط والإجابات الصحيحة لكل فريق
+              if (question.answeredBy) {
+                categoryStats[question.answeredBy][category].correct += 1;
+                categoryStats[question.answeredBy][category].points += question.earnedPoints || 0;
+              }
+              
               if (question.wasDoublePoints) {
                 statistics.doublePointsUsed++;
               }
@@ -940,6 +961,7 @@ const GameScreen = () => {
         categories: latestGameData.categories,
         selectedQuestions: latestGameData.selectedQuestions || [],
         statistics: statistics,
+        categoryStats: categoryStats,
         winner: winner,
         timestamp: new Date().toISOString(),
         
@@ -1078,7 +1100,7 @@ const GameScreen = () => {
           animation: 'none'
         }} 
       />
-      <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 1, flexDirection: 'row-reverse' }]}>
+      <View style={[staticStyles.container, { backgroundColor: 'transparent', zIndex: 1, flexDirection: 'row-reverse', minHeight: screenHeight }]}>
         {/* التيم هيدر */}
         <View style={{
           width: 120,
@@ -1147,24 +1169,30 @@ const GameScreen = () => {
                     <View style={{
                       position: 'absolute',
                       top: -12,
+                      left: 0,
+                      right: 0,
+                      width: '100%',
                       zIndex: 10,
-                      backgroundColor: theme.colors.background.card,
-                      borderRadius: 8,
+                      backgroundColor: theme.colors.primary,
+                      borderTopLeftRadius: 12,
+                      borderTopRightRadius: 12,
+                      borderBottomLeftRadius: 0,
+                      borderBottomRightRadius: 0,
                       paddingHorizontal: 12,
                       paddingVertical: 6,
-                      borderWidth: 2,
-                      borderColor: theme.colors.border?.primary || theme.colors.primary || '#E0E8F5',
-                      shadowColor: theme.colors.primary || '#2E5DB8',
+                      borderWidth: 0,
+                      borderColor: theme.colors.primary,
+                      shadowColor: '#000',
                       shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.15,
-                      shadowRadius: 4,
-                      elevation: 3,
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+                      elevation: 5,
                     }}>
                       <Text style={{
                         fontSize: 11,
                         fontWeight: '700',
                         fontFamily: 'ReadexPro_700Bold',
-                        color: theme.colors.text.primary,
+                        color: '#FFF',
                         textAlign: 'center',
                       }}>
                         {category}

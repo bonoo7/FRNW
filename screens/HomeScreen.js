@@ -175,7 +175,7 @@ const staticStyles = StyleSheet.create({
   },
   settingRow: {
     flexDirection: 'row-reverse', // تغيير الاتجاه ليناسب الكتابة العربية
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingVertical: SPACING.xs, // تقليل المسافة
   },
@@ -310,23 +310,6 @@ const ContainerBackground = ({ style, children }) => {
       {/* خلفية موحدة بلون الثيم */}
       <View style={backgroundStyle} />
       
-      {/* صورة الخلفية (إذا كانت موجودة) */}
-      {imageSource && (
-        <ImageBackground
-          source={imageSource}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            opacity: 0.2, // تقليل الشفافية لتظهر الخلفية الملونة
-          }}
-          imageStyle={{ opacity: 0.5 }}
-          resizeMode="cover"
-        />
-      )}
-      
       {/* عرض المحتوى فوق الخلفية */}
       {children}
     </View>
@@ -369,8 +352,73 @@ const HomeScreen = () => {
   // عرض شاشة التحميل أثناء التحقق من المصادقة
   if (authLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background?.primary }}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
+      <View style={{ flex: 1, backgroundColor: '#000' }}>
+        {/* الخلفية */}
+        <View style={{ 
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+          pointerEvents: 'none'
+        }}>
+          <LinearGradient
+            colors={['#1E40AF', '#3B82F6', '#1E40AF']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ 
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              zIndex: 0
+            }}
+          />
+          <BackgroundSelector
+            lightConfig={{
+              squareSize: 4,
+              gridGap: 6,
+              flickerChance: 0.3,
+              color: 'rgb(59, 130, 246)',
+              maxOpacity: 0.35,
+              animationSpeed: 'medium',
+            }}
+            darkConfig={{
+              direction: 'right',
+              speed: 1,
+              borderColor: '#404040',
+              squareSize: 40,
+              hoverFillColor: '#222',
+            }}
+          />
+        </View>
+
+        {/* المحتوى */}
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
+          <View style={{ alignItems: 'center', marginBottom: 40 }}>
+            <Image
+              source={require('../assets/logo.png')}
+              style={{
+                width: 100,
+                height: 100,
+                resizeMode: 'contain',
+                marginBottom: 30
+              }}
+            />
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+            <Text style={{
+              marginTop: 20,
+              fontSize: 16,
+              color: '#FFF',
+              fontFamily: FONTS.families.secondary,
+              fontWeight: FONTS.weights.medium
+            }}>
+              جاري التحميل...
+            </Text>
+          </View>
+        </View>
       </View>
     );
   }
@@ -708,7 +756,7 @@ const HomeScreen = () => {
     teamsGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-end',
       marginTop: 4, 
       marginBottom: 4, 
     },
@@ -747,12 +795,12 @@ const HomeScreen = () => {
     },
     settingRow: {
       flexDirection: 'row-reverse', 
-      justifyContent: 'space-between',
+      justifyContent: 'flex-end',
       alignItems: 'center',
     },
     settingItem: {
       flexDirection: 'row-reverse', 
-      justifyContent: 'space-between',
+      justifyContent: 'flex-end',
       alignItems: 'center',
       paddingVertical: 4, 
       marginTop: 4, 
@@ -904,7 +952,7 @@ const HomeScreen = () => {
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
-                      justifyContent: 'space-between',
+                      justifyContent: 'flex-end',
                       padding: SPACING.md,
                       borderBottomWidth: option.id === 'rewards' ? 1 : 0,
                       borderBottomColor: theme.colors.border.primary,
@@ -1033,17 +1081,21 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         scrollIndicatorInsets={{ right: 1 }}
       >
-       {/* رأس الصفحة مع أيقونة الملف الشخصي واللوقو والرصيد مدمج */}
+           {/* رأس الصفحة مع الشعار والأزرار */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20, backgroundColor: 'transparent', padding: 10, borderRadius: 8, gap: 10 }}>
-          <Image 
+          {/* الشعار على اليسار */}
+          <Image
             source={require('../assets/logo.png')}
             style={{
-              width: 65,
-              height: 65,
+              width: 80,
+              height: 80,
               resizeMode: 'contain'
             }}
           />
-          <View style={{ flexDirection: 'column', gap: 10, alignItems: 'flex-end', flex: 1, justifyContent: 'flex-start' }}>
+          
+          {/* الأزرار على اليمين */}
+          
+          <View style={{ flexDirection: isSmallScreen ? 'column' : 'row', gap: 10, alignItems: 'flex-end' }}>
             {/* زر ألعابي */}
             <TouchableOpacity 
               style={{
@@ -1091,8 +1143,8 @@ const HomeScreen = () => {
               )}
             </TouchableOpacity>
 
-            {/* الملف الشخصي */}
-            <IntegratedUserProfile 
+            {/* الملف الشخصي - يظهر في جميع الأوضاع */}
+            <IntegratedUserProfile
               style={{ position: 'relative', zIndex: 10 }}
               onPressCredits={() => router.push('/purchase')}
             />
@@ -1100,16 +1152,7 @@ const HomeScreen = () => {
         </View>
 
         <Animated.View style={{ opacity: fadeAnim }}>
-          {/* نص الترحيب */}
-          <Text style={{
-            fontSize: 14,
-            color: '#B3E5FC',
-            fontFamily: FONTS.families.secondary,
-            textAlign: 'center',
-            marginBottom: 20
-          }}>
-            إعداد لعبة جديدة
-          </Text>
+          
 
           {/* قالب واحد يحتوي على جميع الأقسام */}
           <View style={{ 
@@ -1133,74 +1176,87 @@ const HomeScreen = () => {
             {/* المحتوى */}
             <View style={{ position: 'relative', zIndex: 1 }}>
 
-          {/* قسم عدد الفرق */}
-          <View style={{ marginBottom: 20 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-              <Text style={{
-                fontSize: 18,
-                fontWeight: 'bold',
-                color: '#333',
-                fontFamily: FONTS.families.secondary,
-                marginLeft: 10
+          {/* قسم عدد الفرق واسم الجولة */}
+          <View style={{ marginBottom: 20, flexDirection: isSmallScreen ? 'column' : 'row-reverse', gap: isSmallScreen ? 0 : 15 }}>
+            {/* قسم عدد الفرق */}
+            <View style={{ marginBottom: isSmallScreen ? 20 : 0, flex: isSmallScreen ? 1 : 0.4 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, justifyContent: 'flex-end' }}>
+                <Text style={{
+                  fontSize: 13,
+                  fontWeight: '600',
+                  color: '#666',
+                  fontFamily: FONTS.families.secondary,
+                  textAlign: 'right'
+                }}>
+                  عدد الفرق
+                </Text>
+              </View>
+
+              <View style={{
+                flexDirection: 'row-reverse',
+                justifyContent: 'space-around',
+                backgroundColor: 'transparent',
+                borderRadius: 15,
+                padding: 0
               }}>
-                عدد الفرق
-              </Text>
+                {[2, 3, 4, 5].map(count => (
+                  <TouchableOpacity
+                    key={count}
+                    onPress={() => updateTeamCount(count)}
+                    style={{
+                      paddingHorizontal: isSmallScreen ? 16 : 10,
+                      paddingVertical: isSmallScreen ? 10 : 6,
+                      borderRadius: 10,
+                      borderWidth: 2,
+                      borderColor: gameSettings.teamCount === count ? '#1E40AF' : '#DDD',
+                      backgroundColor: gameSettings.teamCount === count ? '#1E40AF' : '#F8FBFF',
+                    }}
+                  >
+                    <Text style={{
+                      fontSize: isSmallScreen ? 16 : 12,
+                      fontWeight: 'bold',
+                      color: gameSettings.teamCount === count ? '#FFF' : '#333',
+                      fontFamily: FONTS.families.secondary,
+                    }}>
+                      {count}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
 
-            <View style={{
-              flexDirection: 'row-reverse',
-              justifyContent: 'space-around',
-              backgroundColor: 'transparent',
-              borderRadius: 15,
-              padding: 0
-            }}>
-              {[2, 3, 4, 5].map(count => (
-                <TouchableOpacity
-                  key={count}
-                  onPress={() => updateTeamCount(count)}
-                  style={{
-                    paddingHorizontal: 16,
-                    paddingVertical: 10,
-                    borderRadius: 10,
-                    borderWidth: 2,
-                    borderColor: gameSettings.teamCount === count ? '#1E40AF' : '#DDD',
-                    backgroundColor: gameSettings.teamCount === count ? '#1E40AF' : '#F8FBFF',
-                  }}
-                >
-                  <Text style={{
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                    color: gameSettings.teamCount === count ? '#FFF' : '#333',
-                    fontFamily: FONTS.families.secondary,
-                  }}>
-                    {count}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* قسم اسم الجولة */}
-          <View style={{ marginBottom: 20 }}>
-            <TextInput
-              style={{
-                borderWidth: 2,
-                borderColor: '#1E40AF',
-                borderRadius: 12,
-                paddingHorizontal: 16,
-                paddingVertical: 14,
-                fontSize: 16,
+            {/* قسم اسم الجولة */}
+            <View style={{ flex: isSmallScreen ? 1 : 0.6 }}>
+              <Text style={{
+                fontSize: 13,
+                fontWeight: '600',
+                color: '#666',
+                marginBottom: 8,
                 fontFamily: FONTS.families.secondary,
-                color: '#333',
                 textAlign: 'right',
-                backgroundColor: '#F8FBFF',
-                minHeight: 50,
-              }}
-              placeholder="الجولة الأولى"
-              placeholderTextColor="#CCC"
-              value={gameSettings.roundName}
-              onChangeText={(value) => setGameSettings(prev => ({ ...prev, roundName: value }))}
-            />
+              }}>
+                اسم الجولة
+              </Text>
+              <TextInput
+                style={{
+                  borderWidth: 2,
+                  borderColor: '#1E40AF',
+                  borderRadius: 12,
+                  paddingHorizontal: 16,
+                  paddingVertical: isSmallScreen ? 14 : 10,
+                  fontSize: 13,
+                  fontFamily: FONTS.families.secondary,
+                  color: '#333',
+                  textAlign: 'right',
+                  backgroundColor: '#F8FBFF',
+                  minHeight: isSmallScreen ? 50 : 40,
+                }}
+                placeholder="الجولة الأولى"
+                placeholderTextColor="#CCC"
+                value={gameSettings.roundName}
+                onChangeText={(value) => setGameSettings(prev => ({ ...prev, roundName: value }))}
+              />
+            </View>
           </View>
 
           {/* قسم أسماء الفرق */}
@@ -1208,7 +1264,7 @@ const HomeScreen = () => {
             <View style={{
               flexDirection: 'row-reverse',
               flexWrap: 'wrap',
-              justifyContent: 'space-between',
+              justifyContent: 'flex-end',
             }}>
               {Array.from({ length: gameSettings.teamCount }).map((_, index) => (
                 <View
@@ -1219,14 +1275,14 @@ const HomeScreen = () => {
                   }}
                 >
                   <Text style={{
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: '600',
                     color: '#666',
                     marginBottom: 8,
                     fontFamily: FONTS.families.secondary,
                     textAlign: 'right',
-                  }}>
-                    الفريق {index + 1}
+                   }}>
+                     الفريق {index + 1}
                   </Text>
                   <TextInput
                     style={{
@@ -1235,7 +1291,7 @@ const HomeScreen = () => {
                       borderRadius: 10,
                       paddingHorizontal: 12,
                       paddingVertical: 10,
-                      fontSize: 14,
+                      fontSize: 13,
                       fontFamily: FONTS.families.secondary,
                       color: '#333',
                       textAlign: 'right',
@@ -1300,3 +1356,4 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+

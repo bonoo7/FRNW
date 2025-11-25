@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
@@ -11,6 +11,13 @@ const ProtectedRoute = ({ children, requireAuth = true, fallbackMessage }) => {
   const { currentUser, loading } = useAuth();
   const { theme } = useTheme();
   const router = useRouter();
+
+  // إذا كانت الصفحة للضيوف فقط والمستخدم مسجل دخول، توجيه إلى الرئيسية
+  useEffect(() => {
+    if (!requireAuth && currentUser && !loading) {
+      router.replace('/');
+    }
+  }, [currentUser, loading, requireAuth, router]);
 
   // إذا كان التطبيق يحمل معلومات المصادقة
   if (loading) {
@@ -61,31 +68,9 @@ const ProtectedRoute = ({ children, requireAuth = true, fallbackMessage }) => {
     );
   }
 
-  // إذا كانت الصفحة للضيوف فقط والمستخدم مسجل دخول
+  // إذا كانت الصفحة للضيوف فقط والمستخدم مسجل دخول، سيتم التوجيه من useEffect
   if (!requireAuth && currentUser) {
-    return (
-      <BackgroundPattern>
-        <View style={styles.centerContainer}>
-          <MaterialIcons name="person" size={64} color={theme.colors.success} />
-          <Text style={[styles.title, { color: theme.colors.text.primary }]}>
-            أنت مسجل دخول بالفعل
-          </Text>
-          <Text style={[styles.message, { color: theme.colors.text.secondary }]}>
-            هذه الصفحة للضيوف فقط
-          </Text>
-          
-          <TouchableOpacity
-            style={[styles.backButton, { borderColor: theme.colors.border?.primary }]}
-            onPress={() => router.replace('/')}
-          >
-            <MaterialIcons name="home" size={24} color={theme.colors.text.primary} />
-            <Text style={[styles.backButtonText, { color: theme.colors.text.primary }]}>
-              الصفحة الرئيسية
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </BackgroundPattern>
-    );
+    return null;
   }
 
   // إذا كانت الشروط مستوفية، عرض المحتوى

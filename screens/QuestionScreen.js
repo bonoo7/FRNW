@@ -518,35 +518,49 @@ const QuestionScreen = ({ questionData }) => {
                 )}
               </View>
               
-              {/* قسم الفئة (يمين) - نحافظ عليه فارغاً للتوازن */}
+              {/* قسم الفئة (يمين) */}
               <View style={styles.headerRightSection}>
-                {/* اسم الفئة وشارة المضاعفة بجانب بعضهما */}
-                <View style={styles.categoryContainer}>
-                  <Text style={[
-                    styles.category,
-                    { 
-                      color: theme.colors.text.primary,
-                      fontFamily: 'ReadexPro_500Medium'
-                    }
-                  ]}>
+                {/* زر الفئات - يشبه زر ألعابي والملف الشخصي */}
+                <View style={{
+                  backgroundColor: theme.colors.primary,
+                  borderRadius: 12,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 6,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                  elevation: 5,
+                }}>
+                  <MaterialIcons name="category" size={16} color="#FFF" />
+                  <Text style={{
+                    fontSize: 12,
+                    color: '#FFF',
+                    fontFamily: FONTS.families.secondary,
+                    fontWeight: FONTS.weights.bold,
+                    marginRight: 4
+                  }}>
                     {questionData.category}
                   </Text>
-                  
-                  {/* شارة المضاعفة */}
-                  {(isDoublePoints || isPentaPoints) && (
-                    <View style={[styles.multiplierBadge, { 
-                      backgroundColor: isPentaPoints ? '#FF572240' : `${theme.colors.success}40`,
-                      borderColor: isPentaPoints ? '#FF5722' : theme.colors.success,
-                      marginRight: 8, // إضافة هامش يمين لإبعاده عن اسم الفئة
-                    }]}>
-                      <Text style={[styles.multiplierText, { 
-                        color: isPentaPoints ? '#FF5722' : theme.colors.success 
-                      }]}>
-                        {isPentaPoints ? 'x5' : 'x2'}
-                      </Text>
-                    </View>
-                  )}
                 </View>
+
+                {/* شارة المضاعفة */}
+                {(isDoublePoints || isPentaPoints) && (
+                  <View style={[styles.multiplierBadge, { 
+                    backgroundColor: isPentaPoints ? '#FF572240' : `${theme.colors.success}40`,
+                    borderColor: isPentaPoints ? '#FF5722' : theme.colors.success,
+                    marginRight: 8,
+                  }]}>
+                    <Text style={[styles.multiplierText, { 
+                      color: isPentaPoints ? '#FF5722' : theme.colors.success 
+                    }]}>
+                      {isPentaPoints ? 'x5' : 'x2'}
+                    </Text>
+                  </View>
+                )}
               </View>
             </View>
 
@@ -1371,3 +1385,4 @@ const styles = StyleSheet.create({
 });
 
 export default QuestionScreen; 
+

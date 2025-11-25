@@ -104,6 +104,8 @@ const SplashScreen = ({ onFinish }) => {
                 rotate: rotationInterpolate,
               },
             ],
+            zIndex: 2,
+            position: 'relative'
           },
         ]}
       >

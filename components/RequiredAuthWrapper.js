@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Image, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../contexts/ThemeContext';
-import BackgroundPattern from './BackgroundPattern';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SPACING, FONTS } from '../styles/theme';
 
 /**
@@ -19,56 +19,47 @@ const RequiredAuthWrapper = ({ children, title, message, showGuestOption = false
   // إذا كان التطبيق يحمل
   if (loading) {
     return (
-      <BackgroundPattern>
+      <View style={{ flex: 1, backgroundColor: "#000" }}>
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: "none" }}>
+          <LinearGradient colors={["#1E40AF", "#3B82F6", "#1E40AF"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }} />
+        </View>
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
           <Text style={[styles.loadingText, { color: theme.colors.text.primary }]}>
             جاري التحميل...
           </Text>
         </View>
-      </BackgroundPattern>
+      </View>
     );
   }
 
   // إذا لم يكن المستخدم مسجل دخول
   if (!currentUser) {
     return (
-      <BackgroundPattern>
-        <View style={styles.centerContainer}>
-          <View style={[styles.authCard, { backgroundColor: theme.colors.background.surface }]}>
-            {/* أيقونة القفل */}
-            <View style={[styles.iconContainer, { backgroundColor: `${theme.colors.primary}15` }]}>
-              <MaterialIcons name="lock" size={64} color={theme.colors.primary} />
+      <View style={{ flex: 1, backgroundColor: "#000" }}>
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: "none" }}>
+          <LinearGradient colors={["#1E40AF", "#3B82F6", "#1E40AF"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }} />
+        </View>
+        
+        <ScrollView contentContainerStyle={styles.centerContainer} style={{ zIndex: 1 }}>
+          <View style={[styles.authCard, { backgroundColor: `${theme.colors.background.surface}E6` }]}>
+            {/* شعار التطبيق */}
+            <View style={{ alignItems: 'center', marginBottom: 30 }}>
+              <Image
+                source={require('../assets/logo.png')}
+                style={{
+                  width: 80,
+                  height: 80,
+                  resizeMode: 'contain',
+                  borderRadius: 20,
+                }}
+              />
+              <Text style={[styles.title, { color: theme.colors.text.primary, marginBottom: 0, marginTop: 15 }]}>
+                {title || 'تسجيل الدخول مطلوب'}
+              </Text>
             </View>
             
-            {/* العنوان المخصص */}
-            <Text style={[styles.title, { color: theme.colors.text.primary }]}>
-              {title || 'تسجيل الدخول مطلوب'}
-            </Text>
-            
-            {/* الرسالة المخصصة */}
-            <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
-              {message || 'للوصول إلى هذه الميزة، يجب تسجيل الدخول أو إنشاء حساب جديد'}
-            </Text>
 
-            {/* مميزات التسجيل */}
-            <View style={styles.features}>
-              <FeatureItem 
-                icon="cloud-done" 
-                text="حفظ تلقائي للبيانات" 
-                theme={theme} 
-              />
-              <FeatureItem 
-                icon="trending-up" 
-                text="تتبع التقدم والإحصائيات" 
-                theme={theme} 
-              />
-              <FeatureItem 
-                icon="devices" 
-                text="المزامنة عبر الأجهزة" 
-                theme={theme} 
-              />
-            </View>
 
             {/* أزرار التفاعل */}
             <View style={styles.buttonContainer}>
@@ -106,15 +97,14 @@ const RequiredAuthWrapper = ({ children, title, message, showGuestOption = false
             </View>
 
             {/* مؤشر الأمان */}
-            <View style={styles.securityIndicator}>
-              <MaterialIcons name="security" size={16} color={theme.colors.success} />
-              <Text style={[styles.securityText, { color: theme.colors.success }]}>
-                محمي بـ Firebase Authentication
+            <View style={styles.footer}>
+              <Text style={[styles.footerText, { color: theme.colors.text.secondary }]}>
+                التسجيل مجاني وآمن تماماً
               </Text>
             </View>
           </View>
-        </View>
-      </BackgroundPattern>
+        </ScrollView>
+      </View>
     );
   }
 
@@ -177,10 +167,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontFamily: FONTS.regular,
   },
-  features: {
-    width: '100%',
-    marginBottom: SPACING.xl,
-  },
+  
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -253,3 +240,5 @@ const styles = StyleSheet.create({
 });
 
 export default RequiredAuthWrapper;
+
+

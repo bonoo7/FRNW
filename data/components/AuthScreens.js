@@ -10,13 +10,13 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
-  Dimensions,
-  Image
+  Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
+import BackgroundSelector from './BackgroundSelector';
 import { SPACING, FONTS } from '../styles/theme';
 
 const { width, height } = Dimensions.get('window');
@@ -91,20 +91,12 @@ export const LoginScreen = ({ onSwitchToRegister }) => {
           style={styles.keyboardView}
         >
           <View style={[styles.formContainer, { backgroundColor: `${theme.colors.background.surface}E6` }]}>
-            <View style={{ alignItems: 'center', marginBottom: 20 }}>
-              <Image
-                source={require('../assets/logo.png')}
-                style={{
-                  width: 80,
-                  height: 80,
-                  resizeMode: 'contain',
-                  marginBottom: 10
-                }}
-              />
-              <Text style={[styles.title, { color: theme.colors.text.primary, marginBottom: 0 }]}>
-                تسجيل الدخول
-              </Text>
-            </View>
+            <Text style={[styles.title, { color: theme.colors.text.primary }]}>
+              مرحباً بك في فكّر
+            </Text>
+            <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
+              سجل دخولك لحفظ تقدمك والتنافس مع الأصدقاء
+            </Text>
 
             {/* Email Input */}
             <View style={styles.inputContainer}>
@@ -280,20 +272,12 @@ export const RegisterScreen = ({ onSwitchToLogin }) => {
           style={styles.keyboardView}
         >
           <View style={[styles.formContainer, { backgroundColor: `${theme.colors.background.surface}E6` }]}>
-            <View style={{ alignItems: 'center', marginBottom: 20 }}>
-              <Image
-                source={require('../assets/logo.png')}
-                style={{
-                  width: 80,
-                  height: 80,
-                  resizeMode: 'contain',
-                  marginBottom: 10
-                }}
-              />
-              <Text style={[styles.title, { color: theme.colors.text.primary, marginBottom: 0 }]}>
-                إنشاء حساب جديد
-              </Text>
-            </View>
+            <Text style={[styles.title, { color: theme.colors.text.primary }]}>
+              إنشاء حساب جديد
+            </Text>
+            <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
+              انضم إلى مجتمع فكّر واحفظ إنجازاتك
+            </Text>
 
             {/* Display Name Input */}
             <View style={styles.inputContainer}>

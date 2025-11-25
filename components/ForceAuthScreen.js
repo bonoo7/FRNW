@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../contexts/ThemeContext';
-import BackgroundPattern from './BackgroundPattern';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SPACING, FONTS } from '../styles/theme';
+
+const { width, height } = Dimensions.get('window');
 
 /**
  * صفحة إجبار تسجيل الدخول - تظهر عندما يريد المطور إجبار المستخدمين على التسجيل
@@ -14,45 +16,30 @@ const ForceAuthScreen = () => {
   const router = useRouter();
 
   return (
-    <BackgroundPattern>
-      <View style={styles.container}>
-        <View style={[styles.card, { backgroundColor: theme.colors.background.surface }]}>
-          {/* أيقونة كبيرة */}
-          <View style={[styles.iconContainer, { backgroundColor: `${theme.colors.primary}20` }]}>
-            <MaterialIcons name="account-circle" size={80} color={theme.colors.primary} />
-          </View>
+    <View style={{ flex: 1, backgroundColor: "#000" }}>
+      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: "none" }}>
+        <LinearGradient colors={["#1E40AF", "#3B82F6", "#1E40AF"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }} />
+      </View>
+      
+      <ScrollView contentContainerStyle={styles.container} style={{ zIndex: 1 }}>
+        <View style={[styles.card, { backgroundColor: `${theme.colors.background.surface}E6` }]}>
+            {/* شعار التطبيق */}
+            <View style={{ alignItems: 'center', marginBottom: 30 }}>
+              <Image
+                source={require('../assets/logo.png')}
+                style={{
+                  width: 100,
+                  height: 100,
+                  resizeMode: 'contain',
+                  borderRadius: 25,
+                }}
+              />
+              <Text style={[styles.title, { color: theme.colors.text.primary, marginBottom: 0, marginTop: 15 }]}>
+                تسجيل الدخول مطلوب
+              </Text>
+            </View>
           
-          {/* العنوان */}
-          <Text style={[styles.title, { color: theme.colors.text.primary }]}>
-            تسجيل الدخول مطلوب
-          </Text>
-          
-          {/* الوصف */}
-          <Text style={[styles.description, { color: theme.colors.text.secondary }]}>
-            للاستمتاع بالتجربة الكاملة لتطبيق فكّر والحفاظ على تقدمك، يرجى تسجيل الدخول أو إنشاء حساب جديد
-          </Text>
 
-          {/* المميزات */}
-          <View style={styles.benefits}>
-            <BenefitItem 
-              icon="cloud-upload" 
-              title="حفظ تلقائي" 
-              description="احفظ تقدمك في السحابة" 
-              theme={theme}
-            />
-            <BenefitItem 
-              icon="trending-up" 
-              title="إحصائيات متقدمة" 
-              description="تتبع أداءك وإنجازاتك" 
-              theme={theme}
-            />
-            <BenefitItem 
-              icon="devices" 
-              title="متعدد الأجهزة" 
-              description="الوصول من أي مكان" 
-              theme={theme}
-            />
-          </View>
 
           {/* أزرار التفاعل */}
           <View style={styles.buttons}>
@@ -82,47 +69,27 @@ const ForceAuthScreen = () => {
             <Text style={[styles.footerText, { color: theme.colors.text.secondary }]}>
               التسجيل مجاني وآمن تماماً
             </Text>
-            <View style={styles.securityIndicator}>
-              <MaterialIcons name="security" size={16} color={theme.colors.success} />
-              <Text style={[styles.securityText, { color: theme.colors.success }]}>
-                محمي بـ Firebase
-              </Text>
-            </View>
           </View>
         </View>
-      </View>
-    </BackgroundPattern>
+      </ScrollView>
+    </View>
   );
 };
 
-const BenefitItem = ({ icon, title, description, theme }) => (
-  <View style={styles.benefitItem}>
-    <View style={[styles.benefitIcon, { backgroundColor: `${theme.colors.primary}15` }]}>
-      <MaterialIcons name={icon} size={24} color={theme.colors.primary} />
-    </View>
-    <View style={styles.benefitText}>
-      <Text style={[styles.benefitTitle, { color: theme.colors.text.primary }]}>
-        {title}
-      </Text>
-      <Text style={[styles.benefitDescription, { color: theme.colors.text.secondary }]}>
-        {description}
-      </Text>
-    </View>
-  </View>
-);
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    minHeight: '100%',
   },
   card: {
     width: '100%',
-    maxWidth: 450,
+    maxWidth: 420,
     borderRadius: 24,
-    padding: SPACING.xl,
+    padding: SPACING.lg,
     alignItems: 'center',
     elevation: 8,
     shadowColor: '#000',
