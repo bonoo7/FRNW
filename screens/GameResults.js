@@ -282,26 +282,7 @@ const GameResults = ({ route }) => {
   });
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-        <BackgroundSelector
-          lightConfig={{
-            squareSize: 4,
-            gridGap: 6,
-            flickerChance: 0.3,
-            color: 'rgb(59, 130, 246)',
-            maxOpacity: 0.35,
-            animationSpeed: 'medium',
-          }}
-          darkConfig={{
-            direction: 'right',
-            speed: 1,
-            borderColor: '#404040',
-            squareSize: 40,
-            hoverFillColor: '#222',
-          }}
-        />
-      </View>
+    <BackgroundSelector>
       <Stack.Screen options={{ headerShown: false }} />
 
       <ScrollView style={styles.container}>
@@ -323,7 +304,7 @@ const GameResults = ({ route }) => {
           </View>
         ))}
       </ScrollView>
-    </View>
+    </BackgroundSelector>
   );
 };
 

@@ -1,11 +1,13 @@
-import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Platform, useWindowDimensions } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Defs, Pattern, Rect, Circle, Polygon, Path } from 'react-native-svg';
 
 const BackgroundSelector = ({ children, design = 'auto' }) => {
   const { currentTheme } = useTheme();
+  const { width, height } = useWindowDimensions();
+  const [renderKey, setRenderKey] = useState(0);
 
   // تحديد التصميم تلقائياً حسب الثيم إذا لم يتم تحديده يدويا
   let effectiveDesign = design;
@@ -20,6 +22,11 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
       effectiveDesign = 'modern1'; // Glassmorphism الافتراضي
     }
   }
+
+  // إعادة رسم عند تغيير حجم الشاشة
+  useEffect(() => {
+    setRenderKey(prev => prev + 1);
+  }, [width, height]);
 
   // For web platform - using Tailwind CSS + CSS animations
   const isWeb = typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -331,13 +338,13 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         linear-gradient(135deg, #667eea 0%, #764ba2 100%)
       `;
       
-      // For fresh theme - use brighter colors
+      // For fresh theme - use nature-inspired green colors
       if (currentTheme === 'fresh') {
         meshBackground = `
-          radial-gradient(circle at 20% 50%, #FF8FD1 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, #90EE90 0%, transparent 50%),
-          radial-gradient(circle at 80% 80%, #FFFF99 0%, transparent 50%),
-          linear-gradient(135deg, #FFCC00 0%, #FF9933 100%)
+          radial-gradient(circle at 20% 50%, #A5D6A7 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, #81C784 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, #C8E6C9 0%, transparent 50%),
+          linear-gradient(135deg, #E8F5E9 0%, #A5D6A7 100%)
         `;
       }
       
@@ -384,26 +391,28 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         margin: 0,
         padding: 0,
         overflow: 'hidden',
-        background: 'linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #0D0D0D 100%)',
+        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 30%, #0d1117 70%, #000000 100%)',
         zIndex: 0
       };
 
+      // نجوم متلألئة للثيم الداكن
       gridElements = React.createElement(
         'div',
         { style: { position: 'absolute', inset: 0 } },
-        Array.from({ length: 20 }).map((_, i) => 
+        Array.from({ length: 50 }).map((_, i) => 
           React.createElement('div', {
             key: i,
             className: 'bg-flicker',
             style: {
               position: 'absolute',
-              width: '4px',
-              height: '4px',
-              backgroundColor: `rgba(${50 + i * 5}, ${50 + i * 5}, ${50 + i * 5}, 0.4)`,
+              width: `${1 + Math.random() * 2}px`,
+              height: `${1 + Math.random() * 2}px`,
+              backgroundColor: '#FFFFFF',
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              borderRadius: '1px',
-              animationDelay: `${i * 0.15}s`
+              borderRadius: '50%',
+              opacity: 0.2 + Math.random() * 0.3,
+              animationDelay: `${i * 0.1}s`
             }
           })
         )
@@ -420,9 +429,47 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         margin: 0,
         padding: 0,
         overflow: 'hidden',
-        background: 'linear-gradient(135deg, #90EE90 0%, #FFFF99 50%, #FFB366 100%)',
+        background: 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%)',
         zIndex: 0
       };
+    }
+    // Pink/Rose theme
+    else if (currentTheme === 'pink' || currentTheme === 'rose' || currentTheme === 'purple') {
+      backgroundStyle = {
+        width: '100vw',
+        height: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        margin: 0,
+        padding: 0,
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #FFF0F5 0%, #FFE4EC 30%, #FFD6E0 70%, #FFCCD5 100%)',
+        zIndex: 0
+      };
+
+      // قلوب صغيرة عائمة للثيم الوردي
+      gridElements = React.createElement(
+        'div',
+        { style: { position: 'absolute', inset: 0 } },
+        Array.from({ length: 15 }).map((_, i) => 
+          React.createElement('div', {
+            key: i,
+            className: 'float-1',
+            style: {
+              position: 'absolute',
+              width: `${15 + Math.random() * 20}px`,
+              height: `${15 + Math.random() * 20}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              opacity: 0.08 + Math.random() * 0.07,
+              animationDelay: `${i * 0.5}s`,
+              fontSize: `${15 + Math.random() * 15}px`,
+              color: i % 2 === 0 ? '#FF69B4' : '#FF1493'
+            }
+          }, '♥')
+        )
+      );
     }
     // Default Blue theme with flickering effect
     else {
@@ -479,40 +526,73 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
       flex: 1,
       width: '100%',
       height: '100%',
+      position: 'relative',
     },
     overlay: {
-      ...StyleSheet.absoluteFill,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       zIndex: 1,
+      width: '100%',
+      height: '100%',
     },
     svgContainer: {
-      ...StyleSheet.absoluteFill,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: '100%',
+      height: '100%',
     },
     content: {
-      ...StyleSheet.absoluteFill,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       zIndex: 2,
+      width: '100%',
+      height: '100%',
     },
   });
 
-  // Mobile/Native rendering - Aurora for dark theme with dark colors
+  // Mobile/Native rendering - Elegant dark theme with stars pattern
   if (currentTheme === 'dark') {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} key={renderKey}>
         <LinearGradient
-          colors={['#000000', '#1a1a2e', '#16213e', '#0f1419']}
+          colors={['#0a0a0a', '#1a1a2e', '#0d1117', '#000000']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
+          style={styles.overlay}
         />
         <View style={styles.overlay}>
-          <Svg height="100%" width="100%" style={styles.svgContainer}>
+          <Svg 
+            height="100%" 
+            width="100%"
+            style={styles.svgContainer}
+          >
             <Defs>
-              <Pattern id="darkAuroraPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                <Circle cx="25" cy="25" r="15" fill="#4A4A6A" opacity="0.2" />
-                <Circle cx="75" cy="75" r="20" fill="#2D1B4E" opacity="0.15" />
-                <Circle cx="50" cy="50" r="18" fill="#1a1a2e" opacity="0.1" />
+              <Pattern id="darkStarsPattern" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+                {/* نجوم صغيرة متناثرة */}
+                <Circle cx="10" cy="10" r="1" fill="#FFFFFF" opacity="0.3" />
+                <Circle cx="50" cy="20" r="1.5" fill="#FFFFFF" opacity="0.25" />
+                <Circle cx="90" cy="15" r="1" fill="#FFFFFF" opacity="0.2" />
+                <Circle cx="30" cy="50" r="1.2" fill="#FFFFFF" opacity="0.35" />
+                <Circle cx="70" cy="60" r="1" fill="#FFFFFF" opacity="0.2" />
+                <Circle cx="110" cy="45" r="1.5" fill="#FFFFFF" opacity="0.3" />
+                <Circle cx="20" cy="90" r="1" fill="#FFFFFF" opacity="0.25" />
+                <Circle cx="60" cy="100" r="1.3" fill="#FFFFFF" opacity="0.2" />
+                <Circle cx="100" cy="85" r="1" fill="#FFFFFF" opacity="0.3" />
+                {/* توهج خفيف */}
+                <Circle cx="40" cy="70" r="25" fill="#4A4A6A" opacity="0.05" />
+                <Circle cx="80" cy="30" r="20" fill="#2D1B4E" opacity="0.04" />
               </Pattern>
             </Defs>
-            <Rect width="100%" height="100%" fill="url(#darkAuroraPattern)" />
+            <Rect x="0" y="0" width="100%" height="100%" fill="url(#darkStarsPattern)" />
           </Svg>
         </View>
         <View style={styles.content}>
@@ -522,27 +602,47 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
     );
   }
 
-  // Mobile/Native rendering - Gradient Mesh for fresh theme
+  // Mobile/Native rendering - Nature theme for fresh
   if (currentTheme === 'fresh') {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} key={renderKey}>
         <LinearGradient
-          colors={['#FFCC00', '#FFB366', '#FF9933', '#90EE90']}
+          colors={['#E8F5E9', '#C8E6C9', '#A5D6A7', '#81C784']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
+          style={styles.overlay}
         />
         <View style={styles.overlay}>
-          <Svg height="100%" width="100%" style={styles.svgContainer}>
+          <Svg 
+            height="100%" 
+            width="100%"
+            style={styles.svgContainer}
+          >
             <Defs>
-              <Pattern id="freshMeshPattern" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-                <Circle cx="20" cy="20" r="12" fill="#90EE90" opacity="0.25" />
-                <Circle cx="60" cy="20" r="10" fill="#FFFF99" opacity="0.2" />
-                <Circle cx="20" cy="60" r="10" fill="#FFFF99" opacity="0.2" />
-                <Circle cx="60" cy="60" r="12" fill="#FF8FD1" opacity="0.25" />
+              <Pattern id="freshNaturePattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                {/* أوراق شجر بسيطة */}
+                <Path 
+                  d="M20 30 Q25 20 30 30 Q25 35 20 30" 
+                  fill="#2D6A4F" 
+                  opacity="0.15" 
+                />
+                <Path 
+                  d="M70 60 Q75 50 80 60 Q75 65 70 60" 
+                  fill="#52B788" 
+                  opacity="0.12" 
+                />
+                <Path 
+                  d="M50 80 Q55 70 60 80 Q55 85 50 80" 
+                  fill="#40916C" 
+                  opacity="0.1" 
+                />
+                {/* دوائر تمثل قطرات الندى */}
+                <Circle cx="15" cy="70" r="3" fill="#52B788" opacity="0.2" />
+                <Circle cx="85" cy="25" r="4" fill="#40916C" opacity="0.15" />
+                <Circle cx="45" cy="45" r="2" fill="#2D6A4F" opacity="0.18" />
               </Pattern>
             </Defs>
-            <Rect width="100%" height="100%" fill="url(#freshMeshPattern)" />
+            <Rect width="100%" height="100%" fill="url(#freshNaturePattern)" />
           </Svg>
         </View>
         <View style={styles.content}>
@@ -552,27 +652,47 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
     );
   }
 
-  // Mobile/Native rendering - Neumorphism for pink theme with pink gradient
-  if (currentTheme === 'pink' || currentTheme === 'rose') {
+  // Mobile/Native rendering - Romantic hearts pattern for pink theme
+  if (currentTheme === 'pink' || currentTheme === 'rose' || currentTheme === 'purple') {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} key={renderKey}>
         <LinearGradient
-          colors={['#FFB6D9', '#FFC0CB', '#FFD9E8', '#FFEBF0']}
+          colors={['#FFF0F5', '#FFE4EC', '#FFD6E0', '#FFCCD5']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
+          style={styles.overlay}
         />
         <View style={styles.overlay}>
-          <Svg height="100%" width="100%" style={styles.svgContainer}>
+          <Svg 
+            height="100%" 
+            width="100%"
+            style={styles.svgContainer}
+          >
             <Defs>
-              <Pattern id="pinkNeuPattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                <Circle cx="15" cy="15" r="10" fill="#FF69B4" opacity="0.15" />
-                <Circle cx="45" cy="15" r="8" fill="#FFB6D9" opacity="0.1" />
-                <Circle cx="15" cy="45" r="8" fill="#FFB6D9" opacity="0.1" />
-                <Circle cx="45" cy="45" r="10" fill="#FFC0CB" opacity="0.15" />
+              <Pattern id="pinkHeartsPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                {/* قلوب صغيرة */}
+                <Path 
+                  d="M20 25 C20 20, 25 18, 27 22 C29 18, 34 20, 34 25 C34 30, 27 35, 27 35 C27 35, 20 30, 20 25" 
+                  fill="#FF69B4" 
+                  opacity="0.12" 
+                />
+                <Path 
+                  d="M70 65 C70 60, 75 58, 77 62 C79 58, 84 60, 84 65 C84 70, 77 75, 77 75 C77 75, 70 70, 70 65" 
+                  fill="#FF1493" 
+                  opacity="0.1" 
+                />
+                <Path 
+                  d="M55 15 C55 12, 58 11, 59 13 C60 11, 63 12, 63 15 C63 18, 59 20, 59 20 C59 20, 55 18, 55 15" 
+                  fill="#FFB6C1" 
+                  opacity="0.15" 
+                />
+                {/* دوائر ناعمة */}
+                <Circle cx="15" cy="70" r="15" fill="#FF69B4" opacity="0.06" />
+                <Circle cx="85" cy="30" r="12" fill="#FF1493" opacity="0.05" />
+                <Circle cx="45" cy="85" r="10" fill="#FFB6C1" opacity="0.08" />
               </Pattern>
             </Defs>
-            <Rect width="100%" height="100%" fill="url(#pinkNeuPattern)" />
+            <Rect width="100%" height="100%" fill="url(#pinkHeartsPattern)" />
           </Svg>
         </View>
         <View style={styles.content}>
@@ -584,15 +704,19 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
 
   // Mobile/Native rendering - Glassmorphism for blue theme (default)
   return (
-    <View style={styles.container}>
+    <View style={styles.container} key={renderKey}>
       <LinearGradient
         colors={['#1E3A8A', '#2563EB', '#3B82F6', '#60A5FA']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
+        style={styles.overlay}
       />
       <View style={styles.overlay}>
-        <Svg height="100%" width="100%" style={styles.svgContainer}>
+        <Svg 
+          height="100%" 
+          width="100%"
+          style={styles.svgContainer}
+        >
           <Defs>
             <Pattern id="blueAuroraPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
               <Circle cx="25" cy="25" r="15" fill="#60A5FA" opacity="0.2" />

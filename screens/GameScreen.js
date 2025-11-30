@@ -10,9 +10,11 @@ import BackgroundSelector from '../components/BackgroundSelector';
 import StorageService from '../services/storageService';
 import PentaPointsService from '../services/pentaPointsService';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import { SPACING, FONTS } from '../styles/theme';
 import categoryImages from '../assets/categories';
 import QuestionDetailsModal from '../components/QuestionDetailsModal';
+import SavedGamesService from '../services/savedGamesService';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useOrientation, useIsLandscape } from '../hooks/useOrientation';
 
@@ -174,10 +176,13 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const availableWidth = screenWidth - teamsHeaderWidth - 50;
     const availableHeight = (screenHeight - 60) / numCategories;
     
-    // مسافات حول البطاقات
-    const outerPadding = 8; // تقليل من 12 إلى 8
-    const cardMarginBetween = 6; // تقليل من 10 إلى 6
-    const innerCardPadding = 6; // تقليل من 8 إلى 6
+    // تحديد كثافة الفئات لضبط المسافات
+    const isHighDensity = numCategories > 6;
+    const isUltraHighDensity = numCategories > 8;
+
+    // مسافات حول البطاقات - تقليل الهوامش عند زيادة عدد الفئات
+    const outerPadding = isUltraHighDensity ? 2 : (isHighDensity ? 4 : 8);
+    const innerCardPadding = isUltraHighDensity ? 2 : (isHighDensity ? 4 : 6);
     
     // المساحة المتاحة بعد الهوامش الخارجية
     const cardContainerWidth = availableWidth - (outerPadding * 2);
@@ -191,16 +196,25 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
     const cardInnerWidth = cardWidth - (innerCardPadding * 2);
     const cardInnerHeight = cardHeight - (innerCardPadding * 2);
     
-    // توزيع المساحة: 16% للصورة والاسم، 84% للأزرار
-    const categoryInfoSpace = Math.min(cardInnerWidth * 0.16, 60);
-    const buttonsSpace = cardInnerWidth - categoryInfoSpace - 2;
+    // توزيع المساحة: عنوان متغير الارتفاع حسب الكثافة
+    const headerHeight = isUltraHighDensity ? 20 : (isHighDensity ? 24 : 28);
+    const headerMarginBottom = isUltraHighDensity ? 1 : 2;
+    const headerFontSize = isUltraHighDensity ? 10 : 12;
+
+    const buttonsSpaceHeight = cardInnerHeight - headerHeight - (headerMarginBottom * 2);
+    const buttonsSpaceWidth = cardInnerWidth;
     
-    // حساب حجم الزر - أكبر قليلاً
-    const buttonsPerRow = 3;
-    const numRows = 2;
-    const buttonSize = Math.min(buttonsSpace / buttonsPerRow, cardInnerHeight / numRows, 45);
+    // حساب حجم الزر
+    // لدينا 6 أزرار في صف واحد (2 سهل، 2 متوسط، 2 صعب)
+    const buttonsPerRow = 6;
+    const numRows = 1;
+    
+    // حساب الحجم بناءً على العرض والارتفاع المتاحين
+    const maxButtonWidth = (buttonsSpaceWidth / buttonsPerRow) - 2; // 2px gap
+    const maxButtonHeight = (buttonsSpaceHeight / numRows) - 2; // 2px gap
+    
+    const buttonSize = Math.min(maxButtonWidth, maxButtonHeight, 50);
     const buttonFontSize = Math.min(buttonSize * 0.36, 13);
-    const fontSize = Math.min(categoryInfoSpace * 0.16, 10);
     
     return (
       <View style={[{
@@ -213,9 +227,9 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         elevation: 6,
         borderWidth: 3,
         borderColor: theme.colors.primary || '#2E5DB8',
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start', // تغيير من center إلى flex-start
         height: cardHeight,
         width: cardWidth,
         marginVertical: outerPadding,
@@ -250,20 +264,42 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
           zIndex: 1,
         }} />
 
-        {/* أزرار الأسئلة - ثلاث أعمدة، كل عمود مستوى صعوبة واحد */}
+        {/* عنوان الفئة */}
+        <View style={{
+          width: '100%',
+          height: headerHeight, // تحديد ارتفاع ثابت
+          backgroundColor: theme.colors.primary,
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2,
+          opacity: 0.9,
+          marginBottom: headerMarginBottom,
+        }}>
+          <Text style={{
+            color: '#FFFFFF',
+            fontSize: headerFontSize,
+            fontWeight: 'bold',
+            fontFamily: 'ReadexPro_700Bold',
+            textAlign: 'center',
+          }} numberOfLines={1}>
+            {category}
+          </Text>
+        </View>
+
+        {/* أزرار الأسئلة - صف واحد يحتوي على جميع الأسئلة */}
         <View style={{
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
           gap: 2,
           flex: 1,
-          marginHorizontal: 4,
+          width: '100%',
           zIndex: 2,
           position: 'relative',
         }}>
-          {/* عمود سهل */}
+          {/* مجموعة سهل */}
           <View style={{
-            flexDirection: 'column',
+            flexDirection: 'row',
             gap: 2,
             justifyContent: 'center',
             alignItems: 'center',
@@ -290,9 +326,9 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
             })()}
           </View>
 
-           {/* عمود متوسط */}
+           {/* مجموعة متوسط */}
            <View style={{
-             flexDirection: 'column',
+             flexDirection: 'row',
              gap: 2,
              justifyContent: 'center',
              alignItems: 'center',
@@ -319,9 +355,9 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
             })()}
           </View>
 
-          {/* عمود صعب */}
+          {/* مجموعة صعب */}
           <View style={{
-            flexDirection: 'column',
+            flexDirection: 'row',
             gap: 2,
             justifyContent: 'center',
             alignItems: 'center',
@@ -375,13 +411,14 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
   const cardInnerWidth = cardWidth - (innerCardPadding * 2);
   const cardInnerHeight = cardHeight - (innerCardPadding * 2);
   
-  // توزيع المساحة العمودية - 18% للعنوان، 82% للأزرار
-  const titleHeight = cardInnerHeight * 0.18;
-  const buttonsHeight = cardInnerHeight * 0.82;
+  // توزيع المساحة العمودية - عنوان متغير الارتفاع والباقي للأزرار
+  // زيادة ارتفاع العنوان للسماح بأسطر متعددة
+  const headerHeight = 40; 
+  const buttonsHeight = cardInnerHeight - headerHeight - 4;
   
-  const buttonSize = Math.min((buttonsHeight / 6) - 1, cardInnerWidth - 2, 40);
+  // لدينا 6 أزرار في عمود واحد
+  const buttonSize = Math.min((buttonsHeight / 6) - 2, cardInnerWidth - 4, 45);
   const buttonFontSize = Math.min(buttonSize * 0.36, 13);
-  const fontSize = Math.min(titleHeight * 0.5, 11);
 
   return (
     <View style={[{
@@ -395,7 +432,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
       borderWidth: 3,
       borderColor: theme.colors.primary || '#2E5DB8',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start', // تغيير من center إلى flex-start
       width: cardWidth,
       height: cardHeight,
       marginVertical: outerPadding,
@@ -430,15 +467,44 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
         zIndex: 1,
       }} />
       
+      {/* عنوان الفئة */}
+      <View style={{
+        width: '100%',
+        height: headerHeight, // ارتفاع ثابت أكبر
+        backgroundColor: theme.colors.primary,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 2,
+        opacity: 0.9,
+        marginBottom: 2,
+        paddingHorizontal: 2, // إضافة هامش داخلي للنص
+      }}>
+        <Text style={{
+          color: '#FFFFFF',
+          fontSize: 11, // تصغير الخط الافتراضي قليلاً
+          fontWeight: 'bold',
+          fontFamily: 'ReadexPro_700Bold',
+          textAlign: 'center',
+          lineHeight: 14, // ضبط ارتفاع السطر
+        }} 
+        numberOfLines={2} // السماح بسطرين
+        adjustsFontSizeToFit={true} // تصغير الخط تلقائياً إذا لزم الأمر
+        minimumFontScale={0.7} // الحد الأدنى لتصغير الخط
+        >
+          {category}
+        </Text>
+      </View>
+
       {/* أزرار الأسئلة - في عمود واحد */}
       <View style={{
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 2,
+        flex: 1, // ملء المساحة المتبقية
         width: '100%',
         zIndex: 2,
         position: 'relative',
+        gap: 2,
       }}>
         {difficultyOrder.map((difficulty) => {
           const diffQuestions = questions[difficulty] || [];
@@ -467,6 +533,7 @@ const CategoryCard = ({ category, questions = {}, onQuestionPress, style, theme,
 
 const GameScreen = () => {
   const { theme } = useTheme();
+  const { currentUser } = useAuth();
   const isLandscapeMode = useIsLandscape();
   const params = useLocalSearchParams();
   const styles = StyleSheet.create({
@@ -983,6 +1050,39 @@ const GameScreen = () => {
       });
       
       await StorageService.saveGameToHistory(gameResults);
+      
+      // حفظ اللعبة في "ألعابي" إذا كان المستخدم مسجلاً للدخول
+      if (currentUser?.uid) {
+        try {
+          console.log('جاري حفظ اللعبة في ألعابي للمستخدم:', currentUser.uid);
+          
+          // التحقق من اكتمال اللعبة
+          const isGameCompleted = statistics.answeredQuestions === statistics.totalQuestions;
+          
+          // إعداد بيانات اللعبة للحفظ
+          const gameToSave = {
+            ...gameResults,
+            isCompleted: isGameCompleted, // تحديد حالة اكتمال اللعبة بناءً على الأسئلة المجابة
+            updatedAt: new Date().toISOString()
+          };
+          
+          // إذا كانت لعبة مستكملة، نقوم بتحديثها بدلاً من إنشاء واحدة جديدة
+          if (gameResults.isContinuing && gameResults.savedGameId) {
+            console.log('تحديث لعبة موجودة:', gameResults.savedGameId);
+            await SavedGamesService.updateSavedGame(gameResults.savedGameId, gameToSave);
+          } else if (!gameResults.isReplaying) {
+            // حفظ لعبة جديدة فقط إذا لم تكن إعادة تشغيل
+            console.log('حفظ لعبة جديدة');
+            await SavedGamesService.saveGame(currentUser.uid, gameToSave);
+          } else {
+            console.log('لعبة معاد تشغيلها، لن يتم حفظها في ألعابي');
+          }
+        } catch (saveError) {
+          console.error('خطأ في حفظ اللعبة في ألعابي:', saveError);
+          // لا نوقف العملية إذا فشل الحفظ في ألعابي، فقط نسجل الخطأ
+        }
+      }
+
       setUsedDoublePoints({});
       setUsedPentaPoints({});
 
@@ -1164,50 +1264,15 @@ const GameScreen = () => {
                 const categories = gameData.categories || [];
                 
                 return categories.map(category => (
-                  <View key={category} style={{ alignItems: 'center', position: 'relative' }}>
-                    {/* اسم الفئة فوق البطاقة مع خلفية معتمة */}
-                    <View style={{
-                      position: 'absolute',
-                      top: -12,
-                      left: 0,
-                      right: 0,
-                      width: '100%',
-                      zIndex: 10,
-                      backgroundColor: theme.colors.primary,
-                      borderTopLeftRadius: 12,
-                      borderTopRightRadius: 12,
-                      borderBottomLeftRadius: 0,
-                      borderBottomRightRadius: 0,
-                      paddingHorizontal: 12,
-                      paddingVertical: 6,
-                      borderWidth: 0,
-                      borderColor: theme.colors.primary,
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.25,
-                      shadowRadius: 3.84,
-                      elevation: 5,
-                    }}>
-                      <Text style={{
-                        fontSize: 11,
-                        fontWeight: '700',
-                        fontFamily: 'ReadexPro_700Bold',
-                        color: '#FFF',
-                        textAlign: 'center',
-                      }}>
-                        {category}
-                      </Text>
-                    </View>
-                    <CategoryCard
-                      key={category}
-                      category={category}
-                      questions={gameData.questions[category]}
-                      onQuestionPress={handleQuestionPress}
-                      theme={theme}
-                      categories={categories}
-                      isLandscape={isLandscapeMode}
-                    />
-                  </View>
+                  <CategoryCard
+                    key={category}
+                    category={category}
+                    questions={gameData.questions[category]}
+                    onQuestionPress={handleQuestionPress}
+                    theme={theme}
+                    categories={categories}
+                    isLandscape={isLandscapeMode}
+                  />
                 ));
               })()}
           </View>

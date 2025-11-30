@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, ImageBackground, Image, Platform } from 'react-native';
+import { View, StyleSheet, ImageBackground, Image, Platform, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Pattern, Path, Rect, Defs, G, Polygon, Circle } from 'react-native-svg';
 import { useTheme } from '../contexts/ThemeContext';
 
 const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) => {
   const { theme, currentTheme } = useTheme();
+  const { width, height } = useWindowDimensions();
   const uniquePatternId = `${patternId}-${Math.random().toString(36).substr(2, 9)}`;
   const patternRef = useRef(null);
+  const [renderKey, setRenderKey] = useState(0);
 
   console.log('Current theme:', currentTheme);
+  console.log('Screen dimensions:', { width, height });
 
   // التأكد من وجود النمط وإعداداته
   const defaultPattern = {
@@ -33,7 +36,7 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
 
   const [currentPattern, setCurrentPattern] = useState(mergedPattern);
 
-  // التأكد من تحديث النمط عند تغيير الثيم
+  // التأكد من تحديث النمط عند تغيير الثيم وحجم النافذة
   useEffect(() => {
     console.log('Theme changed:', theme.colors.background.pattern);
     const updatedPattern = {
@@ -44,10 +47,18 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
     setCurrentPattern(updatedPattern);
   }, [theme]);
 
+  // تحديث عند تغيير حجم الشاشة (تبديل الاتجاه)
+  useEffect(() => {
+    setRenderKey(prev => prev + 1);
+  }, [width, height]);
+
   // تطبيق الأنماط المخصصة وإزالة أي إطار
   const customStyle = StyleSheet.flatten(style || {});
   const containerStyle = {
-    ...styles.container,
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    position: 'relative',
     ...customStyle,
     borderWidth: 0,
     borderColor: 'transparent',
@@ -162,37 +173,46 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
     switch (currentTheme) {
       case 'dark':
         return {
-          colors: ['#000000', '#1a1a2e'],
+          colors: ['#0a0a0a', '#1a1a2e'],
           svgPattern: (
             <>
-              <Circle cx="25" cy="25" r="15" fill="#4A4A6A" opacity="0.2" />
-              <Circle cx="75" cy="75" r="20" fill="#2D1B4E" opacity="0.15" />
-              <Circle cx="50" cy="50" r="18" fill="#1a1a2e" opacity="0.1" />
+              {/* نجوم صغيرة */}
+              <Circle cx="10" cy="10" r="1" fill="#FFFFFF" opacity="0.3" />
+              <Circle cx="50" cy="20" r="1.5" fill="#FFFFFF" opacity="0.25" />
+              <Circle cx="30" cy="50" r="1.2" fill="#FFFFFF" opacity="0.35" />
+              <Circle cx="70" cy="40" r="1" fill="#FFFFFF" opacity="0.2" />
+              {/* توهج خفيف */}
+              <Circle cx="40" cy="70" r="20" fill="#4A4A6A" opacity="0.05" />
             </>
           )
         };
       case 'fresh':
         return {
-          colors: ['#FFCC00', '#FFB366'],
+          colors: ['#E8F5E9', '#C8E6C9'],
           svgPattern: (
             <>
-              <Circle cx="20" cy="20" r="12" fill="#90EE90" opacity="0.25" />
-              <Circle cx="60" cy="20" r="10" fill="#FFFF99" opacity="0.2" />
-              <Circle cx="20" cy="60" r="10" fill="#FFFF99" opacity="0.2" />
-              <Circle cx="60" cy="60" r="12" fill="#FF8FD1" opacity="0.25" />
+              <Path d="M20 30 Q25 20 30 30 Q25 35 20 30" fill="#2D6A4F" opacity="0.15" />
+              <Path d="M70 60 Q75 50 80 60 Q75 65 70 60" fill="#52B788" opacity="0.12" />
+              <Circle cx="15" cy="70" r="3" fill="#52B788" opacity="0.2" />
+              <Circle cx="85" cy="25" r="4" fill="#40916C" opacity="0.15" />
             </>
           )
         };
       case 'pink':
       case 'rose':
+      case 'purple':
         return {
-          colors: ['#FFB6D9', '#FFEBF0'],
+          colors: ['#FFF0F5', '#FFE4EC'],
           svgPattern: (
             <>
-              <Circle cx="15" cy="15" r="10" fill="#FF69B4" opacity="0.15" />
-              <Circle cx="45" cy="15" r="8" fill="#FFB6D9" opacity="0.1" />
-              <Circle cx="15" cy="45" r="8" fill="#FFB6D9" opacity="0.1" />
-              <Circle cx="45" cy="45" r="10" fill="#FFC0CB" opacity="0.15" />
+              {/* قلب صغير */}
+              <Path 
+                d="M20 25 C20 20, 25 18, 27 22 C29 18, 34 20, 34 25 C34 30, 27 35, 27 35 C27 35, 20 30, 20 25" 
+                fill="#FF69B4" 
+                opacity="0.12" 
+              />
+              <Circle cx="60" cy="60" r="12" fill="#FF69B4" opacity="0.06" />
+              <Circle cx="80" cy="20" r="8" fill="#FF1493" opacity="0.05" />
             </>
           )
         };
@@ -213,15 +233,27 @@ const BackgroundPattern = ({ children, style, patternId = 'pattern', pattern }) 
   const modernBg = getModernBackground();
 
   return (
-    <View style={containerStyle}>
+    <View style={[containerStyle]} key={renderKey}>
       <LinearGradient
         colors={modernBg.colors}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100%',
+          height: '100%',
+        }}
       />
       <View style={[StyleSheet.absoluteFill, styles.patternOverlay]}>
-        <Svg height="100%" width="100%" style={styles.svgContainer}>
+        <Svg 
+          height="100%"
+          width="100%"
+          style={styles.svgContainer}
+        >
           <Defs>
             <Pattern
               id={uniquePatternId}
@@ -251,10 +283,14 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    backgroundAttachment: 'fixed',
-    backgroundSize: 'contain',
+    position: 'relative',
   },
   patternOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     opacity: 1,
     width: '100%',
     height: '100%',

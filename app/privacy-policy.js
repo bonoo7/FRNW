@@ -79,38 +79,54 @@ export default function PrivacyPolicy() {
         <ContainerBackground style={styles.contentWrapper}>
           <ScrollView contentContainerStyle={styles.contentContainer}>
             <Text style={styles.title}>سياسة الخصوصية</Text>
+            <Text style={styles.lastUpdated}>آخر تحديث: 30 نوفمبر 2025</Text>
 
-            <Text style={styles.sectionTitle}>1. المعلومات التي نجمعها</Text>
-            <Text style={styles.text}>لا نجمع أي معلومات تعريفية (لا بريد إلكتروني، لا اسم، لا رقم هاتف). بياناتك جميعها تخزن محليًا على جهازك دون إرسال للخادم.</Text>
+            <Text style={styles.sectionTitle}>1. مقدمة</Text>
+            <Text style={styles.text}>نحن في تطبيق "فكّر" نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية. توضح هذه السياسة كيفية تعاملنا مع معلوماتك.</Text>
 
-            <Text style={styles.sectionTitle}>2. البيانات التقنية (اختياري)</Text>
-            <Text style={styles.text}>قد نجمع معلومات تقنية مجهولة مثل إصدار التطبيق ونوع الجهاز لتحسين الأداء وجودة التطبيق، دون ربطها بهويتك.</Text>
+            <Text style={styles.sectionTitle}>2. البيانات التي نجمعها</Text>
+            <Text style={styles.text}>• معلومات الحساب: البريد الإلكتروني والاسم (عند إنشاء حساب فقط){'\n'}• بيانات اللعب: النقاط، الألعاب المحفوظة، الإحصائيات{'\n'}• بيانات تقنية مجهولة: نوع الجهاز، إصدار التطبيق (لتحسين الأداء)</Text>
 
-            <Text style={styles.sectionTitle}>3. الأمان</Text>
-            <Text style={styles.text}>جميع العمليات داخل التطبيق تتم محليًا دون إرسال بياناتك. لا يحتاج التطبيق لأي أذونات خاصة.</Text>
+            <Text style={styles.sectionTitle}>3. كيف نستخدم بياناتك</Text>
+            <Text style={styles.text}>• حفظ تقدمك في اللعبة ومزامنته بين أجهزتك{'\n'}• تحسين تجربة المستخدم وأداء التطبيق{'\n'}• إرسال إشعارات مهمة (اختياري){'\n'}• لا نبيع أو نشارك بياناتك مع أطراف ثالثة</Text>
 
-            <Text style={styles.sectionTitle}>4. حقوقك</Text>
-            <Text style={styles.text}>يمكنك مسح بيانات التطبيق في إعدادات جهازك لإعادة ضبط كل شيء في أي وقت.</Text>
+            <Text style={styles.sectionTitle}>4. تخزين البيانات</Text>
+            <Text style={styles.text}>• بيانات اللعب تُخزن محلياً على جهازك وفي Firebase السحابي{'\n'}• نستخدم تشفير SSL لحماية البيانات أثناء النقل{'\n'}• يمكنك اللعب كضيف بدون حساب (البيانات محلية فقط)</Text>
 
-            <Text style={styles.sectionTitle}>5. التواصل</Text>
-            <Text style={styles.text}>للاستفسارات حول الخصوصية: diwandevlab@gmail.com</Text>
+            <Text style={styles.sectionTitle}>5. حقوقك</Text>
+            <Text style={styles.text}>• حذف حسابك وبياناتك في أي وقت من الإعدادات{'\n'}• مسح البيانات المحلية من إعدادات جهازك{'\n'}• طلب نسخة من بياناتك عبر التواصل معنا</Text>
+
+            <Text style={styles.sectionTitle}>6. أمان البيانات</Text>
+            <Text style={styles.text}>• قواعد Firestore صارمة تمنع الوصول غير المصرح{'\n'}• لا نطلب أذونات غير ضرورية{'\n'}• تحديثات أمنية مستمرة</Text>
+
+            <Text style={styles.sectionTitle}>7. التواصل</Text>
+            <Text style={styles.text}>للاستفسارات حول الخصوصية:{'\n'}البريد: diwandevlab@gmail.com</Text>
+
+            <View style={styles.divider} />
 
             <Text style={styles.title}>Privacy Policy</Text>
+            <Text style={styles.lastUpdated}>Last Updated: November 30, 2025</Text>
 
-            <Text style={styles.sectionTitle}>1. What We Collect</Text>
-            <Text style={styles.text}>No personal identifiers (no email, name, or phone number). All your data remains local on your device and is never sent to any server.</Text>
+            <Text style={styles.sectionTitle}>1. Introduction</Text>
+            <Text style={styles.text}>At "Fakker" app, we respect your privacy and are committed to protecting your personal data. This policy explains how we handle your information.</Text>
 
-            <Text style={styles.sectionTitle}>2. Technical Data (Optional)</Text>
-            <Text style={styles.text}>We may collect anonymous technical metrics (app version, device model) solely to improve performance and app quality, without linking to your identity.</Text>
+            <Text style={styles.sectionTitle}>2. Data We Collect</Text>
+            <Text style={styles.text}>• Account info: Email and name (only when creating an account){'\n'}• Game data: Points, saved games, statistics{'\n'}• Anonymous technical data: Device type, app version (for performance improvement)</Text>
 
-            <Text style={styles.sectionTitle}>3. Security</Text>
-            <Text style={styles.text}>All operations run entirely on your device without transmitting personal data. No special permissions are required.</Text>
+            <Text style={styles.sectionTitle}>3. How We Use Your Data</Text>
+            <Text style={styles.text}>• Save your game progress and sync across devices{'\n'}• Improve user experience and app performance{'\n'}• Send important notifications (optional){'\n'}• We do not sell or share your data with third parties</Text>
 
-            <Text style={styles.sectionTitle}>4. Your Rights</Text>
-            <Text style={styles.text}>You can clear the app's local data via your device settings at any time to reset everything.</Text>
+            <Text style={styles.sectionTitle}>4. Data Storage</Text>
+            <Text style={styles.text}>• Game data is stored locally and in Firebase cloud{'\n'}• We use SSL encryption to protect data in transit{'\n'}• You can play as guest without an account (local data only)</Text>
 
-            <Text style={styles.sectionTitle}>5. Contact</Text>
-            <Text style={styles.text}>For privacy inquiries: diwandevlab@gmail.com</Text>
+            <Text style={styles.sectionTitle}>5. Your Rights</Text>
+            <Text style={styles.text}>• Delete your account and data anytime from settings{'\n'}• Clear local data from device settings{'\n'}• Request a copy of your data by contacting us</Text>
+
+            <Text style={styles.sectionTitle}>6. Data Security</Text>
+            <Text style={styles.text}>• Strict Firestore rules prevent unauthorized access{'\n'}• We don't request unnecessary permissions{'\n'}• Continuous security updates</Text>
+
+            <Text style={styles.sectionTitle}>7. Contact</Text>
+            <Text style={styles.text}>For privacy inquiries:{'\n'}Email: diwandevlab@gmail.com</Text>
 
             <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}> 
               <Text style={styles.backButtonText}>العودة للرئيسية</Text>
@@ -149,6 +165,18 @@ const getStyles = (theme) =>
       marginBottom: SPACING.sm,
       textAlign: 'center',
       fontFamily: FONTS.families.secondary || 'sans-serif',
+    },
+    lastUpdated: {
+      fontSize: FONTS.sizes.xs,
+      color: theme.colors.text?.secondary || '#666',
+      textAlign: 'center',
+      marginBottom: SPACING.md,
+      fontFamily: FONTS.families.secondary || 'sans-serif',
+    },
+    divider: {
+      height: 1,
+      backgroundColor: theme.colors.border?.primary || '#CCC',
+      marginVertical: SPACING.lg,
     },
     sectionTitle: {
       fontSize: FONTS.sizes.h5,

@@ -81,10 +81,7 @@ export const LoginScreen = ({ onSwitchToRegister }) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#000" }}>
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: "none" }}>
-        <LinearGradient colors={["#1E40AF", "#3B82F6", "#1E40AF"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }} />
-      </View>
+    <BackgroundSelector>
       <ScrollView contentContainerStyle={styles.container} style={{ zIndex: 1 }}>
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -205,7 +202,7 @@ export const LoginScreen = ({ onSwitchToRegister }) => {
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
-    </View>
+    </BackgroundSelector>
   );
 };
 
@@ -262,10 +259,7 @@ export const RegisterScreen = ({ onSwitchToLogin }) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#000" }}>
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, pointerEvents: "none" }}>
-        <LinearGradient colors={["#1E40AF", "#3B82F6", "#1E40AF"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, zIndex: 0 }} />
-      </View>
+    <BackgroundSelector>
       <ScrollView contentContainerStyle={styles.container} style={{ zIndex: 1 }}>
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -420,7 +414,7 @@ export const RegisterScreen = ({ onSwitchToLogin }) => {
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
-    </View>
+    </BackgroundSelector>
   );
 };
 

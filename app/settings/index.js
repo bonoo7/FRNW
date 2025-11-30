@@ -193,48 +193,29 @@ export default function SettingsPage() {
   );
 
   return (
-    <BackgroundSelector
-      lightConfig={{
-        squareSize: 4,
-        gridGap: 6,
-        flickerChance: 0.3,
-        color: 'rgb(59, 130, 246)',
-        maxOpacity: 0.35,
-        animationSpeed: 'medium',
-      }}
-      darkConfig={{
-        direction: 'right',
-        speed: 1,
-        borderColor: '#404040',
-        squareSize: 40,
-        hoverFillColor: '#222',
-      }}
-    >
+    <>
       <Stack.Screen 
         options={{
-          headerShown: true,
-          headerTransparent: true,
-          headerTitle: 'الإعدادات',
-          headerTitleStyle: {
-            color: theme.colors.text.primary,
-            fontFamily: FONTS.bold,
-          },
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => {
-                if (router.canGoBack()) {
-                  router.back();
-                } else {
-                  router.replace('/');
-                }
-              }}
-              style={{ paddingLeft: 16 }}
-            >
-              <MaterialIcons name="arrow-back" size={24} color={theme.colors.text.primary} />
-            </TouchableOpacity>
-          ),
+          headerShown: false,
         }}
       />
+      <BackgroundSelector>
+        {/* هيدر مخصص */}
+        <View style={[styles.customHeader, { backgroundColor: theme.colors.background.surface }]}>
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Back button pressed - navigating to home');
+              router.push('/');
+            }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <MaterialIcons name="arrow-back" size={24} color={theme.colors.text.primary} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: theme.colors.text.primary }]}>
+            الإعدادات
+          </Text>
+          <View style={{ width: 24 }} />
+        </View>
 
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         {/* قسم الثيم */}
@@ -336,16 +317,34 @@ export default function SettingsPage() {
           </View>
         </View>
       </ScrollView>
-    </BackgroundSelector>
+      </BackgroundSelector>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  customHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.md,
+    paddingTop: SPACING.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: FONTS.bold,
+    flex: 1,
+    textAlign: 'center',
+  },
   container: {
     flex: 1,
   },
   content: {
-    paddingTop: 100, // مساحة للهيدر
+    paddingTop: SPACING.md,
     paddingHorizontal: SPACING.lg,
     paddingBottom: SPACING.xl,
   },

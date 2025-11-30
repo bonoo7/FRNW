@@ -31,7 +31,8 @@
     "url": "https://fakker.net"
   },
   "scripts": {
-    "start": "expo start",
+    "start": "concurrently \"node server.js\" \"expo start\"",
+    "start:expo": "expo start",
     "dev": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -113,6 +114,7 @@
     "@babel/core": "^7.20.0",
     "body-parser": "^1.20.3",
     "buffer": "^6.0.3",
+    "concurrently": "^9.2.1",
     "copy-webpack-plugin": "^12.0.2",
     "cors": "^2.8.5",
     "crypto-browserify": "^3.12.1",

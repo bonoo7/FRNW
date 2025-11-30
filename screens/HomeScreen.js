@@ -352,49 +352,7 @@ const HomeScreen = () => {
   // عرض شاشة التحميل أثناء التحقق من المصادقة
   if (authLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#000' }}>
-        {/* الخلفية */}
-        <View style={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 0,
-          pointerEvents: 'none'
-        }}>
-          <LinearGradient
-            colors={['#1E40AF', '#3B82F6', '#1E40AF']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={{ 
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-              zIndex: 0
-            }}
-          />
-          <BackgroundSelector
-            lightConfig={{
-              squareSize: 4,
-              gridGap: 6,
-              flickerChance: 0.3,
-              color: 'rgb(59, 130, 246)',
-              maxOpacity: 0.35,
-              animationSpeed: 'medium',
-            }}
-            darkConfig={{
-              direction: 'right',
-              speed: 1,
-              borderColor: '#404040',
-              squareSize: 40,
-              hoverFillColor: '#222',
-            }}
-          />
-        </View>
-
+      <BackgroundSelector>
         {/* المحتوى */}
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
           <View style={{ alignItems: 'center', marginBottom: 40 }}>
@@ -419,7 +377,7 @@ const HomeScreen = () => {
             </Text>
           </View>
         </View>
-      </View>
+      </BackgroundSelector>
     );
   }
 
@@ -1021,59 +979,12 @@ const HomeScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ 
-      flex: 1, 
-      backgroundColor: '#000000'
-    }}>
+    <BackgroundSelector>
       <Stack.Screen
         options={{
           headerShown: false
         }}
       />
-
-      {/* الخلفية الزرقاء الغامقة مع نمط شبكة متحرك جديد - تغطي كل الشاشة */}
-      <View style={{ 
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0,
-        pointerEvents: 'none'
-      }}>
-        <LinearGradient
-          colors={['#1E40AF', '#3B82F6', '#1E40AF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{ 
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            zIndex: 0
-          }}
-        />
-        
-        {/* نمط الخلفية - FlickeringGrid للثيم الفاتح، SquaresBackground للثيم الداكن */}
-        <BackgroundSelector
-          lightConfig={{
-            squareSize: 4,
-            gridGap: 6,
-            flickerChance: 0.3,
-            color: 'rgb(59, 130, 246)',
-            maxOpacity: 0.35,
-            animationSpeed: 'medium',
-          }}
-          darkConfig={{
-            direction: 'right',
-            speed: 1,
-            borderColor: '#404040',
-            squareSize: 40,
-            hoverFillColor: '#222',
-          }}
-        />
-      </View>
 
       <ScrollView 
         style={{ flex: 1, backgroundColor: 'transparent', zIndex: 1 }}
@@ -1099,14 +1010,14 @@ const HomeScreen = () => {
             {/* زر ألعابي */}
             <TouchableOpacity 
               style={{
-                backgroundColor: theme.colors.primary,
+                backgroundColor: theme.colors.button?.primary || theme.colors.primary,
                 borderRadius: 12,
                 paddingHorizontal: 16,
                 paddingVertical: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
                 gap: 8,
-                shadowColor: "#000",
+                shadowColor: theme.colors.button?.primary || theme.colors.primary,
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
@@ -1114,10 +1025,10 @@ const HomeScreen = () => {
               }}
               onPress={() => setShowSavedGames(true)}
             >
-              <MaterialIcons name="videogame-asset" size={20} color="#FFF" />
+              <MaterialIcons name="videogame-asset" size={20} color={theme.colors.button?.text || "#FFF"} />
               <Text style={{
                 fontSize: 13,
-                color: '#FFF',
+                color: theme.colors.button?.text || '#FFF',
                 fontFamily: FONTS.families.secondary,
                 fontWeight: FONTS.weights.bold
               }}>
@@ -1208,14 +1119,14 @@ const HomeScreen = () => {
                       paddingVertical: isSmallScreen ? 10 : 6,
                       borderRadius: 10,
                       borderWidth: 2,
-                      borderColor: gameSettings.teamCount === count ? '#1E40AF' : '#DDD',
-                      backgroundColor: gameSettings.teamCount === count ? '#1E40AF' : '#F8FBFF',
+                      borderColor: gameSettings.teamCount === count ? (theme.colors.button?.primary || theme.colors.primary) : '#DDD',
+                      backgroundColor: gameSettings.teamCount === count ? (theme.colors.button?.primary || theme.colors.primary) : theme.colors.background.secondary,
                     }}
                   >
                     <Text style={{
                       fontSize: isSmallScreen ? 16 : 12,
                       fontWeight: 'bold',
-                      color: gameSettings.teamCount === count ? '#FFF' : '#333',
+                      color: gameSettings.teamCount === count ? (theme.colors.button?.text || '#FFF') : theme.colors.text.primary,
                       fontFamily: FONTS.families.secondary,
                     }}>
                       {count}
@@ -1230,7 +1141,7 @@ const HomeScreen = () => {
               <Text style={{
                 fontSize: 13,
                 fontWeight: '600',
-                color: '#666',
+                color: theme.colors.text.secondary,
                 marginBottom: 8,
                 fontFamily: FONTS.families.secondary,
                 textAlign: 'right',
@@ -1240,19 +1151,19 @@ const HomeScreen = () => {
               <TextInput
                 style={{
                   borderWidth: 2,
-                  borderColor: '#1E40AF',
+                  borderColor: theme.colors.button?.primary || theme.colors.primary,
                   borderRadius: 12,
                   paddingHorizontal: 16,
                   paddingVertical: isSmallScreen ? 14 : 10,
                   fontSize: 13,
                   fontFamily: FONTS.families.secondary,
-                  color: '#333',
+                  color: theme.colors.text.primary,
                   textAlign: 'right',
-                  backgroundColor: '#F8FBFF',
+                  backgroundColor: theme.colors.background.secondary,
                   minHeight: isSmallScreen ? 50 : 40,
                 }}
                 placeholder="الجولة الأولى"
-                placeholderTextColor="#CCC"
+                placeholderTextColor={theme.colors.text.secondary}
                 value={gameSettings.roundName}
                 onChangeText={(value) => setGameSettings(prev => ({ ...prev, roundName: value }))}
               />
@@ -1277,7 +1188,7 @@ const HomeScreen = () => {
                   <Text style={{
                     fontSize: 13,
                     fontWeight: '600',
-                    color: '#666',
+                    color: theme.colors.text.secondary,
                     marginBottom: 8,
                     fontFamily: FONTS.families.secondary,
                     textAlign: 'right',
@@ -1287,19 +1198,19 @@ const HomeScreen = () => {
                   <TextInput
                     style={{
                       borderWidth: 2,
-                      borderColor: '#1E40AF',
+                      borderColor: theme.colors.button?.primary || theme.colors.border.primary,
                       borderRadius: 10,
                       paddingHorizontal: 12,
                       paddingVertical: 10,
                       fontSize: 13,
                       fontFamily: FONTS.families.secondary,
-                      color: '#333',
+                      color: theme.colors.text.primary,
                       textAlign: 'right',
-                      backgroundColor: '#F8FBFF',
+                      backgroundColor: theme.colors.background.secondary,
                       minHeight: 45,
                     }}
                     placeholder={getDefaultTeamName(index)}
-                    placeholderTextColor="#CCC"
+                    placeholderTextColor={theme.colors.text.secondary}
                     value={gameSettings.teams[index]}
                     onChangeText={(value) => updateTeam(index, value)}
                   />
@@ -1314,26 +1225,26 @@ const HomeScreen = () => {
               onPress={handleStartGame}
               disabled={isLoading}
               style={{
-                backgroundColor: '#1E40AF',
+                backgroundColor: theme.colors.button?.primary || theme.colors.primary,
                 borderRadius: 12,
                 paddingVertical: 16,
                 alignItems: 'center',
                 justifyContent: 'center',
                 opacity: isLoading ? 0.7 : 1,
                 elevation: 4,
-                shadowColor: '#1E40AF',
+                shadowColor: theme.colors.button?.primary || theme.colors.primary,
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.25,
                 shadowRadius: 4,
               }}
             >
             {isLoading ? (
-              <ActivityIndicator color="#FFFFFF" />
+              <ActivityIndicator color={theme.colors.button?.text || "#FFFFFF"} />
             ) : (
               <Text style={{
                 fontSize: 18,
                 fontWeight: 'bold',
-                color: '#FFFFFF',
+                color: theme.colors.button?.text || '#FFFFFF',
                 fontFamily: FONTS.families.secondary,
               }}>
                 بدء اللعبة
@@ -1351,7 +1262,7 @@ const HomeScreen = () => {
         visible={showSavedGames}
         onClose={() => setShowSavedGames(false)}
       />
-    </SafeAreaView>
+    </BackgroundSelector>
   );
 };
 

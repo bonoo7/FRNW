@@ -7,7 +7,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 const themeOptions = [
   { id: 'blue', name: 'أزرق', color: '#4A6FFF', icon: 'water' },
   { id: 'dark', name: 'داكن', color: '#1A1A1A', icon: 'nights-stay' },
-  { id: 'fresh', name: 'فريش', color: '#A2FF76', icon: 'eco' },
+  { id: 'fresh', name: 'طبيعة', color: '#2D6A4F', icon: 'eco' },
   { id: 'purple', name: 'وردي', color: '#FF69B4', icon: 'favorite' },
 ];
 

@@ -599,51 +599,7 @@ const GameSetup = () => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000000' }}>
-      {/* الخلفية الزرقاء الغامقة مع نمط شبكة متحرك جديد - تغطي كل الشاشة */}
-      <View style={{ 
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0,
-        pointerEvents: 'none'
-      }}>
-        <LinearGradient
-          colors={['#1E40AF', '#3B82F6', '#1E40AF']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{ 
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            zIndex: 0
-          }}
-        />
-        
-        {/* نمط الخلفية - FlickeringGrid للثيم الفاتح، SquaresBackground للثيم الداكن */}
-        <BackgroundSelector
-          lightConfig={{
-            squareSize: 4,
-            gridGap: 6,
-            flickerChance: 0.3,
-            color: 'rgb(59, 130, 246)',
-            maxOpacity: 0.35,
-            animationSpeed: 'medium',
-          }}
-          darkConfig={{
-            direction: 'right',
-            speed: 1,
-            borderColor: '#404040',
-            squareSize: 40,
-            hoverFillColor: '#222',
-          }}
-        />
-      </View>
-      
+    <BackgroundSelector>      
       <Stack.Screen options={{ headerShown: false }} />
       <View style={[staticStyles.container, { position: 'relative', zIndex: 2 }]}>
         <ScrollView 
@@ -854,7 +810,7 @@ const GameSetup = () => {
           </View>
         </View>
       </View>
-    </View>
+    </BackgroundSelector>
   );
 };
 

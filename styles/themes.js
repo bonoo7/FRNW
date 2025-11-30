@@ -44,7 +44,7 @@ export const modernThemes = {
       overlay: 'rgba(0, 0, 0, 0.5)',
 
       gradient: {
-        primary: ['#1E40AF', '#3B82F6'],
+        primary: ['#1E40AF', '#3B82F6', '#1E40AF'],
         success: ['#4CAF50', '#388E3C'],
         error: ['#F72585', '#B5179E'],
         card: ['rgba(255,255,255,0.9)', 'rgba(255,255,255,0.95)']
@@ -95,14 +95,15 @@ export const modernThemes = {
       overlay: 'rgba(0, 0, 0, 0.7)',
 
       button: {
-        primary: '#2D2D2D',
-        secondary: '#3A3A3A',
-        accent: '#4A4A4A',
+        primary: '#3A3A3A',
+        secondary: '#4A4A4A',
+        accent: '#5A5A5A',
+        text: '#FFFFFF',
         disabled: '#444444'
       },
 
       gradient: {
-        primary: ['#1A1A1A', '#2D2D2D'],
+        primary: ['#1A1A1A', '#2D2D2D', '#1A1A1A'],
         success: ['#4CAF50', '#388E3C'],
         error: ['#FF0000', '#D32F2F'],
         card: ['#1A1A1A', '#2A2A2A']
@@ -122,8 +123,8 @@ export const modernThemes = {
   },
   fresh: {
     colors: {
-      primary: '#A2FF76',
-      secondary: '#FFA000',
+      primary: '#2D6A4F',
+      secondary: '#52B788',
       success: '#4CAF50',
       error: '#F72585',
       warning: '#FF9800',
@@ -131,42 +132,52 @@ export const modernThemes = {
       disabled: '#E0E0E0',
       
       text: {
-        primary: '#2B2D42',
-        secondary: '#8D99AE',
+        primary: '#1B4D2B',
+        secondary: '#5A7A5A',
         light: '#FFFFFF',
-        disabled: 'rgba(45, 45, 45, 0.38)',
-        accent: '#2E5DB8',
+        disabled: 'rgba(27, 77, 43, 0.38)',
+        accent: '#2D6A4F',
       },
 
       background: {
-        primary: 'rgba(255, 255, 255, 0.98)',
-        secondary: 'rgba(253, 248, 235, 0.98)',
-        card: 'rgba(255, 255, 255, 0.9)',
-        surface: 'rgba(255, 252, 245, 0.9)',
-        accent: 'rgba(46, 93, 184, 0.05)',
+        primary: 'rgba(232, 245, 233, 0.98)',
+        secondary: 'rgba(200, 230, 201, 0.98)',
+        card: 'rgba(232, 245, 233, 0.95)',
+        surface: 'rgba(232, 245, 233, 0.92)',
+        accent: 'rgba(45, 106, 79, 0.08)',
         pattern: {
-          type: 'grid',
+          type: 'leaves',
           opacity: 0.15,
           size: 28,
           rotation: 45,
-          color: '#A2FF76',
+          color: '#2D6A4F',
           density: 1
         }
       },
-      border: {
-        primary: '#2E5DB8',
-        secondary: '#2E5DB8',
-        light: '#2E5DB8',
-        dark: '#2E5DB8',
-        accent: '#2E5DB8'
+      
+      button: {
+        primary: '#2D6A4F',
+        secondary: '#52B788',
+        accent: '#40916C',
+        text: '#FFFFFF',
+        disabled: '#CCCCCC'
       },
+
+      border: {
+        primary: '#2D6A4F',
+        secondary: '#52B788',
+        light: '#95D5B2',
+        dark: '#1B4D2B',
+        accent: '#40916C'
+      },
+      
       overlay: 'rgba(0, 0, 0, 0.5)',
 
       gradient: {
-        primary: ['#2E5DB8', '#1E40AF'],
+        primary: ['#2D6A4F', '#52B788', '#2D6A4F'],
         success: ['#4CAF50', '#388E3C'],
         error: ['#F72585', '#B5179E'],
-        card: ['rgba(255,252,240,0.9)', 'rgba(255,252,240,0.95)']
+        card: ['rgba(232,245,233,0.9)', 'rgba(232,245,233,0.95)']
       }
     }
   },
@@ -181,19 +192,19 @@ export const modernThemes = {
       disabled: '#E0E0E0',
       
       text: {
-        primary: '#2B2D42',
-        secondary: '#8D99AE',
+        primary: '#8B3A62',
+        secondary: '#B56B8C',
         light: '#FFFFFF',
-        disabled: 'rgba(45, 45, 45, 0.38)',
+        disabled: 'rgba(139, 58, 98, 0.38)',
         accent: '#FF69B4',
       },
 
       background: {
-        primary: 'rgba(255, 240, 245, 0.8)',
-        secondary: 'rgba(255, 228, 235, 0.8)',
-        card: 'rgba(255, 245, 248, 0.9)',
-        surface: 'rgba(255, 235, 242, 0.9)',
-        accent: 'rgba(255, 105, 180, 0.05)',
+        primary: 'rgba(255, 240, 245, 0.98)',
+        secondary: 'rgba(255, 228, 236, 0.98)',
+        card: 'rgba(255, 245, 248, 0.95)',
+        surface: 'rgba(255, 240, 245, 0.92)',
+        accent: 'rgba(255, 105, 180, 0.08)',
         pattern: {
           color: '#FF69B4',
           opacity: 0.1,
@@ -201,6 +212,14 @@ export const modernThemes = {
           size: 24,
           rotation: 0
         }
+      },
+
+      button: {
+        primary: '#FF69B4',
+        secondary: '#FF1493',
+        accent: '#DB7093',
+        text: '#FFFFFF',
+        disabled: '#CCCCCC'
       },
 
       border: {
@@ -213,11 +232,11 @@ export const modernThemes = {
       overlay: 'rgba(0, 0, 0, 0.5)',
 
       gradient: {
-        primary: ['#FF69B4', '#FF1493'],
+        primary: ['#FF69B4', '#FF1493', '#FF69B4'],
         success: ['#4CAF50', '#388E3C'],
         error: ['#F72585', '#B5179E'],
-        card: ['rgba(255,245,248,0.9)', 'rgba(255,245,248,0.95)']
+        card: ['rgba(255,240,245,0.9)', 'rgba(255,240,245,0.95)']
       }
     }
   }
-}; 
+};

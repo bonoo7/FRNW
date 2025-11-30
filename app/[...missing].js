@@ -6,19 +6,32 @@ export default function NotFound() {
   const segments = useSegments();
 
   useEffect(() => {
+    // تجاهل عناوين الإدارة والويب
+    const firstSegment = segments?.[0];
+    
+    // السماح بصفحات الإدارة والـ API
+    if (firstSegment === 'admin' || firstSegment === 'api' || 
+        firstSegment === 'public' || firstSegment === 'public') {
+      return;
+    }
+
     // Handle OAuth redirect from Google
-    if (segments[0] === 'oauthredirection') {
+    if (firstSegment === 'oauthredirection') {
       // The auth is being processed by AuthContext useEffect
       // Just navigate back to auth or home
       console.log('OAuth redirect detected, navigating away...');
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         router.replace('/');
       }, 100);
-    } else {
+      return () => clearTimeout(timer);
+    } else if (firstSegment) {
       // For other unmatched routes, go to home
-      router.replace('/');
+      const timer = setTimeout(() => {
+        router.replace('/');
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, []);
+  }, [segments, router]);
 
   return null;
 }

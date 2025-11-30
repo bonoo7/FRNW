@@ -490,16 +490,30 @@ const QuestionScreen = ({ questionData }) => {
               {/* قسم الفريق الحالي (يسار) */}
               <View style={styles.headerLeftSection}>
                 {!isAnswerRevealed && currentQuestionTeam && (
-                  <Text style={[
-                    styles.teamName, 
-                    { 
-                      color: theme.colors.text.secondary,
-                      textAlign: 'left',
-                      fontFamily: 'ReadexPro_500Medium'
-                    }
-                  ]}>
-                    {currentQuestionTeam}
-                  </Text>
+                  <View style={{
+                    backgroundColor: theme.colors.button?.secondary || theme.colors.secondary,
+                    borderRadius: 12,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 6,
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
+                  }}>
+                    <MaterialIcons name="group" size={16} color="#FFF" />
+                    <Text style={{
+                      fontSize: 12,
+                      color: '#FFF',
+                      fontFamily: FONTS.families.secondary,
+                      fontWeight: FONTS.weights.bold,
+                    }} numberOfLines={1}>
+                      {currentQuestionTeam}
+                    </Text>
+                  </View>
                 )}
               </View>
               
@@ -711,20 +725,21 @@ const QuestionScreen = ({ questionData }) => {
                 <View style={[
                   styles.teamsAnswerContainer,
                   {
-                    width: '100%', // توسيع الحاوية لتشمل جميع الأزرار
+                    width: '100%',
                     alignSelf: 'center',
                     marginBottom: SPACING.md,
-                    marginTop: SPACING.sm, // إضافة مسافة علوية قبل أزرار الفرق
+                    marginTop: SPACING.sm,
                   }
                 ]}>
                   <View style={[
                     styles.teamsRow,
                     {
                       flexDirection: 'row',
-                      flexWrap: 'nowrap',
+                      flexWrap: 'wrap',
                       justifyContent: 'center',
                       alignItems: 'center',
                       width: '100%',
+                      gap: 6,
                     }
                   ]}>
                     {teams.map((team) => (
@@ -734,9 +749,12 @@ const QuestionScreen = ({ questionData }) => {
                           styles.teamAnswerButton,
                           { 
                             backgroundColor: theme.colors.primary,
-                            flex: 1,
-                            minWidth: 0, // السماح بتقليص الأزرار
+                            minWidth: teams.length > 3 ? '30%' : 60,
+                            maxWidth: teams.length > 3 ? '48%' : 'auto',
+                            paddingHorizontal: 12,
+                            paddingVertical: 10,
                             marginHorizontal: 2,
+                            marginVertical: 3,
                             borderWidth: 1,
                             borderColor: theme.colors.border?.primary || theme.colors.primary,
                             elevation: isAnswerRevealed ? 30 : 0,
@@ -748,12 +766,12 @@ const QuestionScreen = ({ questionData }) => {
                         <Text style={[
                           styles.teamButtonText,
                           { 
-                            fontSize: FONTS.sizes.small, 
-                            fontFamily: 'ReadexPro_700Bold', // تغيير الخط ليكون مثل زر "لم يجب أحد"
+                            fontSize: teams.length > 4 ? 11 : FONTS.sizes.small, 
+                            fontFamily: 'ReadexPro_700Bold',
                             textAlign: 'center',
-                            color: '#FFFFFF', // ضمان أن النص أبيض للتباين
+                            color: '#FFFFFF',
                           }
-                        ]}>
+                        ]} numberOfLines={1} adjustsFontSizeToFit>
                           {team}
                         </Text>
                       </TouchableOpacity>
@@ -762,12 +780,15 @@ const QuestionScreen = ({ questionData }) => {
                       style={[
                         styles.teamAnswerButton,
                         { 
-                          backgroundColor: '#D61C1C', // تغيير اللون إلى أحمر صريح بدلاً من theme.colors.error
-                          flex: 1.2, // زيادة العرض قليلاً مقارنةً بأزرار الفرق
+                          backgroundColor: '#D61C1C',
+                          minWidth: 100,
+                          paddingHorizontal: 16,
+                          paddingVertical: 10,
                           marginHorizontal: 2,
-                          marginLeft: 8, // إضافة مسافة إضافية على اليسار للتفريق بينه وبين أزرار الفرق
-                          borderWidth: 1.5, // إضافة إطار سميك
-                          borderColor: '#FF0000', // إطار بلون أحمر
+                          marginVertical: 3,
+                          marginLeft: 8,
+                          borderWidth: 1.5,
+                          borderColor: '#FF0000',
                           elevation: isAnswerRevealed ? 30 : 0,
                           transform: isAnswerRevealed ? [{ translateY: -25 }] : []
                         }
@@ -778,11 +799,11 @@ const QuestionScreen = ({ questionData }) => {
                         styles.teamButtonText,
                         { 
                           fontSize: FONTS.sizes.small, 
-                          fontFamily: 'ReadexPro_700Bold', // جعل النص أكثر سمكاً للتأكيد
+                          fontFamily: 'ReadexPro_700Bold',
                           textAlign: 'center',
-                          color: '#FFFFFF', // ضمان أن النص أبيض للتباين مع الخلفية الحمراء
+                          color: '#FFFFFF',
                         }
-                      ]}>
+                      ]} numberOfLines={1} adjustsFontSizeToFit>
                         لم يجب أحد
                       </Text>
                     </TouchableOpacity>

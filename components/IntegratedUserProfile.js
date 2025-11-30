@@ -148,14 +148,14 @@ const IntegratedUserProfile = ({ style, onPressCredits }) => {
       <TouchableOpacity
         onPress={() => setIsMenuVisible(true)}
         style={{
-          backgroundColor: theme.colors.primary,
+          backgroundColor: theme.colors.button?.primary || theme.colors.primary,
           borderRadius: 12,
           paddingHorizontal: 16,
           paddingVertical: 10,
           flexDirection: 'row',
           alignItems: 'center',
           gap: 8,
-          shadowColor: "#000",
+          shadowColor: theme.colors.button?.primary || theme.colors.primary,
           shadowOffset: {
             width: 0,
             height: 2,
@@ -169,7 +169,7 @@ const IntegratedUserProfile = ({ style, onPressCredits }) => {
         <Image
           source={{
             uri: currentUser.photoURL || 
-                 `https://via.placeholder.com/40/${theme.colors.primary.replace('#', '')}/FFFFFF?text=${(userProfile?.displayName?.charAt(0) || 'U')}`
+                 `https://via.placeholder.com/40/${(theme.colors.button?.primary || theme.colors.primary).replace('#', '')}/FFFFFF?text=${(userProfile?.displayName?.charAt(0) || 'U')}`
           }}
           style={{
             width: 24,
@@ -183,7 +183,7 @@ const IntegratedUserProfile = ({ style, onPressCredits }) => {
         
         <Text style={{
           fontSize: 13,
-          color: '#FFF',
+          color: theme.colors.button?.text || '#FFF',
           fontFamily: FONTS.families.secondary,
           fontWeight: 'bold',
           maxWidth: 100
