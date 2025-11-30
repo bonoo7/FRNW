@@ -588,9 +588,9 @@ const QuestionScreen = ({ questionData }) => {
                     bottom: 0,
                     width: '100%',
                     height: '100%',
-                    opacity: 0.15, // نفس الشفافية المستخدمة في بطاقات الفئات
-                    zIndex: -1, // وضع الصورة في الخلفية
-                    resizeMode: 'cover' // تغيير من contain إلى cover لتغطية الحاوية كاملة
+                    opacity: 0.35,
+                    zIndex: -1,
+                    resizeMode: 'cover'
                   }}
                 />
               )}
@@ -797,305 +797,279 @@ const QuestionScreen = ({ questionData }) => {
       {/* Modal التبليغ */}
       <Modal
         visible={showReportModal}
-        transparent={true}
-        animationType="fade"
+        transparent={false}
+        animationType="slide"
         onRequestClose={() => setShowReportModal(false)}
         statusBarTranslucent={true}
       >
-        <View style={[styles.modalOverlay, {
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }]}>
-          <View style={[
-            styles.modalContent,
-            { 
-              backgroundColor: '#F8FAFD',
-              borderWidth: 1,
-              borderColor: theme.colors.border,
-              elevation: 5,
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              width: isLandscape ? '85%' : '90%',
-              maxWidth: isLandscape ? 700 : 500,
-              maxHeight: isLandscape ? '90%' : '85%',
-              borderRadius: 16,
-              overflow: 'hidden'
-            }
-          ]}>
-            <View style={[styles.modalHeader, {
-              backgroundColor: theme.colors.primary,
-              padding: SPACING.md,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center'
+        <View style={{
+          flex: 1,
+          backgroundColor: theme.colors.background.primary,
+        }}>
+          <View style={[styles.modalHeader, {
+            backgroundColor: theme.colors.primary,
+            padding: SPACING.md,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingTop: Platform.OS === 'android' ? SPACING.lg : SPACING.md
+          }]}>
+            <Text style={[styles.modalTitle, { 
+              color: '#FFFFFF',
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              flex: 1,
+              fontFamily: 'ReadexPro_700Bold'
             }]}>
-              <Text style={[styles.modalTitle, { 
-                color: '#FFFFFF',
-                fontSize: isLandscape ? 18 : 20,
-                fontWeight: 'bold',
-                textAlign: 'center',
-                flex: 1,
-                fontFamily: 'ReadexPro_700Bold'
-              }]}>
-                تبليغ عن مشكلة في السؤال
-              </Text>
-              <TouchableOpacity
-                onPress={() => setShowReportModal(false)}
-                style={{
-                  padding: SPACING.sm,
-                  marginRight: -SPACING.sm
-                }}
-              >
-                <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: 'bold' }}>×</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView 
-              style={{ flex: 1 }}
-              contentContainerStyle={{ 
-                padding: SPACING.md
+              تبليغ عن مشكلة
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowReportModal(false)}
+              style={{
+                padding: SPACING.sm,
               }}
             >
-              <View style={[styles.reportQuestionContainer, {
-                backgroundColor: '#FFFFFF',
-                borderColor: '#E3E8EF',
-                borderRadius: 12,
-                padding: SPACING.md,
-                marginBottom: SPACING.md,
-                borderWidth: 1,
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 1,
-                },
-                shadowOpacity: 0.1,
-                shadowRadius: 2,
-                elevation: 2,
-              }]}>
-                <Text style={[styles.reportLabel, { 
-                  color: theme.colors.primary,
-                  fontWeight: 'bold',
-                  marginBottom: SPACING.sm,
-                  fontSize: isLandscape ? 14 : 16,
-                  fontFamily: 'ReadexPro_500Medium'
-                }]}>
-                  السؤال:
-                </Text>
-                <Text style={[styles.reportQuestion, { 
-                  color: '#2D3748',
-                  marginBottom: SPACING.md,
-                  fontSize: isLandscape ? 14 : 16,
-                  fontFamily: 'ReadexPro_400Regular'
-                }]}>
-                  {questionData.question}
-                </Text>
-                <Text style={[styles.reportLabel, { 
-                  color: theme.colors.primary,
-                  fontWeight: 'bold',
-                  marginBottom: SPACING.sm,
-                  fontSize: isLandscape ? 14 : 16,
-                  fontFamily: 'ReadexPro_500Medium'
-                }]}>
-                  الإجابة:
-                </Text>
-                <Text style={[styles.reportQuestion, { 
-                  color: '#2D3748',
-                  fontSize: isLandscape ? 14 : 16,
-                  fontFamily: 'ReadexPro_400Regular'
-                }]}>
-                  {questionData.answer}
-                </Text>
-              </View>
-
-              <View style={[styles.reportTypeContainer, {
-                marginBottom: SPACING.md,
-                flexDirection: isLandscape ? 'row' : 'column',
-                flexWrap: 'wrap',
-                gap: SPACING.sm
-              }]}>
-                {Object.entries(ReportTypes).map(([key, value]) => (
-                  <TouchableOpacity
-                    key={key}
-                    style={[
-                      styles.reportTypeButton,
-                      {
-                        backgroundColor: selectedReportType === value 
-                          ? `${theme.colors.primary}15`
-                          : '#FFFFFF',
-                        borderColor: selectedReportType === value 
-                          ? theme.colors.primary
-                          : '#E3E8EF',
-                        borderWidth: 1,
-                        borderRadius: 8,
-                        padding: SPACING.sm,
-                        width: isLandscape ? '32%' : '100%',
-                        shadowColor: "#000",
-                        shadowOffset: {
-                          width: 0,
-                          height: 1,
-                        },
-                        shadowOpacity: 0.05,
-                        shadowRadius: 1,
-                        elevation: selectedReportType === value ? 2 : 1,
-                      }
-                    ]}
-                    onPress={() => setSelectedReportType(value)}
-                  >
-                    <Text style={[
-                      styles.reportTypeText,
-                      { 
-                        color: selectedReportType === value 
-                          ? theme.colors.primary
-                          : '#4A5568',
-                        fontWeight: selectedReportType === value ? 'bold' : 'normal',
-                        fontSize: isLandscape ? 13 : 14,
-                        textAlign: 'center',
-                        fontFamily: 'ReadexPro_500Medium'
-                      }
-                    ]}>
-                      {value}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <TextInput
-                style={[
-                  styles.reportInput,
-                  { 
-                    backgroundColor: '#FFFFFF',
-                    color: '#2D3748',
-                    borderColor: '#E3E8EF',
-                    borderWidth: 1,
-                    borderRadius: 8,
-                    padding: SPACING.sm,
-                    marginBottom: SPACING.sm,
-                    minHeight: isLandscape ? 60 : 80,
-                    maxHeight: isLandscape ? 100 : 120,
-                    fontSize: isLandscape ? 13 : 14,
-                    fontFamily: 'ReadexPro_400Regular'
-                  }
-                ]}
-                placeholder="سبب التبليغ..."
-                placeholderTextColor="#A0AEC0"
-                value={reportReason}
-                onChangeText={setReportReason}
-                multiline
-              />
-
-              <TextInput
-                style={[
-                  styles.reportInput,
-                  { 
-                    backgroundColor: '#FFFFFF',
-                    color: '#2D3748',
-                    borderColor: '#E3E8EF',
-                    borderWidth: 1,
-                    borderRadius: 8,
-                    padding: SPACING.sm,
-                    marginBottom: SPACING.md,
-                    minHeight: isLandscape ? 60 : 80,
-                    maxHeight: isLandscape ? 100 : 120,
-                    fontSize: isLandscape ? 13 : 14,
-                    fontFamily: 'ReadexPro_400Regular'
-                  }
-                ]}
-                placeholder="تعليق إضافي (اختياري)..."
-                placeholderTextColor="#A0AEC0"
-                value={reportComment}
-                onChangeText={setReportComment}
-                multiline
-              />
-
-              <View style={[styles.modalButtons, { 
-                flexDirection: 'row', 
-                justifyContent: 'space-between',
-                gap: SPACING.sm
-              }]}>
-                <TouchableOpacity
-                  style={[
-                    styles.modalButton,
-                    { 
-                      backgroundColor: theme.colors.primary,
-                      flex: 1,
-                      borderRadius: 8,
-                      padding: isLandscape ? SPACING.sm : SPACING.md,
-                      elevation: 2,
-                      shadowColor: "#000",
-                      shadowOffset: {
-                        width: 0,
-                        height: 2,
-                      },
-                      shadowOpacity: 0.15,
-                      shadowRadius: 3,
-                      borderWidth: 1,
-                      borderColor: theme.colors.border?.primary || theme.colors.primary
-                    }
-                  ]}
-                  onPress={handleReportSubmit}
-                >
-                  <Text style={[
-                    styles.modalButtonText,
-                    { 
-                      color: '#FFFFFF',
-                      textAlign: 'center',
-                      fontWeight: 'bold',
-                      fontSize: isLandscape ? 14 : 16,
-                      fontFamily: 'ReadexPro_700Bold'
-                    }
-                  ]}>
-                    إرسال
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.modalButton,
-                    { 
-                      backgroundColor: theme.colors.error,
-                      flex: 1,
-                      borderRadius: 8,
-                      padding: isLandscape ? SPACING.sm : SPACING.md,
-                      elevation: 2,
-                      shadowColor: "#000",
-                      shadowOffset: {
-                        width: 0,
-                        height: 2,
-                      },
-                      shadowOpacity: 0.15,
-                      shadowRadius: 3,
-                      borderWidth: 1,
-                      borderColor: theme.colors.primary
-                    }
-                  ]}
-                  onPress={() => setShowReportModal(false)}
-                >
-                  <Text style={[
-                    styles.modalButtonText,
-                    { 
-                      color: '#FFFFFF',
-                      textAlign: 'center',
-                      fontWeight: 'bold',
-                      fontSize: isLandscape ? 14 : 16,
-                      fontFamily: 'ReadexPro_700Bold'
-                    }
-                  ]}>
-                    إلغاء
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
+              <Text style={{ color: '#FFFFFF', fontSize: 28, fontWeight: 'bold' }}>×</Text>
+            </TouchableOpacity>
           </View>
+
+          <ScrollView 
+            style={{ flex: 1 }}
+            contentContainerStyle={{ 
+              padding: SPACING.md,
+              paddingBottom: SPACING.xl
+            }}
+            scrollEnabled={true}
+          >
+            <View style={[styles.reportQuestionContainer, {
+              backgroundColor: theme.colors.background.card,
+              borderColor: theme.colors.border.primary,
+              borderRadius: 12,
+              padding: SPACING.md,
+              marginBottom: SPACING.md,
+              borderWidth: 1,
+            }]}>
+              <Text style={[styles.reportLabel, { 
+                color: theme.colors.primary,
+                fontWeight: 'bold',
+                marginBottom: SPACING.sm,
+                fontSize: 15,
+                fontFamily: 'ReadexPro_500Medium'
+              }]}>
+                السؤال:
+              </Text>
+              <Text style={[styles.reportQuestion, { 
+                color: theme.colors.text.primary,
+                marginBottom: SPACING.md,
+                fontSize: 15,
+                fontFamily: 'ReadexPro_400Regular',
+                lineHeight: 24
+              }]}>
+                {questionData.question}
+              </Text>
+              <Text style={[styles.reportLabel, { 
+                color: theme.colors.primary,
+                fontWeight: 'bold',
+                marginBottom: SPACING.sm,
+                fontSize: 15,
+                fontFamily: 'ReadexPro_500Medium'
+              }]}>
+                الإجابة:
+              </Text>
+              <Text style={[styles.reportQuestion, { 
+                color: theme.colors.text.primary,
+                fontSize: 15,
+                fontFamily: 'ReadexPro_400Regular',
+                lineHeight: 24
+              }]}>
+                {questionData.answer}
+              </Text>
+            </View>
+
+            <Text style={{
+              color: theme.colors.text.primary,
+              fontWeight: 'bold',
+              marginBottom: SPACING.sm,
+              fontSize: 15,
+              fontFamily: 'ReadexPro_500Medium'
+            }}>
+              نوع المشكلة:
+            </Text>
+
+            <View style={[styles.reportTypeContainer, {
+              marginBottom: SPACING.md,
+              flexDirection: 'column',
+              gap: SPACING.xs
+            }]}>
+              {Object.entries(ReportTypes).map(([key, value]) => (
+                <TouchableOpacity
+                  key={key}
+                  style={[
+                    styles.reportTypeButton,
+                    {
+                      backgroundColor: selectedReportType === value 
+                        ? `${theme.colors.primary}20`
+                        : theme.colors.background.card,
+                      borderColor: selectedReportType === value 
+                        ? theme.colors.primary
+                        : theme.colors.border.primary,
+                      borderWidth: selectedReportType === value ? 2 : 1,
+                      borderRadius: 10,
+                      padding: SPACING.md,
+                      width: '100%',
+                    }
+                  ]}
+                  onPress={() => setSelectedReportType(value)}
+                >
+                  <Text style={[
+                    styles.reportTypeText,
+                    { 
+                      color: selectedReportType === value 
+                        ? theme.colors.primary
+                        : theme.colors.text.secondary,
+                      fontWeight: selectedReportType === value ? 'bold' : 'normal',
+                      fontSize: 15,
+                      textAlign: 'right',
+                      fontFamily: 'ReadexPro_500Medium'
+                    }
+                  ]}>
+                    {value}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <Text style={{
+              color: theme.colors.text.primary,
+              fontWeight: 'bold',
+              marginBottom: SPACING.sm,
+              fontSize: 15,
+              fontFamily: 'ReadexPro_500Medium'
+            }}>
+              سبب التبليغ:
+            </Text>
+
+            <TextInput
+              style={[
+                styles.reportInput,
+                { 
+                  backgroundColor: theme.colors.background.card,
+                  color: theme.colors.text.primary,
+                  borderColor: theme.colors.border.primary,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  padding: SPACING.md,
+                  marginBottom: SPACING.md,
+                  minHeight: 100,
+                  fontSize: 15,
+                  fontFamily: 'ReadexPro_400Regular',
+                  textAlignVertical: 'top',
+                  placeholderTextColor: theme.colors.text.secondary
+                }
+              ]}
+              placeholder="اشرح سبب التبليغ..."
+              placeholderTextColor={theme.colors.text.secondary}
+              value={reportReason}
+              onChangeText={setReportReason}
+              multiline
+            />
+
+            <Text style={{
+              color: theme.colors.text.primary,
+              fontWeight: 'bold',
+              marginBottom: SPACING.sm,
+              fontSize: 15,
+              fontFamily: 'ReadexPro_500Medium'
+            }}>
+              تعليق إضافي (اختياري):
+            </Text>
+
+            <TextInput
+              style={[
+                styles.reportInput,
+                { 
+                  backgroundColor: theme.colors.background.card,
+                  color: theme.colors.text.primary,
+                  borderColor: theme.colors.border.primary,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  padding: SPACING.md,
+                  marginBottom: SPACING.lg,
+                  minHeight: 100,
+                  fontSize: 15,
+                  fontFamily: 'ReadexPro_400Regular',
+                  textAlignVertical: 'top',
+                  placeholderTextColor: theme.colors.text.secondary
+                }
+              ]}
+              placeholder="أضف أي معلومات إضافية..."
+              placeholderTextColor={theme.colors.text.secondary}
+              value={reportComment}
+              onChangeText={setReportComment}
+              multiline
+            />
+
+            <View style={[styles.modalButtons, { 
+              flexDirection: 'row', 
+              justifyContent: 'space-between',
+              gap: SPACING.md,
+              marginBottom: SPACING.lg
+            }]}>
+              <TouchableOpacity
+                style={[
+                  styles.modalButton,
+                  { 
+                    backgroundColor: theme.colors.primary,
+                    flex: 1,
+                    borderRadius: 10,
+                    padding: SPACING.md,
+                    elevation: 3,
+                  }
+                ]}
+                onPress={handleReportSubmit}
+              >
+                <Text style={[
+                  styles.modalButtonText,
+                  { 
+                    color: '#FFFFFF',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    fontFamily: 'ReadexPro_700Bold'
+                  }
+                ]}>
+                  إرسال التبليغ
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.modalButton,
+                  { 
+                    backgroundColor: theme.colors.error,
+                    flex: 1,
+                    borderRadius: 10,
+                    padding: SPACING.md,
+                    elevation: 3,
+                  }
+                ]}
+                onPress={() => setShowReportModal(false)}
+              >
+                <Text style={[
+                  styles.modalButtonText,
+                  { 
+                    color: '#FFFFFF',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    fontFamily: 'ReadexPro_700Bold'
+                  }
+                ]}>
+                  إلغاء
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </View>
       </Modal>
     </BackgroundSelector>

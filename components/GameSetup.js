@@ -61,10 +61,10 @@ const staticStyles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   categoriesContainer: {
-    height: '38%',
+    height: '42%',
     borderRadius: 16,
     padding: 0,
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.sm,
     marginTop: SPACING.xl,
     marginHorizontal: SPACING.xxl,
     alignItems: 'center',
@@ -122,13 +122,19 @@ const staticStyles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  middleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
   progressInfoContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingHorizontal: SPACING.xxs,
-    width: '20%',
-    marginRight: SPACING.sm,
+    width: '0%',
+    marginRight: 0,
   },
   progressBarContainer: {
     height: 4,
@@ -167,15 +173,16 @@ const staticStyles = StyleSheet.create({
   startButton: {
     borderRadius: 8,
     overflow: 'hidden',
-    width: '20%',
-    marginLeft: SPACING.sm,
+    width: '22%',
+    marginLeft: SPACING.xxs,
   },
   startButtonContent: {
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.md,
     alignItems: 'center',
-    height: 40,
+    height: 65,
     justifyContent: 'center',
+    width: '100%',
   },
   startButtonText: {
     fontSize: FONTS.sizes.medium,
@@ -184,7 +191,7 @@ const staticStyles = StyleSheet.create({
     color: '#FFFFFF',
   },
   selectedCategoriesWrapper: {
-    width: '55%',
+    width: '88%',
     paddingVertical: 0,
     paddingHorizontal: 0,
     overflow: 'hidden',
@@ -198,14 +205,14 @@ const staticStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 10,
     paddingHorizontal: 4,
     flexGrow: 0,
     alignSelf: 'center',
   },
   selectedCategoryItem: {
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
     borderRadius: 6,
     overflow: 'hidden',
     backgroundColor: '#FFFFFF',
@@ -731,22 +738,6 @@ const GameSetup = () => {
           }
         ]}>
           <View style={staticStyles.progressContent}>
-            {/* العبارات التعريفية في الجهة اليمنى */}
-            <View style={staticStyles.progressInfoContainer}>
-              <Text style={[
-                staticStyles.progressText,
-                { color: theme.colors.text.secondary }
-              ]}>
-                {`${selectedCategories.length} من ${getMaxCategories(gameData.teams.length)} فئة`}
-              </Text>
-              <Text style={[
-                staticStyles.teamInfo,
-                { color: theme.colors.text.secondary }
-              ]}>
-                {`${getCategoriesPerTeam()} فئات لكل فريق`}
-              </Text>
-            </View>
-
             {/* حاوية الفئات في المنتصف */}
             <View style={staticStyles.middleContainer}>
               {/* عرض الفئات المحددة مع صورها في المنتصف */}
@@ -781,30 +772,72 @@ const GameSetup = () => {
               </View>
             </View>
 
-            {/* زر بدء اللعب على الطرف الأيسر */}
-            <TouchableOpacity
-              style={[
+            {/* العداد يتحول إلى زر بدء عند اكتمال الاختيار */}
+            {selectedCategories.length < getMaxCategories(gameData.teams.length) ? (
+              <View style={[
                 staticStyles.startButton,
-                { opacity: selectedCategories.length < getMaxCategories(gameData.teams.length) || loading ? 0.7 : 1 }
-              ]}
-              onPress={handleStart}
-              disabled={selectedCategories.length < getMaxCategories(gameData.teams.length) || loading}
-            >
-              <LinearGradient
-                colors={theme.colors.gradient.primary}
-                style={staticStyles.startButtonContent}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
+                { justifyContent: 'center', alignItems: 'center' }
+              ]}>
+                <LinearGradient
+                  colors={['#E0E0E0', '#C0C0C0']}
+                  style={staticStyles.startButtonContent}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <View style={{ alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                    <Text style={[
+                      staticStyles.startButtonText,
+                      { color: '#666666', fontSize: 13, fontWeight: 'bold' }
+                    ]}>
+                      {selectedCategories.length}/{getMaxCategories(gameData.teams.length)}
+                    </Text>
+                    <Text style={[
+                      staticStyles.startButtonText,
+                      { color: '#666666', fontSize: 8, fontWeight: '600' }
+                    ]}>
+                      {getCategoriesPerTeam()} لكل فريق
+                    </Text>
+                  </View>
+                </LinearGradient>
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={[
+                  staticStyles.startButton,
+                  { opacity: loading ? 0.7 : 1 }
+                ]}
+                onPress={handleStart}
+                disabled={loading}
               >
-                {loading ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                  <Text style={staticStyles.startButtonText}>
-                    بدء اللعب
-                  </Text>
-                )}
-              </LinearGradient>
-            </TouchableOpacity>
+                <LinearGradient
+                  colors={theme.colors.gradient.primary}
+                  style={staticStyles.startButtonContent}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <View style={{ alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                    {loading ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <>
+                        <Text style={[
+                          staticStyles.startButtonText,
+                          { fontSize: 13, fontWeight: 'bold' }
+                        ]}>
+                          بدء اللعب
+                        </Text>
+                        <Text style={[
+                          staticStyles.startButtonText,
+                          { fontSize: 8 }
+                        ]}>
+                          {getCategoriesPerTeam()} لكل فريق
+                        </Text>
+                      </>
+                    )}
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
           </View>
 
           {/* شريط التقدم في الأسفل */}

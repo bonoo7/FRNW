@@ -19,6 +19,12 @@ const getResponsiveFontSize = () => {
   return isLandscape ? 9 : 11;
 };
 
+// دالة لحساب عرض البطاقة بناءً على المنصة
+const getCardWidth = () => {
+  const isWeb = Platform.OS === 'web';
+  return isWeb ? wp(12) : wp(18);
+};
+
 // التأكد من وجود الصورة
 const getCategoryImage = (category) => {
   const image = categoryImages[category];
@@ -52,6 +58,7 @@ export const CategoryCard = ({
     <View style={[
       styles.container, 
       { 
+        width: getCardWidth(),
         borderColor: isSelected ? theme.colors.primary : theme.colors.border?.primary || theme.colors.border,
         borderWidth: isSelected ? 2 : 1,
         transform: [{ scale: isSelected ? 1.05 : 1 }],
@@ -107,7 +114,7 @@ export const CategoryCard = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: wp(12), // جعل الحجم متناسباً مع عرض الشاشة
+    width: wp(14),
     aspectRatio: 0.75,
     borderRadius: 10,
     margin: 4,
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   imageContainer: {
-    flex: 3.5,
+    flex: 2.5,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -137,18 +144,18 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: '100%',
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
     paddingVertical: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 0.5,
+    flex: 1,
   },
   title: {
     fontSize: FONTS.sizes.body,
     fontWeight: FONTS.weights.bold,
-    fontFamily: 'ReadexPro_700Bold',
+    fontFamily: 'Zain_700Bold',
     textAlign: 'center',
-    numberOfLines: 2,
+    numberOfLines: 3,
   },
   orderBadge: {
     position: 'absolute',

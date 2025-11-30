@@ -53,6 +53,7 @@
   "dependencies": {
     "@expo-google-fonts/mada": "^0.2.3",
     "@expo-google-fonts/readex-pro": "^0.3.0",
+    "@expo-google-fonts/zain": "^0.4.1",
     "@expo/cli": "^0.22.11",
     "@expo/config-plugins": "~9.0.0",
     "@expo/image-utils": "^0.6.4",

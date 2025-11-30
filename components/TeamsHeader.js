@@ -171,14 +171,14 @@ export const TeamsHeader = ({
       width: vertical ? '100%' : 'auto',
     },
     actionButton: {
-      paddingVertical: vertical ? 1.2 : 4,
-      paddingHorizontal: vertical ? 3 : 6,
+      paddingVertical: vertical ? 1.5 : 4,
+      paddingHorizontal: vertical ? 4 : 6,
       borderRadius: 4,
       overflow: 'hidden',
       alignItems: 'center',
       justifyContent: 'center',
-      minHeight: vertical ? 24 : 34,
-      minWidth: vertical ? 36 : 34,
+      minHeight: vertical ? 32 : 34,
+      minWidth: vertical ? 44 : 34,
       elevation: 1,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 0.5 },
@@ -305,7 +305,7 @@ export const TeamsHeader = ({
         {/* حاوية أزرار المضاعفة */}
         <View style={{
           flexDirection: 'row',
-          gap: 3,
+          gap: 6,
           alignItems: 'center',
           justifyContent: 'center',
         }}>
@@ -314,15 +314,21 @@ export const TeamsHeader = ({
             style={[
               styles.actionButton,
               {
-                backgroundColor: isDoublePoints ? '#FFB300' : '#FFC107',
-                opacity: validDoublePoints[currentTeam] ? 0.4 : 1,
+                backgroundColor: isDoublePoints ? '#CC7700' : '#FFD700',
+                borderColor: isDoublePoints ? '#994400' : '#FFA500',
+                opacity: isDoublePoints ? 0.6 : 1,
               }
             ]}
             onPress={() => handleDoublePointsChange(!isDoublePoints)}
             disabled={validDoublePoints[currentTeam]}
-            activeOpacity={0.8}
+            activeOpacity={validDoublePoints[currentTeam] ? 1 : 0.7}
           >
-            <Text style={styles.actionButtonText}>×2</Text>
+            <Text style={[
+              styles.actionButtonText,
+              {
+                color: '#FFFFFF',
+              }
+            ]}>×2</Text>
           </TouchableOpacity>
 
           {/* زر مضاعفة النقاط ×5 */}
@@ -331,15 +337,21 @@ export const TeamsHeader = ({
               style={[
                 styles.actionButton,
                 {
-                  backgroundColor: isPentaPoints ? '#43A047' : '#66BB6A',
-                  opacity: validPentaPoints[currentTeam] || !isLowestScoringTeam(currentTeam) ? 0.4 : 1,
+                  backgroundColor: isPentaPoints ? '#006622' : (isLowestScoringTeam(currentTeam) ? '#00CC44' : '#CCCCCC'),
+                  borderColor: isPentaPoints ? '#003311' : (isLowestScoringTeam(currentTeam) ? '#008800' : '#999999'),
+                  opacity: isPentaPoints ? 0.6 : (isLowestScoringTeam(currentTeam) ? 1 : 0.5),
                 }
               ]}
               onPress={() => handlePentaPointsChange(!isPentaPoints)}
               disabled={validPentaPoints[currentTeam] || !isLowestScoringTeam(currentTeam)}
-              activeOpacity={0.8}
+              activeOpacity={validPentaPoints[currentTeam] || !isLowestScoringTeam(currentTeam) ? 1 : 0.7}
             >
-              <Text style={styles.actionButtonText}>×5</Text>
+              <Text style={[
+                styles.actionButtonText,
+                {
+                  color: '#FFFFFF',
+                }
+              ]}>×5</Text>
             </TouchableOpacity>
           )}
         </View>

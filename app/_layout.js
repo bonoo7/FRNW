@@ -19,6 +19,13 @@ import {
   ReadexPro_600SemiBold,
   ReadexPro_700Bold
 } from '@expo-google-fonts/readex-pro';
+import {
+  useFonts as useZain,
+  Zain_300Light,
+  Zain_400Regular,
+  Zain_700Bold,
+  Zain_800ExtraBold,
+} from '@expo-google-fonts/zain';
 
 // شاشة تحميل مخصصة للخطوط
 const FontsLoadingScreen = () => (
@@ -161,6 +168,13 @@ export default function RootLayout() {
     ReadexPro_700Bold
   });
 
+  const [zainLoaded] = useZain({
+    Zain_300Light,
+    Zain_400Regular,
+    Zain_700Bold,
+    Zain_800ExtraBold,
+  });
+
   // تفعيل جميع الاتجاهات
   try {
     ScreenOrientation.unlockAsync();
@@ -169,7 +183,7 @@ export default function RootLayout() {
   }
 
   // إظهار splash screen أثناء تحميل الخطوط
-  if (!fontsLoaded || !readexProLoaded) {
+  if (!fontsLoaded || !readexProLoaded || !zainLoaded) {
     return <FontsLoadingScreen />;
   }
 
