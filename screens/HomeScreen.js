@@ -1006,7 +1006,36 @@ const HomeScreen = () => {
           
           {/* الأزرار على اليمين */}
           
-          <View style={{ flexDirection: isSmallScreen ? 'column' : 'row', gap: 10, alignItems: 'flex-end' }}>
+          <View style={{ flexDirection: Dimensions.get('window').width > Dimensions.get('window').height ? 'row' : 'column', gap: 10, alignItems: 'flex-end', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            {/* زر شراء رصيد (الألعاب) */}
+            <TouchableOpacity 
+              style={{
+                backgroundColor: '#FF6B6B',
+                borderRadius: 12,
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 8,
+                shadowColor: '#FF6B6B',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+              }}
+              onPress={() => router.push('/purchase')}
+            >
+              <MaterialIcons name="add-circle" size={20} color="#FFF" />
+              <Text style={{
+                fontSize: 13,
+                color: '#FFF',
+                fontFamily: FONTS.families.secondary,
+                fontWeight: FONTS.weights.bold
+              }}>
+                شراء
+              </Text>
+            </TouchableOpacity>
+
             {/* زر ألعابي */}
             <TouchableOpacity 
               style={{

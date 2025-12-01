@@ -142,6 +142,21 @@ service cloud.firestore {
       allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
     
+    // ====== Mock Transactions Collection Rules (للمعاملات الوهمية) ======
+    match /mockTransactions/{transactionId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isSignedIn() 
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.transactionId != null
+                    && request.resource.data.credits > 0
+                    && request.resource.data.credits <= 100;
+      
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow delete: if false;
+    }
+    
     // ====== Default: Deny All Other Access ======
     match /{document=**} {
       allow read, write: if false;

@@ -270,23 +270,6 @@ const IntegratedUserProfile = ({ style, onPressCredits }) => {
             </View>
 
             {/* عرض الرصيد في القائمة */}
-            <View style={[styles.creditsInfoBox, { backgroundColor: theme.colors.primary + '15', borderBottomColor: theme.colors.border?.primary }]}>
-              <MaterialIcons name="sports-esports" size={20} color={theme.colors.primary} />
-              <View style={{ flex: 1, alignItems: 'flex-end', marginRight: 12 }}>
-                <Text style={[styles.creditsLabel, { color: theme.colors.text.secondary }]}>
-                  الألعاب المتبقية
-                </Text>
-                <Text style={[styles.creditsValueMenu, { color: theme.colors.primary }]}>
-                  {credits} {credits === 1 ? 'لعبة' : 'ألعاب'}
-                </Text>
-              </View>
-              {credits <= 2 && credits > 0 && (
-                <MaterialIcons name="warning" size={20} color={theme.colors.accent} />
-              )}
-              {credits === 0 && (
-                <MaterialIcons name="error" size={20} color="#ff3b30" />
-              )}
-            </View>
 
             {/* خيارات القائمة */}
             <MenuItem

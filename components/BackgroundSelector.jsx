@@ -127,7 +127,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
 
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -136,7 +136,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         overflow: 'hidden',
         background: glassBackground,
         backgroundSize: '400% 400%',
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
 
       gridElements = React.createElement(
@@ -168,7 +169,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
     else if (effectiveDesign === 'modern2') {
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -176,7 +177,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         padding: 0,
         overflow: 'hidden',
         background: 'linear-gradient(180deg, #0A0E27 0%, #1a1a3e 50%, #0A0E27 100%)',
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
 
       gridElements = React.createElement(
@@ -237,7 +239,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
       
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -245,7 +247,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         padding: 0,
         overflow: 'hidden',
         background: neuBgColor,
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
 
       gridElements = React.createElement(
@@ -292,7 +295,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
       
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -300,7 +303,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         padding: 0,
         overflow: 'hidden',
         background: auroraBackground,
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
 
       gridElements = React.createElement(
@@ -350,7 +354,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
       
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -358,7 +362,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         padding: 0,
         overflow: 'hidden',
         background: meshBackground,
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
     }
 
@@ -366,7 +371,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
     else if (effectiveDesign === 'modern6') {
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -376,7 +381,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         background: 'linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%)',
         backgroundImage: `radial-gradient(circle, #60a5fa 1px, transparent 1px)`,
         backgroundSize: '50px 50px',
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
     }
 
@@ -384,7 +390,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
     else if (currentTheme === 'dark') {
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -392,7 +398,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         padding: 0,
         overflow: 'hidden',
         background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 30%, #0d1117 70%, #000000 100%)',
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
 
       // نجوم متلألئة للثيم الداكن
@@ -422,7 +429,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
     else if (currentTheme === 'fresh') {
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -430,14 +437,15 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         padding: 0,
         overflow: 'hidden',
         background: 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%)',
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
     }
     // Pink/Rose theme
     else if (currentTheme === 'pink' || currentTheme === 'rose' || currentTheme === 'purple') {
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -445,7 +453,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         padding: 0,
         overflow: 'hidden',
         background: 'linear-gradient(135deg, #FFF0F5 0%, #FFE4EC 30%, #FFD6E0 70%, #FFCCD5 100%)',
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
 
       // قلوب صغيرة عائمة للثيم الوردي
@@ -475,7 +484,7 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
     else {
       backgroundStyle = {
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -483,7 +492,8 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
         padding: 0,
         overflow: 'hidden',
         background: 'linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #0EA5E9 100%)',
-        zIndex: 0
+        zIndex: 0,
+        pointerEvents: 'none'
       };
 
       gridElements = React.createElement(
@@ -510,11 +520,15 @@ const BackgroundSelector = ({ children, design = 'auto' }) => {
 
     return React.createElement(
       'div',
-      { style: backgroundStyle },
-      gridElements,
+      { style: { width: '100%', overflowY: 'auto' } },
       React.createElement(
         'div',
-        { style: { position: 'relative', width: '100%', height: '100%', zIndex: 1 } },
+        { style: backgroundStyle },
+        gridElements
+      ),
+      React.createElement(
+        'div',
+        { style: { position: 'relative', width: '100%', zIndex: 1 } },
         children
       )
     );

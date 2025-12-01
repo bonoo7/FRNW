@@ -41,7 +41,18 @@ export default function RoundResults() {
       position: index + 1
     }));
 
-  const winner = sortedTeams[0];
+  // حساب الفائزين (قد يكون هناك أكثر من واحد في حالة التعادل)
+  const getWinners = () => {
+    if (sortedTeams.length === 0) return [];
+    const maxScore = sortedTeams[0].score;
+    return sortedTeams.filter(team => team.score === maxScore);
+  };
+
+  const winners = getWinners();
+  const isTie = winners.length > 1;
+  const winnerDisplayText = isTie 
+    ? `تعادل: ${winners.map(w => w.name).join(', ')}`
+    : winners[0]?.name;
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
@@ -159,24 +170,32 @@ export default function RoundResults() {
                   {roundName}
                 </Text>
 
-                {winner && (
+                {winners.length > 0 && (
                     <View style={{ alignItems: 'center', marginVertical: 6 }}>
-                        <Text style={{ fontSize: isLandscape ? 32 : 26, marginBottom: 4 }}>👑</Text>
+                        <Text style={{ 
+                          fontSize: isLandscape ? 16 : 14, 
+                          color: theme.colors.text.secondary, 
+                          fontFamily: FONTS.families.secondary,
+                          marginBottom: 8
+                        }}>
+                          الفائز:
+                        </Text>
                         <Text style={{ 
                           fontSize: isLandscape ? 20 : 17, 
                           fontWeight: 'bold', 
-                          color: theme.colors.text.primary, 
+                          color: theme.colors.primary, 
                           fontFamily: FONTS.families.secondary,
                           textAlign: 'center'
                         }}>
-                          {winner.name}
+                          {winnerDisplayText}
                         </Text>
                         <Text style={{ 
                           fontSize: isLandscape ? 32 : 26, 
                           fontWeight: 'bold', 
-                          color: theme.colors.primary 
+                          color: theme.colors.primary,
+                          marginTop: 8
                         }}>
-                          {winner.score}
+                          {isTie ? sortedTeams[0].score : sortedTeams[0].score}
                         </Text>
                     </View>
                 )}

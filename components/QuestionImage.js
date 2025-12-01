@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Image, Dimensions, TouchableOpacity, Modal, Pressable, View, PixelRatio, Platform } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { getImageFromFileName } from '../utils/imageMapping';
+import ImageProxyService from '../services/imageProxyService';
 
 // الصور الافتراضية
 const DEFAULT_QUESTION_IMAGE = require('../assets/images/default-question.png');
@@ -59,15 +60,28 @@ const QuestionImage = ({
       setImageSource(image);
     } else {
       console.warn(`Image not found: ${imagePath}`);
-      setImageSource(isAnswerRevealed ? DEFAULT_ANSWER_IMAGE : DEFAULT_QUESTION_IMAGE);
+      // إذا كانت صورة خارجية، حاول تحميلها مع معالجة الأخطاء
+      if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        setImageSource({ 
+          uri: imagePath,
+          cache: 'force-cache',
+          method: 'GET',
+          headers: {
+            'User-Agent': 'Mozilla/5.0'
+          }
+        });
+      } else {
+        setImageSource(isAnswerRevealed ? DEFAULT_ANSWER_IMAGE : DEFAULT_QUESTION_IMAGE);
+      }
     }
   }, [questionImage, answerImage, isAnswerRevealed]);
 
   // تحديد مصدر الصورة بدقة عالية للمصغرة والرابط الخارجي
   const getThumbnailImageSource = () => {
     const imagePath = isAnswerRevealed ? answerImage : questionImage;
-    if (imagePath && (imagePath.startsWith('http://') || imagePath.startsWith('https://')))
-      return { uri: imagePath };
+    if (imagePath && (imagePath.startsWith('http://') || imagePath.startsWith('https://'))) {
+      return ImageProxyService.getOptimizedImageUrl(imagePath);
+    }
     return imageSource;
   };
 
@@ -75,8 +89,9 @@ const QuestionImage = ({
   const getModalImageSource = () => {
     // إذا كان المستخدم وضع رابط صورة (وليس من الماب)، استخدم الرابط مباشرة
     const imagePath = isAnswerRevealed ? answerImage : questionImage;
-    if (imagePath && (imagePath.startsWith('http://') || imagePath.startsWith('https://')))
-      return { uri: imagePath };
+    if (imagePath && (imagePath.startsWith('http://') || imagePath.startsWith('https://'))) {
+      return ImageProxyService.getOptimizedImageUrl(imagePath);
+    }
     return imageSource;
   };
 
@@ -113,6 +128,10 @@ const QuestionImage = ({
         }}
         resizeMode="contain"
         onError={handleImageError}
+        onLoad={() => {
+          // التحقق من تحميل الصورة بنجاح
+          console.log('Image loaded successfully');
+        }}
       />
     );
   };
@@ -147,12 +166,31 @@ const QuestionImage = ({
           borderRadius: 16
         }}
         resizeMode="contain"
+        onError={handleImageError}
+        onLoad={() => {
+          // التحقق من تحميل الصورة بنجاح
+          console.log('Modal image loaded successfully');
+        }}
       />
     );
   };
 
   // التعامل مع أخطاء تحميل الصورة
-  const handleImageError = () => {
+  const handleImageError = (error) => {
+    const imagePath = isAnswerRevealed ? answerImage : questionImage;
+    console.warn('Error loading image:', imagePath, error);
+    
+    // محاولة الحصول على رابط بديل
+    if (imagePath && (imagePath.startsWith('http://') || imagePath.startsWith('https://'))) {
+      const alternativeUrl = ImageProxyService.getAlternativeImageUrl(imagePath);
+      if (alternativeUrl) {
+        console.log('Trying alternative image URL');
+        setImageSource(alternativeUrl);
+        return;
+      }
+    }
+    
+    // إذا فشلت جميع المحاولات، استخدم الصورة الافتراضية
     setImageError(true);
     setImageSource(isAnswerRevealed ? DEFAULT_ANSWER_IMAGE : DEFAULT_QUESTION_IMAGE);
   };

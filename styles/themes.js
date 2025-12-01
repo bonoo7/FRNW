@@ -30,8 +30,7 @@ export const modernThemes = {
           rotation: 45,
           color: '#1E40AF',
           density: 1
-        },
-        containerImage: require('../assets/bc.png')
+        }
       },
 
       border: {

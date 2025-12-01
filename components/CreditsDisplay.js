@@ -13,6 +13,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import CreditsService from '../services/creditsService';
+import MockPaymentModal from './MockPaymentModal';
 
 /**
  * مكون عرض وإدارة الرصيد (Credits Display & Purchase)
@@ -23,6 +24,8 @@ const CreditsDisplay = ({ onPurchaseComplete }) => {
   const [credits, setCredits] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showMockPayment, setShowMockPayment] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
   const [purchasing, setPurchasing] = useState(false);
 
   // باقات الشراء المتاحة
@@ -52,43 +55,23 @@ const CreditsDisplay = ({ onPurchaseComplete }) => {
     }
   };
 
-  // معالجة الشراء
+  // معالجة الشراء (استخدام Mock Payment)
   const handlePurchase = async (packageData) => {
-    try {
-      setPurchasing(true);
-      
-      // هنا يجب إضافة منطق الدفع الفعلي (Stripe, Apple Pay, Google Pay)
-      // للتجربة، سنقوم بإضافة الرصيد مباشرة
-      
-      const result = await CreditsService.addCredits(
-        currentUser.uid,
-        packageData.credits,
-        {
-          price: packageData.price,
-          currency: 'USD',
-          packageId: packageData.id,
-          platform: 'web',
-          paymentMethod: 'demo',
-          transactionId: `demo_${Date.now()}`
-        }
-      );
+    setSelectedPackage(packageData);
+    setShowMockPayment(true);
+  };
 
-      if (result.success) {
-        setCredits(result.newBalance);
-        setShowPurchaseModal(false);
-        
-        Alert.alert(
-          'تمت العملية بنجاح! 🎉',
-          `تم إضافة ${packageData.credits} ${packageData.credits === 1 ? 'لعبة' : 'ألعاب'} إلى رصيدك.\nالرصيد الجديد: ${result.newBalance}`,
-          [{ text: 'رائع!', onPress: () => onPurchaseComplete?.(result.newBalance) }]
-        );
-      }
-    } catch (error) {
-      console.error('Error purchasing credits:', error);
-      Alert.alert('خطأ', 'حدث خطأ أثناء عملية الشراء. يرجى المحاولة مرة أخرى.');
-    } finally {
-      setPurchasing(false);
-    }
+  // معالجة نجاح الدفع
+  const handlePaymentSuccess = (packageData) => {
+    // تحديث الرصيد
+    loadCredits();
+    
+    // إغلاق النوافذ
+    setShowPurchaseModal(false);
+    setShowMockPayment(false);
+    
+    // استدعاء الـ callback
+    onPurchaseComplete?.(credits + packageData.credits);
   };
 
   if (loading) {
@@ -212,12 +195,20 @@ const CreditsDisplay = ({ onPurchaseComplete }) => {
               <Text style={[styles.infoText, { color: theme.colors.text.secondary }]}>
                 • الألعاب لا تنتهي صلاحيتها أبداً{'\n'}
                 • يمكنك اللعب في أي وقت{'\n'}
-                • دعم فني متاح على مدار الساعة
+                • منصة دفع تجريبية آمنة
               </Text>
             </View>
           </View>
         </View>
       </Modal>
+
+      {/* نافذة الدفع الوهمية */}
+      <MockPaymentModal
+        visible={showMockPayment}
+        packageData={selectedPackage}
+        onClose={() => setShowMockPayment(false)}
+        onSuccess={handlePaymentSuccess}
+      />
     </View>
   );
 };

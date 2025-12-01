@@ -580,20 +580,20 @@ const QuestionScreen = ({ questionData }) => {
 
             <View style={[
               styles.questionContainer,
-              { 
+              {
                 backgroundColor: `${theme.colors.background.surface}CC`,
                 borderColor: 'transparent',
                 borderWidth: 0,
                 marginBottom: SPACING.xs,
                 // ارتفاع متجاوب مع حجم الشاشة لعرض الأزرار أسفله
                 height: isSmallScreen ? screenHeight * 0.5 : screenHeight * 0.6,
-                paddingVertical: SPACING.md,
               }
             ]}>
               {/* إضافة صورة الفئة كخلفية */}
               {categoryImages[questionData.category.toLowerCase()] && (
                 <Image 
                   source={categoryImages[questionData.category.toLowerCase()]}
+                  resizeMode="cover"
                   style={{
                     position: 'absolute',
                     top: 0,
@@ -604,7 +604,6 @@ const QuestionScreen = ({ questionData }) => {
                     height: '100%',
                     opacity: 0.35,
                     zIndex: -1,
-                    resizeMode: 'cover'
                   }}
                 />
               )}
@@ -749,9 +748,9 @@ const QuestionScreen = ({ questionData }) => {
                           styles.teamAnswerButton,
                           { 
                             backgroundColor: theme.colors.primary,
-                            minWidth: teams.length > 3 ? '30%' : 60,
-                            maxWidth: teams.length > 3 ? '48%' : 'auto',
-                            paddingHorizontal: 12,
+                            minWidth: teams.length > 8 ? '20%' : 20,
+                            maxWidth: teams.length > 3 ? '88%' : 'auto',
+                            paddingHorizontal: 18,
                             paddingVertical: 10,
                             marginHorizontal: 2,
                             marginVertical: 3,
@@ -766,7 +765,7 @@ const QuestionScreen = ({ questionData }) => {
                         <Text style={[
                           styles.teamButtonText,
                           { 
-                            fontSize: teams.length > 4 ? 11 : FONTS.sizes.small, 
+                            fontSize: teams.length > 4 ? 16 : 18, 
                             fontFamily: 'ReadexPro_700Bold',
                             textAlign: 'center',
                             color: '#FFFFFF',
@@ -798,7 +797,7 @@ const QuestionScreen = ({ questionData }) => {
                       <Text style={[
                         styles.teamButtonText,
                         { 
-                          fontSize: FONTS.sizes.small, 
+                          fontSize: 38, 
                           fontFamily: 'ReadexPro_700Bold',
                           textAlign: 'center',
                           color: '#FFFFFF',
@@ -1189,10 +1188,8 @@ const styles = StyleSheet.create({
   questionContainer: {
     position: 'relative',
     margin: SPACING.md,
-    padding: SPACING.md,
     borderRadius: 8,
-    flex: 1,
-    maxHeight: '70%',
+    overflow: 'hidden',
   },
   reportButton: {
     position: 'absolute',
@@ -1269,17 +1266,17 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   teamAnswerButton: {
-    paddingVertical: 4, // تقليل الحشو العمودي أكثر
-    paddingHorizontal: SPACING.md, // تقليل الحشو الأفقي أيضاً
+    paddingVertical: 8, // زيادة الارتفاع ليتناسب مع الخط الأكبر
+    paddingHorizontal: SPACING.md,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 0, // السماح بتقليص الأزرار
-    height: 32, // تقليل الارتفاع أكثر
+    minWidth: 0,
+    height: 40, // زيادة الارتفاع ليتناسب مع الخط الأكبر
     marginHorizontal: 2,
   },
   teamButtonText: {
-    fontSize: 12, // تقليل حجم الخط أكثر
+    fontSize: 18, // زيادة حجم الخط
     textAlign: 'center',
     fontFamily: 'ReadexPro_700Bold', // تغيير الخط ليكون مثل زر "لم يجب أحد"
   },
