@@ -13,7 +13,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import CreditsService from '../services/creditsService';
-import MockPaymentModal from './MockPaymentModal';
+import UpaymentModal from './UpaymentModal';
 
 /**
  * مكون عرض وإدارة الرصيد (Credits Display & Purchase)
@@ -24,16 +24,16 @@ const CreditsDisplay = ({ onPurchaseComplete }) => {
   const [credits, setCredits] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-  const [showMockPayment, setShowMockPayment] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [purchasing, setPurchasing] = useState(false);
 
-  // باقات الشراء المتاحة
+  // باقات الشراء المتاحة (أسعار بالدينار الكويتي KWD)
   const purchasePackages = [
-    { id: 'small', credits: 5, price: 4.99, popular: false },
-    { id: 'medium', credits: 15, price: 12.99, popular: true, discount: '15%' },
-    { id: 'large', credits: 30, price: 19.99, popular: false, discount: '25%' },
-    { id: 'unlimited', credits: 100, price: 49.99, popular: false, discount: '40%' }
+    { id: 'small', credits: 1, price: 0.1, popular: false },
+    { id: 'medium', credits: 2, price: 0.15, popular: true, discount: '50%' },
+    { id: 'large', credits: 5, price: 0.25, popular: false, discount: '50%' },
+    { id: 'unlimited', credits: 20, price: 1.0, popular: false, discount: '50%' }
   ];
 
   // تحميل الرصيد الحالي
@@ -58,7 +58,7 @@ const CreditsDisplay = ({ onPurchaseComplete }) => {
   // معالجة الشراء (استخدام Mock Payment)
   const handlePurchase = async (packageData) => {
     setSelectedPackage(packageData);
-    setShowMockPayment(true);
+    setShowPayment(true);
   };
 
   // معالجة نجاح الدفع
@@ -68,7 +68,7 @@ const CreditsDisplay = ({ onPurchaseComplete }) => {
     
     // إغلاق النوافذ
     setShowPurchaseModal(false);
-    setShowMockPayment(false);
+    setShowPayment(false);
     
     // استدعاء الـ callback
     onPurchaseComplete?.(credits + packageData.credits);
@@ -170,11 +170,11 @@ const CreditsDisplay = ({ onPurchaseComplete }) => {
                         {pkg.credits} {pkg.credits === 1 ? 'لعبة' : 'ألعاب'}
                       </Text>
                       <Text style={[styles.packagePrice, { color: theme.colors.primary }]}>
-                        ${pkg.price}
+                        {pkg.price.toFixed(3)} د.ك
                       </Text>
                       {pkg.discount && (
                         <Text style={[styles.packagePerGame, { color: theme.colors.text.secondary }]}>
-                          ${(pkg.price / pkg.credits).toFixed(2)} لكل لعبة
+                          {(pkg.price / pkg.credits).toFixed(3)} د.ك لكل لعبة
                         </Text>
                       )}
                     </View>
@@ -202,11 +202,11 @@ const CreditsDisplay = ({ onPurchaseComplete }) => {
         </View>
       </Modal>
 
-      {/* نافذة الدفع الوهمية */}
-      <MockPaymentModal
-        visible={showMockPayment}
+      {/* نافذة الدفع */}
+      <UpaymentModal
+        visible={showPayment}
         packageData={selectedPackage}
-        onClose={() => setShowMockPayment(false)}
+        onClose={() => setShowPayment(false)}
         onSuccess={handlePaymentSuccess}
       />
     </View>

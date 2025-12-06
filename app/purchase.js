@@ -14,7 +14,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import CreditsService from '../services/creditsService';
-import MockPaymentModal from '../components/MockPaymentModal';
+import UpaymentModal from '../components/UpaymentModal';
 
 export default function PurchasePage() {
   const { theme } = useTheme();
@@ -22,17 +22,17 @@ export default function PurchasePage() {
   const router = useRouter();
   const [credits, setCredits] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [showMockPayment, setShowMockPayment] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
 
   const logoSource = require('../assets/logo.png');
 
-  // باقات الشراء المتاحة
+  // باقات الشراء المتاحة (أسعار بالدينار الكويتي KWD)
   const purchasePackages = [
-    { id: 'small', credits: 5, price: 4.99, popular: false, icon: 'sports-esports' },
-    { id: 'medium', credits: 15, price: 12.99, popular: true, discount: '15%', icon: 'star' },
-    { id: 'large', credits: 30, price: 19.99, popular: false, discount: '25%', icon: 'whatshot' },
-    { id: 'unlimited', credits: 100, price: 49.99, popular: false, discount: '40%', icon: 'favorite' }
+    { id: 'small', credits: 1, price: 0.1, popular: false, icon: 'sports-esports' },
+    { id: 'medium', credits: 2, price: 0.15, popular: true, icon: 'star' },
+    { id: 'large', credits: 5, price: 0.25, popular: false, icon: 'whatshot' },
+    { id: 'unlimited', credits: 20, price: 1.0, popular: false, discount: '50%', icon: 'favorite' }
   ];
 
   React.useEffect(() => {
@@ -54,12 +54,12 @@ export default function PurchasePage() {
 
   const handlePurchase = (packageData) => {
     setSelectedPackage(packageData);
-    setShowMockPayment(true);
+    setShowPayment(true);
   };
 
   const handlePaymentSuccess = (packageData) => {
     loadCredits();
-    setShowMockPayment(false);
+    setShowPayment(false);
     
     Alert.alert(
       'تمت العملية بنجاح! 🎉',
@@ -193,11 +193,11 @@ export default function PurchasePage() {
 
               <View style={styles.packageRight}>
                 <Text style={[styles.packagePrice, { color: theme.colors.primary }]}>
-                  ${pkg.price}
+                  {pkg.price.toFixed(3)} د.ك
                 </Text>
                 {pkg.discount && (
                   <Text style={[styles.pricePerGame, { color: theme.colors.text.secondary }]}>
-                    ${(pkg.price / pkg.credits).toFixed(2)}/لعبة
+                    {(pkg.price / pkg.credits).toFixed(3)} د.ك/لعبة
                   </Text>
                 )}
               </View>
@@ -220,11 +220,11 @@ export default function PurchasePage() {
         <View style={{ height: 30 }} />
       </ScrollView>
 
-      {/* نافذة الدفع الوهمية */}
-      <MockPaymentModal
-        visible={showMockPayment}
+      {/* نافذة الدفع */}
+      <UpaymentModal
+        visible={showPayment}
         packageData={selectedPackage}
-        onClose={() => setShowMockPayment(false)}
+        onClose={() => setShowPayment(false)}
         onSuccess={handlePaymentSuccess}
       />
     </View>
